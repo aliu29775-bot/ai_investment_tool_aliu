@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>核查范围与复算 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">附屬文件</a>
+  </nav>
+  <div class="report-head">
+    <h1>核查范围与复算</h1>
+    <div class="report-meta">
+      <span class="badge">專題</span>
+      <span class="badge badge-type">附屬</span>
+      <span class="meta-item">📅 2026-09-24</span>
+      <span class="meta-item">📁 附屬文件</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>核查范围与复算</h1>
+<p>对应报告：<code>贵州茅台护城河文化需求与十年利润研究报告-20260907.md</code>，资料截止 2026-09-07。</p>
+<ul>
+<li><code>model.py</code> 调用项目 <code>financial_rigor.py</code> 完成七项来源核对及三情景计算，同时使用 Decimal 保存精确结果。项目 calc 当前内部先用浮点求值，本研究以独立 Decimal 结果为精度依据，没有修改共享工具。</li>
+<li><code>calculations.json</code> 包含原始基期、来源 URL、所有假设、情景、敏感性及精确结果。</li>
+<li><code>financial-rigor-output.txt</code> 是原始项目工具输出。</li>
+<li><code>audit.py</code> 调用 <code>report_audit.py extract --seed 42</code>，保留抽样结果，并对事实、推导值和假设分别处理；同时校验全部情景输出表格与计算一致。</li>
+<li><code>audit-extract.txt</code> 保留六项原始抽样。两项为历史事实，一项为从财报计算的比率，三项为前瞻假设。</li>
+<li><code>audit-classified.json</code> 保留每个原始样本及分类。三项前瞻假设仅验证模型输入与正文相符，没有填造外部真实值。</li>
+<li><code>audit-verdict.txt</code> 仅对两项事实及一项历史推导比率输出判决。工具自带的“可发布”文字仅限其实际核查范围，不代表六项全部被外部验证，更不代表未来利润或企业文化结论获审计背书。</li>
+</ul>
+<p>来源核对的第三方平台报道依然源自公司披露，不能视为独立的财务审计。官网对改革成效的陈述与行业问卷都不是茅台终端开瓶量的完整统计。</p>
+<p>未来利润使用 2025 年完整财年为基期，推算至 2036 年，共十一个增长期；研究时点到目标年份约十年。模型中的增长是区间等效年均值，未做逐年路径预测。没有主观概率权重，三情景也不是统计置信区间。</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

@@ -57,14 +57,14 @@
 <table><thead><tr><th>机构</th><th>CIK</th><th>Accession No.</th><th>提交时间</th><th>申报总市值</th><th>条目数</th><th>保密处理</th></tr></thead><tbody><tr><td>Berkshire Hathaway Inc</td><td>1067983</td><td><a href="https://www.sec.gov/Archives/edgar/data/1067983/000119312526352200/0001193125-26-352200-index.htm">0001193125-26-352200</a></td><td>2026-08-14 16:05:04</td><td>$299,253,556,246</td><td>89</td><td>无</td></tr><tr><td>H&amp;H International Investment, LLC</td><td>1759760</td><td><a href="https://www.sec.gov/Archives/edgar/data/1759760/000175976026000007/0001759760-26-000007-index.htm">0001759760-26-000007</a></td><td>2026-08-14</td><td>$19,100,584,155</td><td>18</td><td>无</td></tr><tr><td>Himalaya Capital Management LLC</td><td>1709323</td><td><a href="https://www.sec.gov/Archives/edgar/data/1709323/000204358526000022/0002043585-26-000022-index.htm">0002043585-26-000022</a></td><td>2026-08-14</td><td>$3,702,921,099</td><td>8</td><td>无</td></tr></tbody></table>
 <p>三份文件封面的 <code>isConfidentialOmitted</code> 字段均为 <code>false</code>，即本季没有任何一家申请保密处理（confidential treatment）来隐藏持仓。三份文件的 <code>putCall</code> 字段全部为空，即申报范围内没有期权头寸。</p>
 <p><strong>核验方法：</strong>直接从 EDGAR 拉取八份原始 XML（三家的 2026Q1 与 2026Q2，加上段永平、李录的 2025Q4），用脚本逐条解析 infoTable，按 CUSIP 归并同一发行人的多行申报（伯克希尔 89 行来自 14 家保险子公司分别申报，归并后为 29 个 CUSIP、26 个发行人），再做逐期比对。每家每期的解析合计值与封面 <code>tableValueTotal</code> 字段完全一致，可确认解析无遗漏。伯克希尔的现金、国债与买卖股票现金流来自 10-Q 的 XBRL 数据与财务报表原页。</p>
-<p><img src="../assets/13f-2026q2/edgar-brk-2026q2.png" alt="伯克希尔 2026Q2 13F-HR 备案页"> <em>图 1：伯克希尔 2026Q2 13F-HR 在 SEC EDGAR 的备案详情页（原图）</em></p>
-<p><img src="../assets/13f-2026q2/13f-cover-brk-2026q2.png" alt="伯克希尔 13F 封面页"> <em>图 2：伯克希尔 13F 封面页（SEC 官方渲染），报告期 2026-06-30，条目 89 条，合计 $299,253,556,246，<code>isConfidentialOmitted = false</code></em></p>
-<p><img src="../assets/13f-2026q2/edgar-hh-2026q2.png" alt="H&amp;H 2026Q2 13F-HR 备案页"> <em>图 3：段永平 H&amp;H International Investment 的备案详情页（原图），CIK 0001759760，13F 文件编号 028-19454</em></p>
-<p><img src="../assets/13f-2026q2/edgar-him-2026q2.png" alt="喜马拉雅资本 2026Q2 13F-HR 备案页"> <em>图 4：李录 Himalaya Capital Management 的备案详情页（原图），CIK 0001709323，13F 文件编号 028-18090，2026-08-14 15:28:42 被 EDGAR 接收</em></p>
+<p><img src="assets/13f-2026q2/edgar-brk-2026q2.png" alt="伯克希尔 2026Q2 13F-HR 备案页"> <em>图 1：伯克希尔 2026Q2 13F-HR 在 SEC EDGAR 的备案详情页（原图）</em></p>
+<p><img src="assets/13f-2026q2/13f-cover-brk-2026q2.png" alt="伯克希尔 13F 封面页"> <em>图 2：伯克希尔 13F 封面页（SEC 官方渲染），报告期 2026-06-30，条目 89 条，合计 $299,253,556,246，<code>isConfidentialOmitted = false</code></em></p>
+<p><img src="assets/13f-2026q2/edgar-hh-2026q2.png" alt="H&amp;H 2026Q2 13F-HR 备案页"> <em>图 3：段永平 H&amp;H International Investment 的备案详情页（原图），CIK 0001759760，13F 文件编号 028-19454</em></p>
+<p><img src="assets/13f-2026q2/edgar-him-2026q2.png" alt="喜马拉雅资本 2026Q2 13F-HR 备案页"> <em>图 4：李录 Himalaya Capital Management 的备案详情页（原图），CIK 0001709323，13F 文件编号 028-18090，2026-08-14 15:28:42 被 EDGAR 接收</em></p>
 <hr>
 <h2>全局图：三人持仓结构</h2>
-<p><img src="../assets/13f-2026q2/chart1-holdings.png" alt="三人持仓结构"> <em>图 5：三位投资人 2026Q2 末美股持仓结构。条形长度为占本人 13F 组合的比重</em></p>
-<p><img src="../assets/13f-2026q2/chart2-changes.png" alt="买卖规模"> <em>图 6：二季度买卖规模估算。注意三个面板横轴各自独立缩放</em></p>
+<p><img src="assets/13f-2026q2/chart1-holdings.png" alt="三人持仓结构"> <em>图 5：三位投资人 2026Q2 末美股持仓结构。条形长度为占本人 13F 组合的比重</em></p>
+<p><img src="assets/13f-2026q2/chart2-changes.png" alt="买卖规模"> <em>图 6：二季度买卖规模估算。注意三个面板横轴各自独立缩放</em></p>
 <hr>
 <h2>一、巴菲特 / 伯克希尔·哈撒韦</h2>
 <h3>1.1 组合概况</h3>
@@ -102,7 +102,7 @@
 <li>现金加国债从 $3,907.4 亿降到 $3,600.0 亿，仍在历史高位区间。作为参照，2025 年底是 $3,691.5 亿（现金 $477.19 亿 + 国债 $3,214.34 亿），二季度末只比半年前低了 $91.5 亿。说"巴菲特开始大规模花钱了"，数据目前只支持"这个季度花得比往常多"。</li>
 <li>13F 不区分是巴菲特本人还是 Todd Combs / Ted Weschler 决定的。梅西百货、纽约时报、霍顿房屋这类小仓位（合计不到组合的 0.5%）通常被认为出自副手，但文件本身不披露决策人。</li>
 </ul>
-<p><img src="../assets/13f-2026q2/13f-table-brk-2026q2.png" alt="伯克希尔 13F 信息表原图"> <em>图 7：伯克希尔 2026Q2 Form 13F 信息表全文（SEC 官方渲染，89 条完整申报）。同一标的出现多行，是因为 14 家子公司分别申报</em></p>
+<p><img src="assets/13f-2026q2/13f-table-brk-2026q2.png" alt="伯克希尔 13F 信息表原图"> <em>图 7：伯克希尔 2026Q2 Form 13F 信息表全文（SEC 官方渲染，89 条完整申报）。同一标的出现多行，是因为 14 家子公司分别申报</em></p>
 <hr>
 <h2>二、段永平 / H&amp;H International Investment</h2>
 <h3>2.1 组合概况</h3>
@@ -128,7 +128,7 @@
 </ul>
 <p>拼多多是连续第二个季度加仓：11,536,694（2025Q4）→ 19,748,294（2026Q1）→ 25,022,094（2026Q2），两个季度累计 +117%。而拼多多股价在二季度从 $102.18 跌到 $76.28（−25.3%），这一季的加仓是在下跌中完成的。</p>
 <p><strong>反面：</strong>这个"减美股 AI、加中概"的概括有两个漏洞。第一，苹果仍占组合 41.05%，是绝对第一大重仓，本季只减了 6.4%；伯克希尔 B 占 24.18% 还在加。前两大持仓合计 65.2%，都是美国资产，结构上并没有转向。第二，被减的英伟达、Alphabet、微软本季股价都在涨（英伟达 +14.7%、Alphabet C +23.2%、微软 +0.8%），减仓也可能只是涨上来后的再平衡，不一定是看法变化。文件本身不区分这两者。</p>
-<p><img src="../assets/13f-2026q2/13f-table-hh-2026q2.png" alt="段永平 13F 信息表原图"> <em>图 8：H&amp;H International Investment 2026Q2 Form 13F 信息表全文（SEC 官方渲染，18 条完整申报）</em></p>
+<p><img src="assets/13f-2026q2/13f-table-hh-2026q2.png" alt="段永平 13F 信息表原图"> <em>图 8：H&amp;H International Investment 2026Q2 Form 13F 信息表全文（SEC 官方渲染，18 条完整申报）</em></p>
 <hr>
 <h2>三、李录 / 喜马拉雅资本</h2>
 <h3>3.1 组合概况</h3>
@@ -151,7 +151,7 @@
 <p>喜马拉雅的 Alphabet 持仓在三个季度里总股数完全不变（4,994,600 股），但 A/C 两类的股数在 2025Q4 和 2026Q1 之间对调了：</p>
 <table><thead><tr><th>季度</th><th>CL A（02079K305）</th><th>CL C（02079K107）</th></tr></thead><tbody><tr><td>2025Q4</td><td>2,451,300</td><td>2,543,300</td></tr><tr><td>2026Q1</td><td>2,543,300</td><td>2,451,300</td></tr><tr><td>2026Q2</td><td>2,543,300</td><td>2,451,300</td></tr></tbody></table>
 <p>两类之间恰好互换 92,000 股、总数分毫不差，更像是某一期填报时的类别转置，而非真实的换股操作。两种解释下 Alphabet 的合计仓位都没有变化，不影响任何结论，但引用分类别数据时要留意。</p>
-<p><img src="../assets/13f-2026q2/13f-table-him-2026q2.png" alt="李录 13F 信息表原图"> <em>图 9：Himalaya Capital Management 2026Q2 Form 13F 信息表全文（SEC 官方渲染，8 条完整申报）</em></p>
+<p><img src="assets/13f-2026q2/13f-table-him-2026q2.png" alt="李录 13F 信息表原图"> <em>图 9：Himalaya Capital Management 2026Q2 Form 13F 信息表全文（SEC 官方渲染，8 条完整申报）</em></p>
 <hr>
 <h2>四、三人对比</h2>
 <h3>4.1 谁在动，动了多少</h3>
@@ -160,7 +160,7 @@
 <p>这张表里最刺眼的是"未动标的占市值"这一行。<strong>段永平只有 2.8%</strong>——他组合里几乎每一个有分量的仓位本季都动过（苹果、伯克希尔、拼多多、特斯拉、英伟达、Alphabet、微软、Credo、联合健康、迪士尼全部有变动），没动的只有西方石油和几只百万美元级的小票。同一季度巴菲特有 71.9% 的市值一动不动。两人的操作密度完全不在一个量级。</p>
 <p>李录的 62.9% 有误导性：他的"没动"集中在 Alphabet（47.9%）和华美银行（9.7%），而在动的那部分里，一半是整仓清光。</p>
 <h3>4.2 交集与分歧</h3>
-<p><img src="../assets/13f-2026q2/chart3-overlap.png" alt="三人重叠"> <em>图 10：三人共同持有或曾共同持有的标的</em></p>
+<p><img src="assets/13f-2026q2/chart3-overlap.png" alt="三人重叠"> <em>图 10：三人共同持有或曾共同持有的标的</em></p>
 <p><strong>同时被三人持有的只有两只：Alphabet 和苹果。</strong> 但仓位含义完全不同。</p>
 <table><thead><tr><th>标的</th><th>巴菲特</th><th>段永平</th><th>李录</th></tr></thead><tbody><tr><td><strong>Alphabet</strong></td><td>12.62%（本季大举加仓，A+C 合计增持 4,814 万股）</td><td>3.64%（本季 C 类减持 46.9%）</td><td>47.94%（三个季度一股未动，第一大持仓）</td></tr><tr><td><strong>苹果</strong></td><td>22.04%（一股未动，第一大持仓）</td><td>41.05%（本季减 6.4%，仍是第一大持仓）</td><td>0.86%（一股未动，最小持仓）</td></tr><tr><td><strong>伯克希尔 B</strong></td><td>—（不申报自身股票）</td><td>24.18%（本季加 0.9%，第二大持仓）</td><td>14.98%（本季加 23.5%，第四大持仓）</td></tr><tr><td><strong>拼多多</strong></td><td>未持有</td><td>9.99%（本季加 26.7%）</td><td>22.17%（本季加 133.5%，第三大持仓）</td></tr><tr><td><strong>西方石油</strong></td><td>4.30%（一股未动）</td><td>2.61%（一股未动）</td><td>本季清仓</td></tr><tr><td><strong>穆迪</strong></td><td>3.73%（一股未动）</td><td>未持有</td><td>本季清仓</td></tr><tr><td><strong>美国银行</strong></td><td>9.20%（本季减 5.9%）</td><td>未持有</td><td>本季清仓</td></tr></tbody></table>
 <p>三条可以从数据里直接读出来的结论：</p>

@@ -58,7 +58,7 @@
 <hr>
 <h2>买多了会怎样？不是赚得更多，而是必然亏光</h2>
 <p>这是凯利公式最反直觉的地方。很多人以为"既然看好，就应该多买"。但数学告诉你，超过最优仓位之后，买得越多，长期赚得越少——直到亏光。</p>
-<p><img src="../assets/kelly/fig1-kelly-curve.png" alt="凯利曲线"></p>
+<p><img src="assets/kelly/fig1-kelly-curve.png" alt="凯利曲线"></p>
 <table><thead><tr><th>仓位策略</th><th>长期增长率</th><th>波动</th><th>一句话总结</th></tr></thead><tbody><tr><td>半仓凯利</td><td>最优的75%</td><td>最优的50%</td><td>少赚一点，但稳很多</td></tr><tr><td>全仓凯利</td><td>100%（理论最优）</td><td>100%</td><td>增长最快，但颠簸极大</td></tr><tr><td>1.5倍凯利</td><td>最优的75%</td><td>最优的150%</td><td>和半仓赚得一样，波动却是三倍</td></tr><tr><td><strong>2倍凯利</strong></td><td><strong>零</strong></td><td>最优的200%</td><td><strong>白忙一场</strong></td></tr><tr><td><strong>超过2倍</strong></td><td><strong>负数</strong></td><td>更高</td><td><strong>长期必然亏光</strong></td></tr></tbody></table>
 <p>重点看1.5倍那一行：增长率和半仓凯利一模一样，但波动是半仓的三倍。多买不仅没多赚，还要承受三倍的煎熬。</p>
 <p>2倍凯利更极端——每笔交易都在赚钱，但长期增长率为零。<strong>超过2倍，即便每笔都赚，最终也必然亏光。</strong></p>
@@ -66,7 +66,7 @@
 <hr>
 <h2>为什么亏50%比你想的严重得多</h2>
 <p>过度下注之所以致命，是因为亏损和盈利在数学上不对称：</p>
-<p><img src="../assets/kelly/fig2-loss-asymmetry.png" alt="亏损不对称性"></p>
+<p><img src="assets/kelly/fig2-loss-asymmetry.png" alt="亏损不对称性"></p>
 <table><thead><tr><th>亏损</th><th>回本需要涨</th></tr></thead><tbody><tr><td>-10%</td><td>+11%</td></tr><tr><td>-20%</td><td>+25%</td></tr><tr><td>-30%</td><td>+43%</td></tr><tr><td>-50%</td><td><strong>+100%（翻倍）</strong></td></tr><tr><td>-75%</td><td><strong>+300%（涨3倍）</strong></td></tr></tbody></table>
 <p>亏10%，涨11%就回来了。但亏50%，你需要翻倍才能回本。这是因为投资是乘法不是加法——亏50%是乘以0.5，涨50%是乘以1.5，0.5 × 1.5 = 0.75，回不到1。</p>
 <p><strong>凯利公式的本质就是避免大幅亏损。</strong> 不亏钱，就是最好的赚钱策略。</p>

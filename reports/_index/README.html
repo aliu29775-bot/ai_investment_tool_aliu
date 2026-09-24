@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>报告索引机制说明 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../index.html">首頁</a>
+    <a href="../../companies.html">公司</a>
+    <a href="../../reports.html">報告</a>
+    <a href="../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../companies.html">附屬文件</a>
+  </nav>
+  <div class="report-head">
+    <h1>报告索引机制说明</h1>
+    <div class="report-meta">
+      <span class="badge">專題</span>
+      <span class="badge badge-type">附屬</span>
+      <span class="meta-item">📅 2026-09-24</span>
+      <span class="meta-item">📁 附屬文件</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>报告索引机制说明</h1>
+<p><code>reports/</code> 下有 2000+ 份报告。为了让人和机器都能找到它们，这里维护一层<strong>索引</strong>， 不改动任何报告文件本身。</p>
+<h2>产物</h2>
+<table><thead><tr><th>文件</th><th>用途</th></tr></thead><tbody><tr><td><code>reports/README.md</code></td><td>人读索引：最近更新 + 按公司/专题/大师分组</td></tr><tr><td><code>reports/index.json</code></td><td>机器可读清单，供脚本、网页、检索消费</td></tr><tr><td>根 <code>README.md</code> 中的 <code>REPORTS-INDEX</code> 块</td><td>仓库首页的研究入口，自动刷新</td></tr></tbody></table>
+<p>三份产物全部由 <code>tools/reports_index.py</code> 生成，<strong>不要手工编辑</strong>。</p>
+<h2>用法</h2>
+<pre><code># 写完新报告后跑一次
+python3 tools/reports_index.py
+
+# CI 用：只检查是否过期，不写盘
+python3 tools/reports_index.py --check</code></pre>
+<h2>元数据从哪来</h2>
+<p>脚本按以下优先级推断每份报告的标题、日期、类型与归属：</p>
+<ol>
+<li><strong>文件自带 YAML front-matter</strong>（可选，优先级最高）</li>
+<li><strong>文件名</strong>：<code>公司-主题-YYYYMMDD.md</code> 中的 8 位日期</li>
+<li><strong>正文</strong>：前 15 行里的 <code>2026-09-07</code> / <code>2026年9月7日</code></li>
+<li><strong>git 最近提交时间</strong></li>
+</ol>
+<p>写新报告时，<strong>只要文件名带 <code>-YYYYMMDD</code> 后缀、正文首行是 <code># 标题</code>，就不需要额外做任何事</strong>。</p>
+<p>需要覆盖推断结果时，在文件开头加 front-matter：</p>
+<pre><code>---
+title: 拼多多 2026Q2 财报精读
+date: 2026-08-25
+type: 财报
+---
+
+# 正文标题</code></pre>
+<p><code>type</code> 可选值：<code>研究</code> <code>财报</code> <code>深度系列</code> <code>横评对比</code> <code>估值仓位</code> <code>组织管理</code> <code>筛选</code> <code>公众号</code> <code>底稿</code>。</p>
+<h2>归属分类</h2>
+<p>顶层目录归到哪一类，由 <code>reports/_index/config.json</code> 决定：</p>
+<ul>
+<li><code>companies</code>：公司目录（默认。新建的公司目录不用登记也能正常索引）</li>
+<li><code>themes</code>：跨公司专题、产业链研究</li>
+<li><code>masters</code>：大师方法论研究</li>
+<li><code>screens</code>：筛选与推演的<strong>中间产物</strong>（召回池等），在索引里只显示目录和数量，不逐条列出</li>
+<li><code>aliases</code>：同一家公司的多个目录名合并到一个规范名，例如 <code>Alibaba</code> → <code>阿里巴巴</code></li>
+</ul>
+<p>新增专题或筛选池目录时，记得往 <code>config.json</code> 对应数组里加一行，否则会被当成公司。</p>
+<h2>隐私</h2>
+<p>脚本会调用 <code>git check-ignore</code> 过滤掉被 <code>.gitignore</code> 命中的文件 （例如 <code>reports/portfolio-latest.md</code> 组合报告），确保本地私有内容不会被写进公开索引。</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

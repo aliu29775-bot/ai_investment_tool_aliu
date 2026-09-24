@@ -50,7 +50,7 @@
 <p>押少了，增长慢。押多了呢？不是增长更快——而是增长变慢，甚至倒退。这才是凯利公式最反直觉的地方。</p>
 <hr>
 <h2>超过上限，必然毁灭</h2>
-<p><img src="../assets/kelly/fig1-kelly-curve.png" alt="凯利曲线"></p>
+<p><img src="assets/kelly/fig1-kelly-curve.png" alt="凯利曲线"></p>
 <p>下面这张表是全文最重要的信息：</p>
 <table><thead><tr><th>下注策略</th><th>长期增长率</th><th>波动率</th><th>意味着什么</th></tr></thead><tbody><tr><td>半凯利（0.5倍）</td><td>全凯利的75%</td><td>全凯利的50%</td><td>用一半波动换四分之三的增长</td></tr><tr><td>全凯利（1倍）</td><td>100%（理论最优）</td><td>100%</td><td>增长最快但颠簸极大</td></tr><tr><td>1.5倍凯利</td><td>全凯利的75%</td><td>全凯利的150%</td><td>增长率和半凯利一样，波动却是三倍</td></tr><tr><td><strong>2倍凯利</strong></td><td><strong>零</strong></td><td>全凯利的200%</td><td><strong>长期增长率为零，白忙一场</strong></td></tr><tr><td><strong>超过2倍</strong></td><td><strong>负数</strong></td><td>更高</td><td><strong>长期必然破产</strong></td></tr></tbody></table>
 <p>请注意1.5倍那一行：增长率和半凯利完全一样，但波动率是半凯利的三倍。过度下注不仅没好处，还要承受大得多的痛苦。</p>
@@ -62,7 +62,7 @@
 <hr>
 <h2>为什么亏损50%比你想的严重得多</h2>
 <p>过度下注之所以致命，根源在于亏损的数学不对称性。</p>
-<p><img src="../assets/kelly/fig2-loss-asymmetry.png" alt="亏损不对称性"></p>
+<p><img src="assets/kelly/fig2-loss-asymmetry.png" alt="亏损不对称性"></p>
 <table><thead><tr><th>亏损幅度</th><th>回本需要涨多少</th></tr></thead><tbody><tr><td>-10%</td><td>+11%</td></tr><tr><td>-20%</td><td>+25%</td></tr><tr><td>-30%</td><td>+43%</td></tr><tr><td>-50%</td><td><strong>+100%</strong></td></tr><tr><td>-75%</td><td><strong>+300%</strong></td></tr><tr><td>-90%</td><td><strong>+900%</strong></td></tr></tbody></table>
 <p>亏10%，涨11%就回来了，看起来差不多。但亏50%，需要翻倍才能回本。亏75%，需要涨三倍。亏90%——需要涨九倍。</p>
 <p>原因很简单：投资是乘法不是加法。亏50%是乘以0.5，涨50%是乘以1.5，0.5×1.5=0.75，不等于1。亏损缩小了本金，从更小的基数上涨回同样的绝对值，需要更大的百分比。</p>
@@ -76,7 +76,7 @@
 <p>用字母表示就是 f = (预期收益 - 无风险利率) / 方差。大白话：<strong>超额收益越高、波动越小，就应该仓位越重。</strong></p>
 <p>这个公式还有一个信息论的解读：你的最优增长率等于你相对市场的信息优势。如果你对一家公司的理解不比市场更深，最优仓位是零。</p>
 <p>现在用这个框架审视大师们的操作：</p>
-<p><img src="../assets/kelly/fig3-master-cases.png" alt="大师重仓案例"></p>
+<p><img src="assets/kelly/fig3-master-cases.png" alt="大师重仓案例"></p>
 <p><strong>巴菲特买美国运通，1964年。</strong></p>
 <p>1963年运通因"色拉油丑闻"股价腰斩。巴菲特亲自去餐厅和商店观察，发现人们照常使用运通卡——生意没有受损，只是市场恐慌。</p>
 <p>用凯利框架分析：巴菲特判断运通的内在价值远高于市价（预期收益极高），而他通过实地调研确认了生意没有受损（在他眼中波动很小）。公式的分子大、分母小，凯利值很高。他投入约1300万美元，占合伙基金的40%。结果：获利数倍。</p>

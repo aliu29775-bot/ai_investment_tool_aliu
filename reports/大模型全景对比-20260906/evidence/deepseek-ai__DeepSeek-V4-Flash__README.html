@@ -100,7 +100,7 @@
 <table><thead><tr><th>Benchmark (Metric)</th><th>V4-Flash Non-Think</th><th>V4-Flash High</th><th>V4-Flash Max</th><th>V4-Pro Non-Think</th><th>V4-Pro High</th><th>V4-Pro Max</th></tr></thead><tbody><tr><td><strong>Knowledge &amp; Reasoning</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MMLU-Pro (EM)</td><td>83.0</td><td>86.4</td><td>86.2</td><td>82.9</td><td>87.1</td><td><strong>87.5</strong></td></tr><tr><td>SimpleQA-Verified (Pass@1)</td><td>23.1</td><td>28.9</td><td>34.1</td><td>45.0</td><td>46.2</td><td><strong>57.9</strong></td></tr><tr><td>Chinese-SimpleQA (Pass@1)</td><td>71.5</td><td>73.2</td><td>78.9</td><td>75.8</td><td>77.7</td><td><strong>84.4</strong></td></tr><tr><td>GPQA Diamond (Pass@1)</td><td>71.2</td><td>87.4</td><td>88.1</td><td>72.9</td><td>89.1</td><td><strong>90.1</strong></td></tr><tr><td>HLE (Pass@1)</td><td>8.1</td><td>29.4</td><td>34.8</td><td>7.7</td><td>34.5</td><td><strong>37.7</strong></td></tr><tr><td>LiveCodeBench (Pass@1)</td><td>55.2</td><td>88.4</td><td>91.6</td><td>56.8</td><td>89.8</td><td><strong>93.5</strong></td></tr><tr><td>Codeforces (Rating)</td><td>-</td><td>2816</td><td>3052</td><td>-</td><td>2919</td><td><strong>3206</strong></td></tr><tr><td>HMMT 2026 Feb (Pass@1)</td><td>40.8</td><td>91.9</td><td>94.8</td><td>31.7</td><td>94.0</td><td><strong>95.2</strong></td></tr><tr><td>IMOAnswerBench (Pass@1)</td><td>41.9</td><td>85.1</td><td>88.4</td><td>35.3</td><td>88.0</td><td><strong>89.8</strong></td></tr><tr><td>Apex (Pass@1)</td><td>1.0</td><td>19.1</td><td>33.0</td><td>0.4</td><td>27.4</td><td><strong>38.3</strong></td></tr><tr><td>Apex Shortlist (Pass@1)</td><td>9.3</td><td>72.1</td><td>85.7</td><td>9.2</td><td>85.5</td><td><strong>90.2</strong></td></tr><tr><td><strong>Long Context</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MRCR 1M (MMR)</td><td>37.5</td><td>76.9</td><td>78.7</td><td>44.7</td><td>83.3</td><td><strong>83.5</strong></td></tr><tr><td>CorpusQA 1M (ACC)</td><td>15.5</td><td>59.3</td><td>60.5</td><td>35.6</td><td>56.5</td><td><strong>62.0</strong></td></tr><tr><td><strong>Agentic</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Terminal Bench 2.0 (Acc)</td><td>49.1</td><td>56.6</td><td>56.9</td><td>59.1</td><td>63.3</td><td><strong>67.9</strong></td></tr><tr><td>SWE Verified (Resolved)</td><td>73.7</td><td>78.6</td><td>79.0</td><td>73.6</td><td>79.4</td><td><strong>80.6</strong></td></tr><tr><td>SWE Pro (Resolved)</td><td>49.1</td><td>52.3</td><td>52.6</td><td>52.1</td><td>54.4</td><td><strong>55.4</strong></td></tr><tr><td>SWE Multilingual (Resolved)</td><td>69.7</td><td>70.2</td><td>73.3</td><td>69.8</td><td>74.1</td><td><strong>76.2</strong></td></tr><tr><td>BrowseComp (Pass@1)</td><td>-</td><td>53.5</td><td>73.2</td><td>-</td><td>80.4</td><td><strong>83.4</strong></td></tr><tr><td>HLE w/ tools (Pass@1)</td><td>-</td><td>40.3</td><td>45.1</td><td>-</td><td>44.7</td><td><strong>48.2</strong></td></tr><tr><td>MCPAtlas (Pass@1)</td><td>64.0</td><td>67.4</td><td>69.0</td><td>69.4</td><td><strong>74.2</strong></td><td>73.6</td></tr><tr><td>GDPval-AA (Elo)</td><td>-</td><td>-</td><td>1395</td><td>-</td><td>-</td><td><strong>1554</strong></td></tr><tr><td>Toolathlon (Pass@1)</td><td>40.7</td><td>43.5</td><td>47.8</td><td>46.3</td><td>49.0</td><td><strong>51.8</strong></td></tr></tbody></table>
 </div>
 <h2>Chat Template</h2>
-<p>This release does not include a Jinja-format chat template. Instead, we provide a dedicated <code>encoding</code> folder with Python scripts and test cases demonstrating how to encode messages in OpenAI-compatible format into input strings for the model, and how to parse the model's text output. Please refer to the <a href="encoding/README.html"><code>encoding</code></a> folder for full documentation.</p>
+<p>This release does not include a Jinja-format chat template. Instead, we provide a dedicated <code>encoding</code> folder with Python scripts and test cases demonstrating how to encode messages in OpenAI-compatible format into input strings for the model, and how to parse the model's text output. Please refer to the <code>encoding</code> folder for full documentation.</p>
 <p>A brief example:</p>
 <pre><code>from encoding_dsv4 import encode_messages, parse_message_from_completion_text
 
@@ -118,10 +118,10 @@ import transformers
 tokenizer = transformers.AutoTokenizer.from_pretrained("deepseek-ai/DeepSeek-V4-Pro")
 tokens = tokenizer.encode(prompt)</code></pre>
 <h2>How to Run Locally</h2>
-<p>Please refer to the <a href="inference/README.html">inference</a> folder for detailed instructions on running DeepSeek-V4 locally, including model weight conversion and interactive chat demos.</p>
+<p>Please refer to the inference folder for detailed instructions on running DeepSeek-V4 locally, including model weight conversion and interactive chat demos.</p>
 <p>For local deployment, we recommend setting the sampling parameters to <code>temperature = 1.0, top_p = 1.0</code>. For the Think Max reasoning mode, we recommend setting the context window to at least <strong>384K</strong> tokens.</p>
 <h2>License</h2>
-<p>This repository and the model weights are licensed under the <a href="LICENSE">MIT License</a>.</p>
+<p>This repository and the model weights are licensed under the MIT License.</p>
 <h2>Citation</h2>
 <pre><code>@misc{deepseekai2026deepseekv4,
       title={DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence},
@@ -129,7 +129,7 @@ tokens = tokenizer.encode(prompt)</code></pre>
       year={2026},
 }</code></pre>
 <h2>Contact</h2>
-<p>If you have any questions, please raise an issue or contact us at <a href="service@deepseek.com">service@deepseek.com</a>.</p>
+<p>If you have any questions, please raise an issue or contact us at service@deepseek.com.</p>
   </article>
   <footer class="report-foot">
     <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>

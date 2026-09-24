@@ -61,7 +61,7 @@
     <img alt="License" src="https://img.shields.io/badge/License-NVIDIA Nemotron Open Model License-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
   </a>
 </div>
-<p><img src="./accuracy_chart.png" alt=""></p>
+<p><span class="img-missing">🖼 （源資料庫未收錄此圖）</span></p>
 <h2>Model Summary</h2>
 <table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Total Parameters</strong></td><td>120B (12B active)</td></tr><tr><td><strong>Architecture</strong></td><td>LatentMoE - Mamba-2 + MoE + Attention hybrid with Multi-Token Prediction (MTP)</td></tr><tr><td><strong>Context Length</strong></td><td>Up to 1M tokens</td></tr><tr><td><strong>Minimum GPU Requirement</strong></td><td>8× H100-80GB</td></tr><tr><td><strong>Supported Languages</strong></td><td>English, French, German, Italian, Japanese, Spanish, Chinese</td></tr><tr><td><strong>Best For</strong></td><td>Agentic workflows, long-context reasoning, high-volume workloads (e.g. IT ticket automation), tool use, RAG</td></tr><tr><td><strong>Reasoning Mode</strong></td><td>Configurable on/off via chat template (<code>enable_thinking=True/False</code>)</td></tr><tr><td><strong>Speculative Decoding</strong></td><td>Includes a built-in MTP head, with an updated MTPv2 head available as a separate <a href="https://huggingface.co/nvidia/Nemotron-3-Super-120B-A12B-BF16-MTPv2">checkpoint</a></td></tr><tr><td><strong>License</strong></td><td><a href="https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-nemotron-open-model-license/">NVIDIA Nemotron Open Model License</a></td></tr><tr><td><strong>Release Date</strong></td><td>March 11, 2026</td></tr></tbody></table>
 <h2>Quick Start</h2>
@@ -498,8 +498,8 @@ print(tokenizer.decode(outputs[0]))</code></pre>
 </ul>
 <h2>Ethical Considerations</h2>
 <p>NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal model team to ensure this model meets requirements for the relevant industry and use case and addresses unforeseen product misuse.</p>
-<p>We advise against circumvention of any provided safety guardrails contained in the Model without a substantially similar guardrail appropriate for your use case. For more details: <a href="./safety.html">Safety</a> and <a href="./explainability.html">Explainability</a> Subcards.</p>
-<p>For more detailed information on ethical considerations for this model, please see the Model Card++ <a href="./bias.html">Bias</a>, and <a href="./privacy.html">Privacy</a> Subcards.</p>
+<p>We advise against circumvention of any provided safety guardrails contained in the Model without a substantially similar guardrail appropriate for your use case. For more details: Safety and Explainability Subcards.</p>
+<p>For more detailed information on ethical considerations for this model, please see the Model Card++ Bias, and Privacy Subcards.</p>
 <p>Please report model quality, risk, security vulnerabilities or NVIDIA AI Concerns <a href="https://www.nvidia.com/en-us/support/submit-security-vulnerability/">here</a>.</p>
 <h2>Citation</h2>
 <pre><code>@misc{nvidia_nemotron_3_2025,

@@ -35,7 +35,7 @@
   <article class="report-body">
 <h1>全球旗舰大模型对比报告</h1>
 <p>数据截止：2026 年 9 月 6 日，北京时间。检索日期已通过本机 <code>date</code> 确认。范围：通用语言、推理、代码及以文本为输出的多模态模型。本文是技术研究，不涉及证券投资建议。</p>
-<p>配套报告：<a href="&lt;/Users/linxuan/ai-berkshire/reports/大模型全景对比-20260906/02-千亿参数模型报告.md&gt;">千亿参数模型、许可证与部署成本</a>。</p>
+<p>配套报告：千亿参数模型、许可证与部署成本。</p>
 <h2>先读结论</h2>
 <p>选模型需要同时回答三个问题：任务能否完成、完成一次要花多少钱、能否合法地自行部署。参数量只能回答其中一部分。</p>
 <p>截至本次检索，全球前沿产品已经包括 GPT-6 Astra、Claude Fable 5.1 / Opus 5、Gemini 3.8 Flash / 3.1 Pro Preview、Grok 4.6、Muse Spark 1.3；中国重点候选包括 DeepSeek-V4、Qwen3.8、Kimi K3、GLM-5.3、MiniMax M3。它们的“旗舰”含义不同：有的是能力上限，有的是厂商主推的生产模型，有的是可下载权重的最强产品。本报告将这几种定位分别写明，而不以型号中的数字大小排名。<a href="https://developers.openai.com/api/docs/models/gpt-6-astra">OpenAI 模型页</a>、<a href="https://platform.claude.com/docs/en/models/overview">Claude 产品矩阵</a>、<a href="https://ai.google.dev/gemini-api/docs/models">Google 模型目录</a>、<a href="https://docs.x.ai/developers/models">Grok 模型目录</a>、<a href="https://ai.meta.com/llama/">Meta 产品页</a>。中国模型的逐项来源见下表。</p>
@@ -81,7 +81,7 @@
 <p>实际评估宜取一组固定的代表性任务，固定工具、数据、时间预算和验收标准，记录成功率、总费用及人工修改时间。涉及检索的回答还应记录引用是否真正支持原句。单看榜单、参数或每百万 tokens 价格，都不能代替这一步。</p>
 <h2>证据边界与核查记录</h2>
 <p>本文优先使用厂商官网、官方模型仓库、许可证原文与评测机构自己的文章。模型参数的主干口径与 Hugging Face 张量总数不完全一致时保留差异：例如 GLM-5.3 仓库统计为 753,329,940,480，MiniMax M3 模型卡称约 428B 而张量统计约 427B；不据此推断谁虚报参数。量化存储、额外预测层和视觉编码器是否计入需要逐模型核对。</p>
-<p>模型卡与已获取的许可证保存在本目录 <code>evidence/</code>，关键仓库保留了 API 返回的提交哈希和权重文件数量。公开文件列表核验不等于实际下载数 TB 权重并成功部署。对于只核实到 API/产品而没有公开权重的模型，本文采用“未核实开放权重”的保守表述。审计结果见 <a href="&lt;/Users/linxuan/ai-berkshire/reports/大模型全景对比-20260906/03-核查记录.md&gt;">核查记录</a>。</p>
+<p>模型卡与已获取的许可证保存在本目录 <code>evidence/</code>，关键仓库保留了 API 返回的提交哈希和权重文件数量。公开文件列表核验不等于实际下载数 TB 权重并成功部署。对于只核实到 API/产品而没有公开权重的模型，本文采用“未核实开放权重”的保守表述。审计结果见 核查记录。</p>
   </article>
   <footer class="report-foot">
     <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>

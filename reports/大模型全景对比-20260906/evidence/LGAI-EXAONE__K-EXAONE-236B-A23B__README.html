@@ -73,7 +73,7 @@
 <li><strong>Safety &amp; Ethics:</strong> Aligned with <strong>universal human values</strong>, the model uniquely incorporates <strong>Korean cultural and historical contexts</strong> to address regional sensitivities often overlooked by other models. It demonstrates high reliability across diverse risk categories.</li>
 </ul>
 <p>For more details, please refer to the <a href="https://arxiv.org/abs/2601.01739">technical report</a>, <a href="https://www.lgresearch.ai/blog/view?seq=619">blog</a> and <a href="https://github.com/LG-AI-EXAONE/K-EXAONE">GitHub</a>.</p>
-<p><img src="../../assets/main_figure.png" alt="main_figure"></p>
+<p><span class="img-missing">🖼 main_figure（源資料庫未收錄此圖）</span></p>
 <h3>Model Configuration</h3>
 <ul>
 <li>Number of Parameters: 236B in total and 23B activated</li>
@@ -454,7 +454,7 @@ output_ids = generated_ids[0][input_ids['input_ids'].shape[-1]:]
 print(tokenizer.decode(output_ids, skip_special_tokens=True))</code></pre>
 <h3>Agentic tool use</h3>
 <p>For your AI-powered agent, you can leverage K-EXAONE’s tool calling capability.  The K-EXAONE model is compatible with both OpenAI and HuggingFace tool calling specifications.  The example below demonstrates tool calling using HuggingFace’s docstring-to-tool-schema utility.</p>
-<p>Please check the <a href="examples/example_output_search.txt">example file</a> for an example of a search agent conversation using K-EXAONE.</p>
+<p>Please check the example file for an example of a search agent conversation using K-EXAONE.</p>
 <pre><code>from transformers.utils import get_json_schema
 
 def roll_dice(max_num: int):
@@ -589,7 +589,7 @@ print(response.json()['text'])</code></pre>
 </ul>
 <p>LG AI Research strives to reduce potential risks that may arise from K-EXAONE language models. Users are not allowed to engage in any malicious activities (e.g., keying in illegal information) that may induce the creation of inappropriate outputs violating LG AI's ethical principles when using K-EXAONE language models.</p>
 <h2>License</h2>
-<p>The model is licensed under <a href="./LICENSE">K-EXAONE AI Model License Agreement</a></p>
+<p>The model is licensed under K-EXAONE AI Model License Agreement</p>
 <h2>Citation</h2>
 <pre><code>@article{k-exaone,
   title={K-EXAONE Technical Report},
