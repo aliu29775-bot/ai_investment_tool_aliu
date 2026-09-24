@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LGAI-EXAONE__K-EXAONE-236B-A23B__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>LGAI-EXAONE__K-EXAONE-236B-A23B__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<br>
+<br>
+<p align="center">
+<img src="assets/K-EXAONE_logo_gray.png" width="400">
+<br>
+<br>
+<br>
+<div align="center">
+  <a href="https://huggingface.co/collections/LGAI-EXAONE/k-exaone" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/🤗-HuggingFace-FC926C?style=for-the-badge" alt="HuggingFace">
+  </a>
+  <a href="https://www.lgresearch.ai/blog/view?seq=619" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/📝-Blog-E343BD?style=for-the-badge" alt="Blog">
+  </a>
+  <a href="https://arxiv.org/abs/2601.01739" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/📑-Technical_Report-684CF4?style=for-the-badge" alt="Technical Report">
+  </a>
+  <a href="https://github.com/LG-AI-EXAONE/K-EXAONE" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/🖥️-GitHub-2B3137?style=for-the-badge" alt="GitHub">
+  </a>
+  <a href="https://friendli.ai/model/LGAI-EXAONE/K-EXAONE-236B-A23B" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/✈️_API-Try_on_FriendliAI-2649BC?style=for-the-badge" alt="FriendliAI">
+  </a>
+</div>
+<div align="center">
+<table><tr><td>Check out the <span style="color: orange"> <b>NVFP4+GPTQ weights by FuriosaAI</b>! </span> <a href="https://huggingface.co/FuriosaAIShareLGAI/K-EXAONE-236B-A23B-NVFP4A16-GPTQ" style="text-decoration: none;"> ➡️ link</a> </td></tr></table>
+</div>
+<br>
+<h1>K-EXAONE-236B-A23B</h1>
+<h2>Introduction</h2>
+<p>We introduce <strong>K-EXAONE</strong>, a large-scale multilingual language model developed by LG AI Research. Built using a Mixture-of-Experts architecture, K-EXAONE features <strong>236 billion total</strong> parameters, with <strong>23 billion active</strong> during inference. Performance evaluations across various benchmarks demonstrate that K-EXAONE excels in reasoning, agentic capabilities, general knowledge, multilingual understanding, and long-context processing.</p>
+<h4>Key Features</h4>
+<ul>
+<li><strong>Architecture &amp; Efficiency:</strong> Features a 236B fine-grained MoE design (23B active) optimized with <strong>Multi-Token Prediction (MTP)</strong>, enabling self-speculative decoding that boosts inference throughput by approximately 1.5x.</li>
+<li><strong>Long-Context Capabilities:</strong> Natively supports a <strong>256K context window</strong>, utilizing a <strong>3:1 hybrid attention</strong> scheme with a <strong>128-token sliding window</strong> to significantly minimize memory usage during long-document processing.</li>
+<li><strong>Multilingual Support:</strong> Covers 6 languages: Korean, English, Spanish, German, Japanese, and Vietnamese. Features a redesigned <strong>150k vocabulary</strong> with <strong>SuperBPE</strong>, improving token efficiency by ~30%.</li>
+<li><strong>Agentic Capabilities:</strong> Demonstrates superior tool-use and search capabilities via <strong>multi-agent strategies.</strong></li>
+<li><strong>Safety &amp; Ethics:</strong> Aligned with <strong>universal human values</strong>, the model uniquely incorporates <strong>Korean cultural and historical contexts</strong> to address regional sensitivities often overlooked by other models. It demonstrates high reliability across diverse risk categories.</li>
+</ul>
+<p>For more details, please refer to the <a href="https://arxiv.org/abs/2601.01739">technical report</a>, <a href="https://www.lgresearch.ai/blog/view?seq=619">blog</a> and <a href="https://github.com/LG-AI-EXAONE/K-EXAONE">GitHub</a>.</p>
+<p><img src="../../assets/main_figure.png" alt="main_figure"></p>
+<h3>Model Configuration</h3>
+<ul>
+<li>Number of Parameters: 236B in total and 23B activated</li>
+<li>Number of Parameters (without embeddings): 234B</li>
+<li>Hidden Dimension: 6,144</li>
+<li>Number of Layers: 48 Main layers + 1 MTP layers<ul>
+<li>Hybrid Attention Pattern: 12 x (3 Sliding window attention + 1 Global attention)</li>
+</ul></li>
+<li>Sliding Window Attention<ul>
+<li>Number of Attention Heads: 64 Q-heads and 8 KV-heads</li>
+<li>Head Dimension: 128 for both Q/KV</li>
+<li>Sliding Window Size: 128</li>
+</ul></li>
+<li>Global Attention<ul>
+<li>Number of Attention Heads: 64 Q-heads and 8 KV-heads</li>
+<li>Head Dimension: 128 for both Q/KV</li>
+<li>No Rotary Positional Embedding Used (NoPE)</li>
+</ul></li>
+<li>Mixture of Experts:<ul>
+<li>Number of Experts: 128</li>
+<li>Number of Activated Experts: 8</li>
+<li>Number of Shared Experts: 1</li>
+<li>MoE Intermediate Size: 2,048</li>
+</ul></li>
+<li>Vocab Size: 153,600</li>
+<li>Context Length: 262,144 tokens</li>
+<li>Knowledge Cutoff: Dec 2024 (2024/12)</li>
+</ul>
+<h2>Evaluation Results</h2>
+<p>The following table shows the evaluation results of the K-EXAONE model in reasoning mode, compared to our previous model, <a href="https://github.com/LG-AI-EXAONE/EXAONE-4.0">EXAONE-4.0</a>, and other competing models. The evaluation details can be found in the <a href="https://arxiv.org/abs/2601.01739">technical report</a>.</p>
+<table>
+	<tr>
+		<th> </th>
+		<th>K-EXAONE (Reasoning)</th>
+		<th>EXAONE 4.0 (Reasoning)</th>
+		<th>GPT-OSS (Reasoning: High)</th>
+		<th>Qwen3-Thinking-2507</th>
+		<th>DeepSeek-V3.2 (Reasoning)</th>
+	</tr>
+	<tr>
+		<td align="center">Architecture</td>
+		<td align="center">MoE</td>
+		<td align="center">Dense</td>
+		<td align="center">MoE</td>
+		<td align="center">MoE</td>
+		<td align="center">MoE</td>
+	</tr>
+	<tr>
+		<td align="center">Total Params</td>
+		<td align="center">236B</td>
+		<td align="center">32B</td>
+		<td align="center">117B</td>
+		<td align="center">235B</td>
+		<td align="center">671B</td>
+	</tr>
+	<tr>
+		<td align="center">Active Params</td>
+		<td align="center">23B</td>
+		<td align="center">32B</td>
+		<td align="center">5.1B</td>
+		<td align="center">22B</td>
+		<td align="center">37B</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>World Knowledge</i></td>
+	</tr>
+	<tr>
+		<td align="center">MMLU-Pro</td>
+		<td align="center">83.8</td>
+		<td align="center">81.8</td>
+		<td align="center">80.7</td>
+		<td align="center">84.4</td>
+		<td align="center">85.0</td>
+	</tr>
+	<tr>
+		<td align="center">GPQA-Diamond</td>
+		<td align="center">79.1</td>
+		<td align="center">75.4</td>
+		<td align="center">80.1</td>
+		<td align="center">81.1</td>
+		<td align="center">82.4</td>
+	</tr>
+	<tr>
+		<td align="center">Humanity's Last Exam</td>
+		<td align="center">13.6</td>
+		<td align="center">10.6</td>
+		<td align="center">14.9</td>
+		<td align="center">18.2</td>
+		<td align="center">25.1</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Math</i></td>
+	</tr>
+	<tr>
+		<td align="center">IMO-AnswerBench</td>
+		<td align="center">76.3</td>
+		<td align="center">66.1</td>
+		<td align="center">75.6</td>
+		<td align="center">74.8</td>
+		<td align="center">78.3</td>
+	</tr>
+	<tr>
+		<td align="center">AIME 2025</td>
+		<td align="center">92.8</td>
+		<td align="center">85.3</td>
+		<td align="center">92.5</td>
+		<td align="center">92.3</td>
+		<td align="center">93.1</td>
+	</tr>
+	<tr>
+		<td align="center">HMMT Nov 2025</td>
+		<td align="center">86.8</td>
+		<td align="center">78.1</td>
+		<td align="center">84.9</td>
+		<td align="center">88.8</td>
+		<td align="center">90.2</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Coding / Agentic Coding</i></td>
+	</tr>
+	<tr>
+		<td align="center">LiveCodeBench Pro 25Q2 (Medium)</td>
+		<td align="center">25.9</td>
+		<td align="center">4.8</td>
+		<td align="center">35.4</td>
+		<td align="center">16.0</td>
+		<td align="center">27.9</td>
+	</tr>
+	<tr>
+		<td align="center">LiveCodeBench v6</td>
+		<td align="center">80.7</td>
+		<td align="center">66.7</td>
+		<td align="center">81.9</td>
+		<td align="center">74.1</td>
+		<td align="center">79.4</td>
+	</tr>
+	<tr>
+		<td align="center">Terminal-Bench 2.0</td>
+		<td align="center">29.0</td>
+		<td align="center">-</td>
+		<td align="center">18.7</td>
+		<td align="center">13.3</td>
+		<td align="center">46.4</td>
+	</tr>
+	<tr>
+		<td align="center">SWE-Bench Verified</td>
+		<td align="center">49.4</td>
+		<td align="center">-</td>
+		<td align="center">62.4</td>
+		<td align="center">25.0</td>
+		<td align="center">73.1</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Agentic Tool Use</i></td>
+	</tr>
+	<tr>
+		<td align="center">τ<sup>2</sup>-Bench (Retail)</td>
+		<td align="center">78.6</td>
+		<td align="center">67.5</td>
+		<td align="center">69.1</td>
+		<td align="center">71.9</td>
+		<td align="center">77.9</td>
+	</tr>
+	<tr>
+		<td align="center">τ<sup>2</sup>-Bench (Airline)</td>
+		<td align="center">60.4</td>
+		<td align="center">52.0</td>
+		<td align="center">60.5</td>
+		<td align="center">58.0</td>
+		<td align="center">66.0</td>
+	</tr>
+	<tr>
+		<td align="center">τ<sup>2</sup>-Bench (Telecom)</td>
+		<td align="center">73.5</td>
+		<td align="center">23.7</td>
+		<td align="center">60.3</td>
+		<td align="center">45.6</td>
+		<td align="center">85.8</td>
+	</tr>
+	<tr>
+		<td align="center">BrowseComp</td>
+		<td align="center">31.4</td>
+		<td align="center">-</td>
+		<td align="center">-</td>
+		<td align="center">-</td>
+		<td align="center">51.4</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Instruction Following</i></td>
+	</tr>
+	<tr>
+		<td align="center">IFBench</td>
+		<td align="center">67.3</td>
+		<td align="center">36.0</td>
+		<td align="center">69.5</td>
+		<td align="center">52.6</td>
+		<td align="center">62.5</td>
+	</tr>
+	<tr>
+		<td align="center">IFEval</td>
+		<td align="center">89.7</td>
+		<td align="center">84.7</td>
+		<td align="center">89.5</td>
+		<td align="center">87.8</td>
+		<td align="center">92.6</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Long Context Understanding</i></td>
+	</tr>
+	<tr>
+		<td align="center">AA-LCR</td>
+		<td align="center">53.5</td>
+		<td align="center">14.0</td>
+		<td align="center">50.7</td>
+		<td align="center">67.0</td>
+		<td align="center">65.0</td>
+	</tr>
+	<tr>
+		<td align="center">OpenAI-MRCR</td>
+		<td align="center">52.3</td>
+		<td align="center">20.1</td>
+		<td align="center">29.9</td>
+		<td align="center">58.6</td>
+		<td align="center">57.7</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Korean</i></td>
+	</tr>
+	<tr>
+		<td align="center">KMMLU-Pro</td>
+		<td align="center">67.3</td>
+		<td align="center">67.7</td>
+		<td align="center">62.4</td>
+		<td align="center">71.6</td>
+		<td align="center">72.1</td>
+	</tr>
+	<tr>
+		<td align="center">KoBALT</td>
+		<td align="center">61.8</td>
+		<td align="center">25.4</td>
+		<td align="center">54.3</td>
+		<td align="center">56.1</td>
+		<td align="center">62.7</td>
+	</tr>
+	<tr>
+		<td align="center">CLIcK</td>
+		<td align="center">83.9</td>
+		<td align="center">78.8</td>
+		<td align="center">74.6</td>
+		<td align="center">81.3</td>
+		<td align="center">86.3</td>
+	</tr>
+	<tr>
+		<td align="center">HRM8K</td>
+		<td align="center">90.9</td>
+		<td align="center">89.4</td>
+		<td align="center">91.6</td>
+		<td align="center">92.0</td>
+		<td align="center">90.6</td>
+	</tr>
+	<tr>
+		<td align="center">Ko-LongBench</td>
+		<td align="center">86.8</td>
+		<td align="center">68.0</td>
+		<td align="center">82.2</td>
+		<td align="center">83.2</td>
+		<td align="center">87.9</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Multilinguality</i></td>
+	</tr>
+	<tr>
+		<td align="center">MMMLU</td>
+		<td align="center">85.7</td>
+		<td align="center">83.2</td>
+		<td align="center">83.8</td>
+		<td align="center">87.3</td>
+		<td align="center">88.0</td>
+	</tr>
+	<tr>
+		<td align="center">WMT24++</td>
+		<td align="center">90.5</td>
+		<td align="center">80.8</td>
+		<td align="center">93.6</td>
+		<td align="center">94.7</td>
+		<td align="center">90.0</td>
+	</tr>
+	<tr>
+		<td align="center" colspan='7'><i>Safety</i></td>
+	</tr>
+	<tr>
+		<td align="center">Wild-Jailbreak</td>
+		<td align="center">89.9</td>
+		<td align="center">62.8</td>
+		<td align="center">98.2</td>
+		<td align="center">85.5</td>
+		<td align="center">79.1</td>
+	</tr>
+	<tr>
+		<td align="center">KGC-Safety</td>
+		<td align="center">96.1</td>
+		<td align="center">58.0</td>
+		<td align="center">92.5</td>
+		<td align="center">66.2</td>
+		<td align="center">73.0</td>
+	</tr>
+</table>
+<h2>Requirements</h2>
+<p>K-EXAONE is supported by multiple libraries. Please install the required libraries as needed for your use case.</p>
+<h4>Transformers</h4>
+<p>You should install <code>transformers &gt;= 5.1.0</code> for the K-EXAONE model.</p>
+<h4>vLLM</h4>
+<p>To serve the K-EXAONE model on a vLLM server, you should install both Transformers and vLLM (<code>vllm &gt;= 0.14.0</code>).</p>
+<h4>SGLang</h4>
+<p>You should install both Transformers and SGLang to serve the K-EXAONE model on SGLang server. You can install the latest version of SGLang from source using the following commands.</p>
+<pre><code>git clone https://github.com/sgl-project/sglang.git
+pip install -e sglang/python</code></pre>
+<h4>llama.cpp</h4>
+<p>To use the K-EXAONE model with llama.cpp library, you should install <code>llama.cpp &gt;= b7737</code>.</p>
+<h2>Quickstart</h2>
+<p>You can use the K-EXAONE model with the Transformers library version <code>5.1.0</code> or later.</p>
+<h3>Reasoning mode</h3>
+<p>For tasks that require accurate results, you can run the K-EXAONE model in reasoning mode as below.</p>
+<pre><code>from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_name = "LGAI-EXAONE/K-EXAONE-236B-A23B"
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    dtype="bfloat16",
+    device_map="auto",
+)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+messages = [
+    {"role": "system", "content": "You are K-EXAONE, a large language model developed by LG AI Research in South Korea, built to serve as a helpful and reliable assistant."},
+    {"role": "user", "content": "Which one is bigger, 3.9 vs 3.12?"}
+]
+input_ids = tokenizer.apply_chat_template(
+    messages,
+    tokenize=True,
+    add_generation_prompt=True,
+    return_tensors="pt",
+    enable_thinking=True,   # skippable (default: True)
+)
+
+generated_ids = model.generate(
+    **input_ids.to(model.device),
+    max_new_tokens=16384,
+    temperature=1.0,
+    top_p=0.95,
+    do_sample=True,
+)
+output_ids = generated_ids[0][input_ids['input_ids'].shape[-1]:]
+print(tokenizer.decode(output_ids, skip_special_tokens=True))</code></pre>
+<h3>Non-reasoning mode</h3>
+<p>For tasks where latency matters more than accuracy, you can run the K-EXAONE model in non-reasoning mode as below.</p>
+<pre><code>messages = [
+    {"role": "system", "content": "You are K-EXAONE, a large language model developed by LG AI Research in South Korea, built to serve as a helpful and reliable assistant."},
+    {"role": "user", "content": "Explain how wonderful you are"}
+]
+input_ids = tokenizer.apply_chat_template(
+    messages,
+    tokenize=True,
+    add_generation_prompt=True,
+    return_tensors="pt",
+    enable_thinking=False,
+)
+
+generated_ids = model.generate(
+    **input_ids.to(model.device),
+    max_new_tokens=1024,
+    temperature=1.0,
+    top_p=0.95,
+    do_sample=True,
+)
+output_ids = generated_ids[0][input_ids['input_ids'].shape[-1]:]
+print(tokenizer.decode(output_ids, skip_special_tokens=True))</code></pre>
+<h3>Agentic tool use</h3>
+<p>For your AI-powered agent, you can leverage K-EXAONE’s tool calling capability.  The K-EXAONE model is compatible with both OpenAI and HuggingFace tool calling specifications.  The example below demonstrates tool calling using HuggingFace’s docstring-to-tool-schema utility.</p>
+<p>Please check the <a href="examples/example_output_search.txt">example file</a> for an example of a search agent conversation using K-EXAONE.</p>
+<pre><code>from transformers.utils import get_json_schema
+
+def roll_dice(max_num: int):
+    """
+    Roll a dice with the number 1 to N. User can select the number N.
+
+    Args:
+        max_num: The maximum number on the dice.
+    """
+    return random.randint(1, max_num)
+
+tool_schema = get_json_schema(roll_dice)
+tools = [tool_schema]
+
+messages = [
+    {"role": "system", "content": "You are K-EXAONE, a large language model developed by LG AI Research in South Korea, built to serve as a helpful and reliable assistant."},
+    {"role": "user", "content": "Roll a D20 twice and sum the results."}
+]
+input_ids = tokenizer.apply_chat_template(
+    messages,
+    tokenize=True,
+    add_generation_prompt=True,
+    return_tensors="pt",
+    tools=tools,
+)
+
+generated_ids = model.generate(
+    **input_ids.to(model.device),
+    max_new_tokens=16384,
+    temperature=1.0,
+    top_p=0.95,
+    do_sample=True,
+)
+output_ids = generated_ids[0][input_ids['input_ids'].shape[-1]:]
+print(tokenizer.decode(output_ids, skip_special_tokens=True))</code></pre>
+<h2>Usage Guideline</h2>
+<blockquote><p>[!IMPORTANT] To achieve the expected performance, we recommend using the following configurations:</p>
+<ul>
+<li>We strongly recommend to use <code>temperature=1.0</code>, <code>top_p=0.95</code>, <code>presence_penalty=0.0</code> for best performance.</li>
+<li>Different from EXAONE-4.0, K-EXAONE uses <code>enable_thinking=True</code> as default. Thus, you need to set <code>enable_thinking=False</code> when you want to use non-reasoning mode.</li>
+</ul></blockquote>
+<h2>Deployment</h2>
+<h3>TensorRT-LLM</h3>
+<p>TensorRT-LLM provides official support for the K-EXAONE model. Please refer to the <a href="https://github.com/NVIDIA/TensorRT-LLM/tree/main/examples/models/core/exaone">EXAONE Documentation</a> in the TensorRT-LLM repository for more information.</p>
+<h3>vLLM</h3>
+<p>We support the K-EXAONE model on vLLM. You need to install <code>vllm &gt;= 0.14.0</code>. Practically, you can serve the model with a 256K context length using tensor parallel on 4 H200 GPUs.</p>
+<p>After you install the vLLM library with an EXAONE-MoE implementation, you can run the vLLM server by following command:</p>
+<pre><code>vllm serve LGAI-EXAONE/K-EXAONE-236B-A23B \
+    --reasoning-parser deepseek_v3 \
+    --tensor-parallel-size 4 \
+    --enable-auto-tool-choice \
+    --tool-call-parser hermes</code></pre>
+<p>An OpenAI-compatible API server will be available at http://localhost:8000/v1.</p>
+<p>You can test the vLLM server by sending a chat completion request as below:</p>
+<pre><code>curl -X POST http://localhost:8000/v1/chat/completions \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "LGAI-EXAONE/K-EXAONE-236B-A23B",
+        "messages": [
+            {"role": "user", "content": "How many r'\''s in \"strawberry\"?"}
+        ],
+        "max_tokens": 16384,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "chat_template_kwargs": {"enable_thinking": true}
+    }'</code></pre>
+<p>If you are interested in using MTP weights for speculative decoding, add according options as below.</p>
+<pre><code>vllm serve LGAI-EXAONE/K-EXAONE-236B-A23B \
+    --reasoning-parser deepseek_v3 \
+    --tensor-parallel-size 4 \
+    --enable-auto-tool-choice \
+    --tool-call-parser hermes \
+    --no-enable-prefix-caching \
+    --speculative_config '{
+        "method": "mtp", 
+        "num_speculative_tokens": 2 
+    }'</code></pre>
+<h3>SGLang</h3>
+<p>We support the K-EXAONE model on SGLang. You need to install the latest version of the SGLang library from source. Please check the <a href="#requirements">requirements</a> section. Practically, you can serve the model with a 256K context length using tensor parallel on 4 H200 GPUs.</p>
+<pre><code>python -m sglang.launch_server \
+    --model LGAI-EXAONE/K-EXAONE-236B-A23B \
+    --tp-size 4 \
+    --reasoning-parser qwen3</code></pre>
+<p>A SGLang server will be available at http://localhost:30000.</p>
+<blockquote><p>[!NOTE] Currently, using the OpenAI-compatible server is incompatible with the <code>transformers&gt;=5.0.0rc0</code>, so you need to use SGLang native API for now. For native API, please refer to the <a href="https://docs.sglang.io/basic_usage/native_api.html">official documentation</a>.</p>
+<p>Once the issue is resolved, we will update this section accordingly.</p></blockquote>
+<p>You can test the SGLang server by sending a request as below:</p>
+<pre><code>from transformers import AutoTokenizer
+import requests
+
+model_name = "LGAI-EXAONE/K-EXAONE-236B-A23B"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+messages = [
+    {"role": "user", "content": "How many r'\''s in \"strawberry\"?"}
+]
+input_text = tokenizer.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    return_tensors="pt",
+)
+
+response = requests.post(
+    f"http://localhost:30000/generate",
+    json={
+        "text": input_text,
+        "sampling_params": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "max_new_tokens": 16384,
+        },
+    },
+)
+print(response.json()['text'])</code></pre>
+<p>If you are interested in in using MTP weights for speculative decoding, add according options as below.</p>
+<pre><code>python -m sglang.launch_server \
+    --model LGAI-EXAONE/K-EXAONE-236B-A23B \
+    --tp-size 4 \
+    --reasoning-parser qwen3 \
+    --speculative-algorithm EAGLE \
+    --speculative-num-steps 3 \
+    --speculative-eagle-topk 1 \
+    --speculative-num-draft-tokens 4</code></pre>
+<h2>Limitation</h2>
+<p>The K-EXAONE language model has certain limitations and may occasionally generate inappropriate responses. The language model generates responses based on the output probability of tokens, and it is determined during learning from training data. While we have made every effort to exclude personal, harmful, and biased information from the training data, some problematic content may still be included, potentially leading to undesirable responses. Please note that the text generated by K-EXAONE language model does not reflect the views of LG AI Research.</p>
+<ul>
+<li>Inappropriate answers may be generated, which contain personal, harmful or other inappropriate information.</li>
+<li>Biased responses may be generated, which are associated with age, gender, race, and so on.</li>
+<li>The generated responses rely heavily on statistics from the training data, which can result in the generation of semantically or syntactically incorrect sentences.</li>
+<li>Since the model does not reflect the latest information, the responses may be false or contradictory.</li>
+</ul>
+<p>LG AI Research strives to reduce potential risks that may arise from K-EXAONE language models. Users are not allowed to engage in any malicious activities (e.g., keying in illegal information) that may induce the creation of inappropriate outputs violating LG AI's ethical principles when using K-EXAONE language models.</p>
+<h2>License</h2>
+<p>The model is licensed under <a href="./LICENSE">K-EXAONE AI Model License Agreement</a></p>
+<h2>Citation</h2>
+<pre><code>@article{k-exaone,
+  title={K-EXAONE Technical Report},
+  author={{LG AI Research}},
+  journal={arXiv preprint arXiv:2601.01739},
+  year={2025}
+}</code></pre>
+<h2>Contact</h2>
+<p>LG AI Research Technical Support: contact_us@lgresearch.ai</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

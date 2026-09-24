@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tencent__Hy3__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>tencent__Hy3__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<p align="left">
+    <a href="https://huggingface.co/tencent/Hy3/blob/main/README_CN.md">中文</a>&nbsp;｜&nbsp;English
+</p>
+<br>
+<p align="center">
+ <img src="assets/logo-en.png" width="400"/> <br>
+</p>
+<div align="center" style="line-height: 1;">
+<p><a href="#license"><img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="License"></a> &amp;nbsp;&amp;nbsp; <a href="https://huggingface.co/tencent/Hy3"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Tencent%20Hy-ffc107?color=ffc107&amp;logoColor=white" alt="HuggingFace"></a> &amp;nbsp;&amp;nbsp; <a href="https://modelscope.cn/models/Tencent-Hunyuan/Hy3"><img src="https://img.shields.io/badge/ModelScope-Tencent%20Hy-624aff" alt="ModelScope"></a> &amp;nbsp;&amp;nbsp; <a href="https://cnb.cool/ai-models/tencent/Hy3"><img src="https://img.shields.io/badge/cnb.cool-Tencent%20Hy-blue?logoColor=white" alt="cnb.cool"></a> &amp;nbsp;&amp;nbsp; <a href="https://ai.gitcode.com/tencent_hunyuan/Hy3"><img src="https://img.shields.io/badge/GitCode-Tencent%20Hy-red?logoColor=white" alt="GitCode"></a></p>
+</div>
+<p align="center">
+<p>    🖥️&amp;nbsp;<a href="https://aistudio.tencent.com/"><b>Official Website</b></a>&amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp;     💬&amp;nbsp;<a href="https://github.com/Tencent-Hunyuan/Hy3"><b>GitHub</b></a></p></p>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#model-introduction">Model Introduction</a></li>
+<li><a href="#stronger-agent-capabilities">Stronger Agent Capabilities</a></li>
+<li><a href="#more-reliable-product-experiences">More Reliable Product Experiences</a></li>
+<li><a href="#benchmark-appendix">Benchmark Appendix</a></li>
+<li><a href="#news">News</a></li>
+<li><a href="#model-links">Model Links</a></li>
+<li><a href="#quickstart">Quickstart</a></li>
+<li><a href="#deployment">Deployment</a><ul>
+<li><a href="#vllm">vLLM</a></li>
+<li><a href="#sglang">SGLang</a></li>
+</ul></li>
+<li><a href="#finetuning">Finetuning</a></li>
+<li><a href="#rl-post-training">RL Post-training</a></li>
+<li><a href="#quantization">Quantization</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#contact-us">Contact Us</a></li>
+</ul>
+<hr>
+<h2>Model Introduction</h2>
+<p><strong>Hy3</strong> is a 295B-parameter Mixture-of-Experts (MoE) model with 21B active parameters and 3.8B MTP layer parameters, developed by the Tencent Hy Team. Following the Hy3 Preview launch in late April, we gathered feedback from 50+ products and scaled up post-training with higher quality data. Today, we introduce Hy3, which outperforms similar-size models and rivals flagship open-source models with 2-5x parameters. It also shows significant gains in utility across various products and productivity tasks.</p>
+<table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody><tr><td>Architecture</td><td>Mixture-of-Experts (MoE)</td></tr><tr><td>Total Parameters</td><td>295B</td></tr><tr><td>Activated Parameters</td><td>21B</td></tr><tr><td>MTP Layer Parameters</td><td>3.8B</td></tr><tr><td>Number of Layers (excluding MTP layer)</td><td>80</td></tr><tr><td>Number of MTP Layers</td><td>1</td></tr><tr><td>Attention Heads</td><td>64 (GQA, 8 KV heads, head dim 128)</td></tr><tr><td>Hidden Size</td><td>4096</td></tr><tr><td>Intermediate Size</td><td>13312</td></tr><tr><td>Context Length</td><td>256K</td></tr><tr><td>Vocabulary Size</td><td>120832</td></tr><tr><td>Number of Experts</td><td>192 experts, top-8 activated</td></tr><tr><td>Supported Precisions</td><td>BF16</td></tr></tbody></table>
+<h2>Stronger Agent Capabilities</h2>
+<p>Building on Hy3 Preview, we further improved the quality and diversity of post-training data while scaling up RL training. Hy3 shows solid gains across reasoning, agentic, and long-context tasks, competitive with much larger flagship models.</p>
+<p align="center">
+  <img src="assets/benchmark.png" width="100%"/>
+</p>
+<p>In productivity scenarios such as coding, office work, financial modeling, frontend design, and game development, Hy3 has made remarkable progress and can now serve as a reliable, cost-effective model option.</p>
+<p>We don't think public benchmark scores tell the full story. So we ran a blind evaluation with 270 experts using tasks from their work, and Hy3 scored 2.67/4, outperforming GLM-5.1 at 2.51/4. The advantage was most substantial in frontend development, data &amp; storage, and CI/CD tasks.</p>
+<h2>More Reliable Product Experiences</h2>
+<p>Model usefulness is not fully captured by benchmarks. Based on extensive product feedback, we identified and fixed the following issues, receiving consistently positive feedback from product teams.</p>
+<p><strong>Stability of tool calls and output formats</strong>: We fixed multiple baseline reliability issues, bringing the model to production-grade standards across tool configurations and output constraints. Tool-call error recovery and overall efficiency improved. Hy3 also generalizes across different agent scaffoldings. On SWE-Bench Verified, accuracy variance across scaffoldings like CodeBuddy, Cline, and KiloCode remains within 4%.</p>
+<p><strong>Knowledge and anti-hallucination</strong>: Guided by the ideal of "answer when grounded, state when evidence is missing, do not conflate sources or fabricate data," we implemented fine-grained data cleaning and training constraints. In internal evaluations based on real-world scenarios, Hy3's hallucination rate dropped from 12.5% to 5.4%, and commonsense error rates fell from 25.4% to 12.7%. These improvements materially reduce fact conflation, fabrication, and logical contradiction.</p>
+<p><strong>Complex context retention and multi-turn intent tracking</strong>: Through joint optimization of SFT and RL, Hy3 improved on operational pain points like coreference resolution, ellipsis recovery, and multi-turn constraint inheritance. On internal comprehensive multi-turn tests, the issue rate dropped from 17.4% to 7.9%. Hy3 also improved markedly on long-dialogue evals like MRCR. Its outputs are more concise while ensuring complex intents do not decay or drift over long-horizon interactions.</p>
+<h2>Benchmark Appendix</h2>
+<p align="center">
+  <img src="assets/benchmark-appendix.png" width="100%"/>
+</p>
+<h2>News</h2>
+<ul>
+<li>🔥 We open-source <strong>Hy3</strong> and <strong>Hy3-FP8</strong> model weights on <a href="https://huggingface.co/tencent/Hy3">Hugging Face</a>, <a href="https://modelscope.cn/models/Tencent-Hunyuan/Hy3">ModelScope</a>, <a href="https://ai.gitcode.com/tencent_hunyuan/Hy3">GitCode</a>, and <a href="https://cnb.cool/ai-models/tencent/Hy3">CNB</a>.</li>
+</ul>
+<h2>Model Links</h2>
+<table><thead><tr><th>Model Name</th><th>Description</th><th>Hugging Face</th><th>ModelScope</th><th>GitCode</th><th>CNB</th></tr></thead><tbody><tr><td>Hy3</td><td>Instruct model</td><td>🤗 <a href="https://huggingface.co/tencent/Hy3">Model</a></td><td><a href="https://modelscope.cn/models/Tencent-Hunyuan/Hy3">Model</a></td><td><a href="https://ai.gitcode.com/tencent_hunyuan/Hy3">Model</a></td><td><a href="https://cnb.cool/ai-models/tencent/Hy3">Model</a></td></tr><tr><td>Hy3-FP8</td><td>FP8 quantized instruct model</td><td>🤗 <a href="https://huggingface.co/tencent/Hy3-FP8">Model</a></td><td><a href="https://modelscope.cn/models/Tencent-Hunyuan/Hy3-FP8">Model</a></td><td><a href="https://ai.gitcode.com/tencent_hunyuan/Hy3-FP8">Model</a></td><td><a href="https://cnb.cool/ai-models/tencent/Hy3-FP8">Model</a></td></tr></tbody></table>
+<h2>Quickstart</h2>
+<p>Deploy Hy3 with <a href="#vllm">vLLM</a> or <a href="#sglang">SGLang</a> first, then call the OpenAI-compatible API:</p>
+<pre><code>from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8000/v1", api_key="EMPTY")
+
+response = client.chat.completions.create(
+    model="hy3",
+    messages=[
+        {"role": "user", "content": "Hello! Can you briefly introduce yourself?"},
+    ],
+    temperature=0.9,
+    top_p=1.0,
+    # reasoning_effort: "no_think" (default, direct response), "low", "high" (deep chain-of-thought)
+    extra_body={"chat_template_kwargs": {"reasoning_effort": "no_think"}},
+)
+print(response.choices[0].message.content)</code></pre>
+<blockquote><p><strong>Recommended parameters</strong>: <code>temperature=0.9</code>, <code>top_p=1.0</code>.</p>
+<p><strong>Reasoning mode</strong>: Set <code>reasoning_effort</code> to <code>"high"</code> for complex tasks (math, coding, reasoning) or <code>"no_think"</code> for direct responses.</p></blockquote>
+<p>See the <a href="#deployment">Deployment</a> section below for how to start the API server.</p>
+<h2>Deployment</h2>
+<p>Hy3 has 295B parameters in total. To serve it on 8 GPUs, we recommend using H20-3e or other GPUs with larger memory capacity.</p>
+<p>For production serving, we recommend using vLLM or SGLang, both of which provide dedicated recipes for Hy3:</p>
+<ul>
+<li><a href="https://github.com/vllm-project/vllm">vLLM</a> - see <a href="https://recipes.vllm.ai/tencent/Hy3">vLLM recipes</a></li>
+</ul>
+<ul>
+<li><a href="https://docs.sglang.io/">SGLang</a> - see <a href="https://lmsysorg.mintlify.app/cookbook/autoregressive/Tencent/Hy3">SGLang cookbook</a></li>
+</ul>
+<h3>vLLM</h3>
+<p>Build vLLM from source:</p>
+<pre><code>uv venv --python 3.12 --seed --managed-python
+source .venv/bin/activate
+git clone https://github.com/vllm-project/vllm.git
+cd vllm
+uv pip install --editable . --torch-backend=auto</code></pre>
+<p>Start the vLLM server with MTP enabled:</p>
+<pre><code># Switch to trtllm backend to work-around mnnvl workspace size issue.
+export VLLM_FLASHINFER_ALLREDUCE_BACKEND=trtllm
+vllm serve tencent/Hy3 \
+  --tensor-parallel-size 8 \
+  --speculative-config.method mtp \
+  --speculative-config.num_speculative_tokens 2 \
+  --tool-call-parser hy_v3 \
+  --reasoning-parser hy_v3 \
+  --enable-auto-tool-choice \
+  --port 8000 \
+  --served-model-name hy3</code></pre>
+<h3>SGLang</h3>
+<p>Build SGLang from source:</p>
+<pre><code>git clone https://github.com/sgl-project/sglang
+cd sglang
+pip3 install pip --upgrade
+pip3 install "transformers&gt;=5.6.0"
+pip3 install -e "python"</code></pre>
+<p>Launch SGLang server with MTP enabled:</p>
+<pre><code>python3 -m sglang.launch_server \
+  --model tencent/Hy3 \
+  --tp-size 8 \
+  --tool-call-parser hunyuan \
+  --reasoning-parser hunyuan \
+  --speculative-num-steps 2 \
+  --speculative-eagle-topk 1 \
+  --speculative-num-draft-tokens 3 \
+  --speculative-algorithm EAGLE \
+  --port 8000 \
+  --served-model-name hy3</code></pre>
+<h2>Finetuning</h2>
+<p>Hy3 provides a complete model finetuning pipeline. For detailed documentation, please refer to: <a href="https://huggingface.co/tencent/Hy3/blob/main/finetune/README.md">Finetuning Guide</a></p>
+<h2>RL Post-training</h2>
+<p>Hy3 supports GRPO reinforcement learning training with <a href="https://github.com/volcengine/verl">verl</a>, training on Megatron-LM (model conversion via NVIDIA Megatron-Bridge) with vLLM rollout. For detailed documentation, please refer to: <a href="https://huggingface.co/tencent/Hy3/blob/main/rl/README.md">RL Training Guide</a></p>
+<h2>Quantization</h2>
+<p>We provide <a href="https://github.com/tencent/AngelSlim">AngelSlim</a>, a more accessible, comprehensive, and efficient toolkit for large model compression. AngelSlim supports a comprehensive suite of compression tools for large-scale multimodal models, including common quantization algorithms, low-bit quantization, and speculative sampling.</p>
+<h2>License</h2>
+<p>Hy3 is released under the <strong>Apache License 2.0</strong>. See <a href="https://huggingface.co/tencent/Hy3/blob/main/LICENSE">LICENSE</a> for details.</p>
+<h2>Contact Us</h2>
+<p>If you would like to leave a message for our R&amp;D and product teams, welcome to contact us. You can also reach us via email:</p>
+<p>📧 <strong>hunyuan_opensource@tencent.com</strong></p>
+<hr>
+<p align="center">
+  <i>Hy3 is developed by the Tencent Hy Team.</i>
+</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

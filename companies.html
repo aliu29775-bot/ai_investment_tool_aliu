@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公司總覽 — AI Berkshire 投研網站</title>
+<meta name="description" content="110 家公司的四維評分、投資結論與研究報告索引。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="companies">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AI Berkshire <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">實盤</a>
+    </nav>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">公司總覽</h1>
+    <span class="more" id="co-count" style="font-size:14px; color: var(--muted);"></span>
+  </div>
+  <p class="section-desc">四維評分：段永平（商業模式）、巴菲特（財務估值）、芒格（行業競爭）、李錄（風險管理）。評分與結論萃取自各公司最新研究報告；點擊卡片展開報告清單。</p>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="icon">🔍</span>
+      <input id="co-search" type="search" placeholder="搜尋公司、代碼或摘要…" aria-label="搜尋公司">
+    </div>
+    <button class="chip on" data-filter="all">全部</button>
+    <button class="chip" data-filter="scored">有評分</button>
+    <button class="chip" data-filter="positive">✅ 正面</button>
+    <button class="chip" data-filter="neutral">❓ 中性</button>
+    <button class="chip" data-filter="negative">❌ 負面</button>
+  </div>
+
+  <div class="co-grid" id="co-grid"></div>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>📚 專題與篩選池</h2>
+    </div>
+    <p class="section-desc">跨公司主題研究、大師研究與全市場篩選池，點擊展開報告清單。</p>
+    <div class="topic-grid" id="topic-grid"></div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">GitHub：xbtlin/ai-berkshire</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var n = window.SITE_DATA.companies.length;
+  var scored = window.SITE_DATA.companies.filter(function (c) { return c.score; }).length;
+  document.getElementById("co-count").textContent = n + " 家公司 · " + scored + " 家有評分";
+});
+</script>
+</body>
+</html>

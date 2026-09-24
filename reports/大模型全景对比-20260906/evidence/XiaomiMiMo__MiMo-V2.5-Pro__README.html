@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XiaomiMiMo__MiMo-V2.5-Pro__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>XiaomiMiMo__MiMo-V2.5-Pro__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<br/><br/>
+<div align="center">
+  <picture>
+    <source srcset="https://github.com/XiaomiMiMo/MiMo/raw/main/figures/Xiaomi_MiMo_darkmode.png?raw=true" media="(prefers-color-scheme: dark)">
+    <img src="https://github.com/XiaomiMiMo/MiMo/raw/main/figures/Xiaomi_MiMo.png?raw=true" width="60%" alt="Xiaomi-MiMo" />
+  </picture>
+</div>
+<br/>
+<div align="center" style="line-height: 1;">
+  <a href="https://huggingface.co/XiaomiMiMo" target="_blank">🤗 HuggingFace</a>
+<p>  &amp;nbsp;|</p>
+  <a href="https://mimo.xiaomi.com/mimo-v2-5-pro" target="_blank">📰 Blog </a>
+<p>  &amp;nbsp;|</p>
+  <a href="https://platform.xiaomimimo.com/" target="_blank">🎨 Xiaomi MiMo API Platform </a>
+<p>  &amp;nbsp;|</p>
+  <a href="https://aistudio.xiaomimimo.com" target="_blank">🗨️ Xiaomi MiMo Studio </a>
+<p>  &amp;nbsp;|</p>
+</div>
+<br/>
+<div align="center" style="line-height: 1.2;">
+  <strong>Community</strong><br/>
+  <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro/blob/main/assets/wechat.jpg" target="_blank">WeChat Group</a>
+<p>  &amp;nbsp;|&amp;nbsp;</p>
+  <a href="https://discord.gg/kKC2kNnQEX" target="_blank">Discord</a>
+<p>  &amp;nbsp;|&amp;nbsp;</p>
+  <a href="https://t.me/+3T-I0pekOVIyNDBl" target="_blank">Telegram</a>
+<p>  &amp;nbsp;|&amp;nbsp;</p>
+  <a href="https://www.reddit.com/r/XiaomiMiMo_Official/" target="_blank">Reddit</a>
+</div>
+<br/>
+<h1>MiMo-V2.5-Pro</h1>
+<p>MiMo-V2.5-Pro is an open-source Mixture-of-Experts (MoE) language model with 1.02T total parameters and 42B active parameters. It utilizes the hybrid attention architecture and 3-layers Multi-Token Prediction (MTP) introduced in <a href="https://github.com/XiaomiMiMo/MiMo-V2-Flash">MiMo-V2-Flash</a>, with up to 1M tokens context length.</p>
+<div align="center">
+  <img src="assets/benchmark.jpg" width="90%" alt="Benchmark Results" />
+</div>
+<h2>1. Introduction</h2>
+<p>MiMo-V2.5-Pro is our most capable model to date, designed for the most demanding agentic, complex software engineering, and long-horizon tasks. It sustains complex trajectories spanning thousands of tool calls with strong instruction following and coherence over a 1M-token context window. Key features include:</p>
+<ul>
+<li><strong>Hybrid Attention Architecture</strong>: Interleaves Sliding Window Attention (SWA) and Global Attention (GA) with a 6:1 ratio and 128 sliding window. This reduces KV-cache storage by nearly 7x while maintaining long-context performance via learnable attention sink bias.</li>
+<li><strong>Multi-Token Prediction (MTP)</strong>: Equipped with three lightweight MTP modules using dense FFNs. This triples output speed during inference and will be good to accelerate rollout in RL training.</li>
+<li><strong>Efficient Pre-Training</strong>: Trained on 27T tokens using FP8 mixed precision and native 32k seq length. The context window supports up to 1M tokens.</li>
+<li><strong>Agentic Capabilities</strong>: Post-training utilizes SFT, large-scale agentic RL and Multi-Teacher On-Policy Distillation (MOPD), achieving superior performance on the most demanding agentic, complex software engineering, and long-horizon tasks.</li>
+</ul>
+<h2>2. Model Downloads</h2>
+<table><thead><tr><th>Model</th><th>Total Params</th><th>Active Params</th><th>Context Length</th><th>Precision</th><th>Download</th></tr></thead><tbody><tr><td><strong>MiMo-V2.5-Pro</strong></td><td>1.02T</td><td>42B</td><td>1M</td><td>FP8 (E4M3) Mixed</td><td><a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro">🤗 HuggingFace</a> <br> <a href="https://modelscope.cn/models/XiaomiMiMo/MiMo-V2.5-Pro">🤖 ModelScope</a></td></tr><tr><td><strong>MiMo-V2.5-Pro-Base</strong></td><td>1.02T</td><td>42B</td><td>256K</td><td>FP8 (E4M3) Mixed</td><td><a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro-Base">🤗 HuggingFace</a> <br> <a href="https://modelscope.cn/models/XiaomiMiMo/MiMo-V2.5-Pro-Base">🤖 ModelScope</a></td></tr></tbody></table>
+<h2>3. Evaluation Results</h2>
+<h3>Base Model Evaluation</h3>
+<table><thead><tr><th>Category</th><th>Benchmark</th><th>Setting</th><th>MiMo-V2.5-Pro Base</th><th>MiMo-V2.5 Base</th><th>DeepSeek-V4-Pro Base</th><th>DeepSeek-V4-Flash Base</th><th>Kimi-K2 Base</th></tr></thead><tbody><tr><td><strong>Params</strong></td><td>#Activated / #Total</td><td>-</td><td>42B / 1.02T</td><td>15B / 310B</td><td>49B / 1.6T</td><td>13B / 284B</td><td>32B / 1.04T</td></tr><tr><td><strong>General</strong></td><td>BBH</td><td>3-shot</td><td>88.4</td><td>87.2</td><td>87.5</td><td>86.9</td><td>88.7</td></tr><tr><td></td><td>MMLU</td><td>5-shot</td><td>89.4</td><td>86.3</td><td>90.1</td><td>88.7</td><td>87.8</td></tr><tr><td></td><td>MMLU-Redux</td><td>5-shot</td><td>92.8</td><td>89.8</td><td>90.8</td><td>89.4</td><td>90.2</td></tr><tr><td></td><td>MMLU-Pro</td><td>5-shot</td><td>68.5</td><td>65.8</td><td>73.5</td><td>68.3</td><td>69.2</td></tr><tr><td></td><td>DROP</td><td>3-shot</td><td>86.3</td><td>83.7</td><td>88.7</td><td>88.6</td><td>83.6</td></tr><tr><td></td><td>ARC-Challenge</td><td>25-shot</td><td>97.2</td><td>96.5</td><td>-</td><td>-</td><td>96.2</td></tr><tr><td></td><td>HellaSwag</td><td>10-shot</td><td>89.8</td><td>88.6</td><td>88.0</td><td>85.7</td><td>94.6</td></tr><tr><td></td><td>WinoGrande</td><td>5-shot</td><td>85.6</td><td>84.7</td><td>81.5</td><td>79.5</td><td>85.3</td></tr><tr><td></td><td>TriviaQA</td><td>5-shot</td><td>81.3</td><td>80.7</td><td>85.6</td><td>82.8</td><td>85.1</td></tr><tr><td></td><td>GPQA-Diamond</td><td>5-shot</td><td>66.7</td><td>58.1</td><td>-</td><td>-</td><td>48.1</td></tr><tr><td><strong>Math</strong></td><td>GSM8K</td><td>8-shot</td><td>99.6</td><td>83.3</td><td>92.6</td><td>90.8</td><td>92.1</td></tr><tr><td></td><td>MATH</td><td>4-shot</td><td>86.2</td><td>67.7</td><td>64.5</td><td>57.4</td><td>70.2</td></tr><tr><td></td><td>AIME 24&amp;25</td><td>2-shot</td><td>37.3</td><td>36.9</td><td>-</td><td>-</td><td>31.6</td></tr><tr><td><strong>Code</strong></td><td>HumanEval+</td><td>1-shot</td><td>75.6</td><td>71.3</td><td>-</td><td>-</td><td>84.8</td></tr><tr><td></td><td>MBPP+</td><td>3-shot</td><td>74.1</td><td>70.9</td><td>-</td><td>-</td><td>73.8</td></tr><tr><td></td><td>LiveCodeBench v6</td><td>1-shot</td><td>39.6</td><td>35.5</td><td>-</td><td>-</td><td>26.3</td></tr><tr><td></td><td>SWE-Bench (AgentLess)</td><td>3-shot</td><td>35.7</td><td>30.8</td><td>-</td><td>-</td><td>28.2</td></tr><tr><td><strong>Chinese</strong></td><td>C-Eval</td><td>5-shot</td><td>91.5</td><td>88.6</td><td>93.1</td><td>92.1</td><td>92.5</td></tr><tr><td></td><td>CMMLU</td><td>5-shot</td><td>90.2</td><td>88.2</td><td>90.8</td><td>90.4</td><td>90.9</td></tr><tr><td><strong>Multilingual</strong></td><td>GlobalMMLU</td><td>5-shot</td><td>83.6</td><td>77.4</td><td>-</td><td>-</td><td>80.7</td></tr></tbody></table>
+<h3>Long-context Evaluation</h3>
+<div align="center">
+  <img src="assets/post_training_evaluation.jpg" width="80%" alt="Post-training Evaluation" />
+</div>
+<p>GraphWalks is a long-context benchmark from OpenAI that fills the prompt with a directed graph of hex-hash nodes and asks the model to run a breadth-first search (nodes exactly at depth <em>N</em>) or list a node's parents. We evaluate across the full 32k–1M input-token span and apply the same evaluation fixes described by Anthropic.</p>
+<p>MiMo V2.5 Pro delivers a major leap in long-context reasoning. Past 128k, V2 Pro degrades rapidly and collapses to 0.00 at 1M on both subtasks, while V2.5 Pro still scores 0.56 BFS / 0.92 Parents at 512k and 0.37 / 0.62 at 1M.</p>
+<h2>4. Model Architecture &amp; Training Process</h2>
+<p>MiMo-V2.5-Pro addresses the quadratic complexity of long contexts by interleaving Local Sliding Window Attention (SWA) and Global Attention (GA). Unlike traditional speculative decoding, our MTP module is natively integrated for training and inference.</p>
+<div align="center">
+  <img src="assets/architecture.png" width="60%" alt="Model Architecture" />
+</div>
+<h3>Model Summary</h3>
+<table><thead><tr><th>Component</th><th>MiMo-V2.5-Pro</th><th>MiMo-V2.5</th></tr></thead><tbody><tr><td><strong>Total Parameters</strong></td><td>1.02T</td><td>310B</td></tr><tr><td><strong>Activated Parameters</strong></td><td>42B</td><td>15B</td></tr><tr><td><strong>Hidden Size</strong></td><td>6144</td><td>4096</td></tr><tr><td><strong>Num Layers</strong></td><td>70 (1 dense + 69 MoE)</td><td>48 (1 dense + 47 MoE)</td></tr><tr><td><strong>Full Attention Layers</strong></td><td>10</td><td>9</td></tr><tr><td><strong>SWA Layers</strong></td><td>60</td><td>39</td></tr><tr><td><strong>Num Attention Heads</strong></td><td>128</td><td>64</td></tr><tr><td><strong>Num KV Heads</strong></td><td>8 (GQA)</td><td>8 (GA) / 4 (SWA)</td></tr><tr><td><strong>Head Dim (QK / V)</strong></td><td>192 / 128</td><td>192 / 128</td></tr><tr><td><strong>Routed Experts</strong></td><td>384</td><td>256</td></tr><tr><td><strong>Experts per Token</strong></td><td>8</td><td>8</td></tr><tr><td><strong>MoE Intermediate Size</strong></td><td>2048</td><td>2048</td></tr><tr><td><strong>Dense Intermediate Size</strong></td><td>16384 (layer 0 only)</td><td>16384 (layer 0 only)</td></tr><tr><td><strong>SWA Window Size</strong></td><td>128</td><td>128</td></tr><tr><td><strong>Max Context Length</strong></td><td>1M</td><td>1M</td></tr><tr><td><strong>MTP Layers</strong></td><td>3</td><td>3</td></tr></tbody></table>
+<h3>Training Process</h3>
+<p>For post-training, MiMo-V2.5-Pro adopts the three-stage post-training paradigm introduced in <a href="https://github.com/XiaomiMiMo/MiMo-V2-Flash">MiMo-V2-Flash</a> to achieve exceptional performance. The paradigm begins with Supervised Fine-Tuning (SFT) to build strong, foundational instruction-following skills using curated data pairs. Next, in the Domain-Specialized Training stage, diverse teacher models — ranging from math and safety to complex agentic tool-use — are individually optimized using domain-specific RL rewards. Finally, the process culminates in Multi-Teacher On-Policy Distillation (MOPD). Through dynamic on-policy RL, the single student model iteratively learns from its own outputs, continuously receiving precise token-level guidance from the expert teachers to seamlessly integrate broad capabilities.</p>
+<h2>5. Deployment</h2>
+<p>Since inference engines are continuously being updated and optimized, this guide only provides deployment examples for reference. For the best performance, we strongly recommend following our referenced approach to get the latest best practices and optimal performance.</p>
+<h3>SGLang Deployment</h3>
+<p>For the best performance, we strongly recommend deploying using this approach, which is officially supported by the SGLang community. Please refer to <a href="https://docs.sglang.io/cookbook/autoregressive/Xiaomi/MiMo-V2.5">SGLang MiMo-V2.5-Pro Cookbook</a> for the latest deployment guide.</p>
+<p>The following is an example of running the model with SGLang, referenced from <a href="https://github.com/sgl-project/sglang/pull/23808">sgl-project/sglang#23808</a>:</p>
+<pre><code>SGLANG_ENABLE_SPEC_V2=1
+SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK=256
+python3 -m sglang.launch_server \
+              --model-path XiaomiMiMo/MiMo-V2.5-Pro \
+              --trust-remote-code \
+              --pp-size 1 \
+              --dp-size 2 \
+              --ep-size 16 \
+              --tp-size 16 \
+              --moe-dense-tp-size 1 \
+              --enable-dp-attention \
+              --moe-a2a-backend deepep \
+              --dist-init-addr ${LWS_LEADER_IP}:20000 \
+              --node-rank ${LWS_WORKER_INDEX} \
+              --nnodes ${LWS_GROUP_SIZE} \
+              --page-size 64 \
+              --attention-backend fa3 \
+              --quantization fp8 \
+              --mem-fraction-static 0.7 \
+              --max-running-requests 128 \
+              --cuda-graph-max-bs 64 \
+              --chunked-prefill-size 32768 \
+              --context-length 1048576 \
+              --tokenizer-worker-num 64 \
+              --speculative-algorithm EAGLE \
+              --speculative-num-steps 3 \
+              --speculative-eagle-topk 1 \
+              --speculative-num-draft-tokens 4 \
+              --enable-multi-layer-eagle \
+              --host 0.0.0.0 \
+              --port 9001 \
+              --reasoning-parser mimo \
+              --tool-call-parser mimo \
+              --watchdog-timeout 3600 \
+              --model-loader-extra-config '{"enable_multithread_load": "true","num_threads": 64}'</code></pre>
+<h3>vLLM Deployment</h3>
+<p>For the best performance, we strongly recommend deploying using this approach, which is officially supported by the vLLM community. Please refer to <a href="https://recipes.vllm.ai/XiaomiMiMo/MiMo-V2.5-Pro">vLLM MiMo-V2.5-Pro Cookbook</a> for the latest deployment guide.</p>
+<p>For local deployment, we recommend setting the sampling parameters to <code>temperature=1.0</code>, <code>top_p=0.95</code>.</p>
+<h2>Citation</h2>
+<pre><code>@misc{mimo2026v25pro,
+  title={MiMo-V2.5-Pro},
+  author={{Xiaomi MiMo Team}},
+  year={2026},
+  howpublished={\url{https://huggingface.co/collections/XiaomiMiMo/mimo-v25}},
+}</code></pre>
+<h2>Contact</h2>
+<p>For questions or feedback, reach us at <a href="mailto:mimo@xiaomi.com">mimo@xiaomi.com</a> or join our community:</p>
+<ul>
+<li><a href="https://work.weixin.qq.com/apph5/external_room/join/group_mng?plg_id=c417f99bd9014b5dd894daa8bfe19790&amp;">WeChat Group</a></li>
+<li><a href="https://discord.gg/WX2R2uNp">Discord</a></li>
+<li><a href="https://t.me/+3T-I0pekOVIyNDBl">Telegram</a></li>
+<li><a href="https://www.reddit.com/r/XiaomiMiMo_Official/">Reddit</a></li>
+</ul>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

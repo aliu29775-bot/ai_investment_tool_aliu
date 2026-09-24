@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>實盤業績 — AI Berkshire 投研網站</title>
+<meta name="description" content="2024 +69.29%、2025 +66.38% 實盤業績、指數對比與持倉記錄。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="trackrecord">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AI Berkshire <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">實盤</a>
+    </nav>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">實盤業績與持倉</h1>
+  </div>
+  <p class="section-desc">不是紙上談兵——這套框架背後是真金白銀驗證的投資體系。懸停圖表查看數值，完整數字見下方表格。</p>
+
+  <!-- 年度收益圖 -->
+  <section class="card viz-root chart-box" style="position: relative;">
+    <h3>年度收益對比（%）</h3>
+    <div class="chart-note">本框架實盤 vs 全球主要指數 · 2024、2025 全年</div>
+    <div class="legend" id="returns-legend"></div>
+    <div id="returns-chart" aria-describedby="returns-legend"></div>
+    <p class="disclaimer" style="padding: 0 12px;">圖例與表格提供數值標籤，不單靠顏色識別系列。歷史收益不代表未來表現，截圖來自富途證券真實帳戶。</p>
+  </section>
+
+  <!-- 指數對比表（圖表的表格檢視） -->
+  <section class="section">
+    <div class="section-head"><h2 style="font-size:20px;">指數對比明細</h2></div>
+    <div class="card" style="padding: 8px 4px; overflow-x:auto;">
+      <table class="data-table">
+        <thead><tr><th>指標</th><th>2024 全年</th><th>2025 全年</th><th>兩年累計（約）</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">本框架實盤</td><td class="hl">+69.29%</td><td class="hl">+66.38%</td><td class="hl">+181.6%</td></tr>
+          <tr><td>納斯達克</td><td>+28.64%</td><td>+20.36%</td><td>+54.8%</td></tr>
+          <tr><td>標普500</td><td>+23.31%</td><td>+16.39%</td><td>+43.5%</td></tr>
+          <tr><td>恒生指數</td><td>+17.67%</td><td>+27.77%</td><td>+50.3%</td></tr>
+          <tr><td>滬深300</td><td>+14.68%</td><td>+17.66%</td><td>+34.9%</td></tr>
+        </tbody>
+      </table>
+      <p class="disclaimer" style="padding: 0 16px;">兩年累計按複利約算：本框架 1.6929 × 1.6638 ≈ 2.816。兩年累計實盤收益超 146 萬元，連續兩年大幅跑贏全球主要指數。</p>
+    </div>
+  </section>
+
+  <!-- 當前持倉 -->
+  <section class="section">
+    <div class="section-head"><h2 style="font-size:20px;">💼 當前持倉（截至 2026-09-07）</h2></div>
+    <p class="section-desc">權重為持股組合口徑（不含現金），隨市價波動，非固定目標配置。長條為權重、百分比為相對成本浮動盈虧。</p>
+    <div class="card" style="padding: 18px 22px;">
+      <div id="holdings-bars"></div>
+      <div style="overflow-x:auto; margin-top: 12px;">
+        <table class="data-table">
+          <thead><tr><th>標的</th><th>組合權重（約）</th><th>成本價</th><th>相對成本浮動盈虧</th></tr></thead>
+          <tbody id="holdings-table"></tbody>
+        </table>
+      </div>
+      <div class="note-box">
+        組合相對成本浮動盈虧約 <strong>-3.6%</strong>：MiniMax +75.4%、快手 -1.5%、騰訊 -3.4%、PDD -10.1%、美團 -17.3%，按成本權重加權。清倉泡泡瑪特回籠的現金約佔組合 8%，尚未再配置。
+      </div>
+      <p class="disclaimer">口徑說明：這是相對成本的浮動盈虧，非年內時間加權收益；賣出 PUT 的權利金、分紅與騰訊減倉的已實現損益均未計入。</p>
+    </div>
+  </section>
+
+  <!-- 操作記錄 -->
+  <section class="section">
+    <div class="section-head"><h2 style="font-size:20px;">📝 實盤操作記錄</h2></div>
+    <p class="section-desc">公開每筆操作的方向、價格與組合權重變化，不公開股數與金額——參考段永平：公開決策，不公開規模。</p>
+    <div class="card" style="padding: 8px 4px; overflow-x:auto;">
+      <table class="data-table">
+        <thead><tr><th>日期</th><th>標的</th><th>操作</th><th>價格</th><th>倉位變化</th><th>備註</th></tr></thead>
+        <tbody id="trades-table"></tbody>
+      </table>
+      <p class="disclaimer" style="padding: 0 16px;">2026-09-05 與 09-07 各筆為記錄日而非成交日，成交價按記錄日收盤價登記，待補券商流水後修訂。</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">GitHub：xbtlin/ai-berkshire</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var D = window.SITE_DATA;
+  var SERIES_COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)"];
+
+  /* 圖例（5 個系列：圖例恆在 + 圖上僅標示本框架數值） */
+  var legend = document.getElementById("returns-legend");
+  legend.innerHTML = D.trackrecord.returns.map(function (s, i) {
+    return '<span class="item"><span class="sw" style="background:' + SERIES_COLORS[i] +
+      '"></span>' + s.name + "</span>";
+  }).join("");
+
+  /* 持倉表格 */
+  document.getElementById("holdings-table").innerHTML = D.portfolio.holdings.map(function (h) {
+    var cls = h.pnl >= 0 ? "pnl-up" : "pnl-down";
+    return "<tr><td>" + h.name + "</td><td>" + h.weight + "%</td><td>" + h.cost +
+      "</td><td class='" + cls + "'>" + (h.pnl >= 0 ? "+" : "") + h.pnl.toFixed(1) + "%</td></tr>";
+  }).join("");
+
+  /* 操作記錄表格 */
+  document.getElementById("trades-table").innerHTML = D.portfolio.trades.map(function (t) {
+    return "<tr><td>" + t[0] + "</td><td>" + t[1] + "</td><td>" + t[2] + "</td><td>" + t[3] +
+      "</td><td>" + t[4] + "</td><td>" + t[5] + "</td></tr>";
+  }).join("");
+});
+</script>
+</body>
+</html>

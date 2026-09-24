@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>核验说明 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../index.html">首頁</a>
+    <a href="../../companies.html">公司</a>
+    <a href="../../reports.html">報告</a>
+    <a href="../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../companies.html">七公司商业质量与十年利润-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>核验说明</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">底稿</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 七公司商业质量与十年利润-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>核验说明</h1>
+<p>核验日期：2026-09-06。范围为本目录七公司横评，不改变此前公司报告或实盘操作记录。</p>
+<h2>历史事实</h2>
+<p>各公司最新年度收入、归母和最新一期数据回到原始年报/业绩公告，再与独立数据库或编辑整理渠道交叉。来源和逐项差异保存在各底稿。独立渠道大多仍根据发行人披露整理，不能称为第二次财务审计。</p>
+<p>主报告固定随机种子42，工具共识别36个数据点，抽6项：腾讯半年归母、阿里年度归母、美团半年归母，以及3个2036情景值。事实与预测分开处理。</p>
+<ul>
+<li>腾讯半年与阿里年度归母：原件与独立数据商均一致。</li>
+<li>美团半年归母：原件为亏损46.72487亿元，报告取亏损46.72亿元。第三方所报亏损46.72036亿元是集团利润口径，不能充当精确归母第二来源。故该点仅完成原件核验与集团数量级对照，归母独立第二源缺口保留。</li>
+<li>三个2036值：只验证公式计算与取整，不填入虚构的“未来财报取数”。</li>
+</ul>
+<p><a href="主报告事实抽样判决.txt">事实抽样判决</a>为3项通过，其中2项双源、1项单源。工具未强制要求两个来源，因此它显示的PASS不代表三个点都双源，更不代表全报告预测获准。结构化证据见<a href="主报告事实抽样核验.json">事实核验</a>、<a href="主报告模型抽样核验.json">模型样本</a>、<a href="主报告抽样.txt">原始抽样</a>。</p>
+<h2>模型计算</h2>
+<p>主表21个情景全部调用仓库financial_rigor计算，另用40位Decimal独立复算，检查报告取整。范围覆盖三种情景的全部公司，未只复核抽中的三个值。两种计算实现的金额差均小于0.000001亿元，主表取整完全一致。</p>
+<p><a href="复核主报告.py">复算脚本</a>和<a href="主表21情景复算.json">21情景结果</a>记录公式、精确结果、取整步长及工具原文。腾讯/拼多多另有各自40位复算；快手/美团及泡泡/MiniMax底稿记录业务驱动参数与工具调用。</p>
+<p>工具内calc使用浮点运算，本报告以独立Decimal复算消除可见浮点尾差；没有修改共享工具。公式精确不代表收入、利润率、税率、权益比例准确。未来利润没有客观可核验真值，未声称历史抽检能验证这些假设。</p>
+<h2>研究范围与局限</h2>
+<ul>
+<li>只比较用户指定四维，不以完整估值研究自居，未添加新股价、市场市值或交易建议。</li>
+<li>PDD模型按营销/交易服务收费类别，不能分别改名为国内/Temu。</li>
+<li>快手可灵长期经济归属比例为假设，融资优先权或母公司额外义务可能使坏情景更差。</li>
+<li>MiniMax实际报表以美元列示；2036人民币比较用固定7的情景汇率，不是当日汇率或外汇预测。</li>
+<li>七公司情景不构成独立可相加利润池；竞争、相互持股和共同AI成本周期都可能造成相关性或重复计入。</li>
+<li>GitHub发布范围限定为本目录内的七公司横评、研究底稿、公开来源证据及复算记录；发布不扩大事实核验覆盖，也不代表未来情景获得验证。</li>
+</ul>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

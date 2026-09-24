@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mistral Medium 3.5 128B — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>Mistral Medium 3.5 128B</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>Mistral Medium 3.5 128B</h1>
+<p>Mistral Medium 3.5 is our first flagship merged model. It is a dense 128B model with a 256k context window, handling instruction-following, reasoning, and coding in a single set of weights. Mistral Medium 3.5 replaces its predecessor Mistral Medium 3.1 and Magistral in Le Chat. It also replaces Devstral 2 in our coding agent Vibe. Concretely, expect better performance for instruct, reasoning and coding tasks in a new unified model in comparison with our previous released models.</p>
+<p>Reasoning effort is configurable per request, so the same model can answer a quick chat reply or work through a complex agentic run. We trained the vision encoder from scratch to handle variable image sizes and aspect ratios.</p>
+<p>Find more information on our <a href="https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5">blog</a>.</p>
+<blockquote><p>[!Note] To speed up local inference using vLLM or SGLang, check out our released <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B-EAGLE">EAGLE model</a>.</p></blockquote>
+<blockquote><p>[!Warning] The Transformers config originally had an incorrect entry that caused long-context performance degradation. This has been fixed in this <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/commit/c4be198050fb5789774a55b92ed697becfbf20ae">commit</a>. GGUFs generated using the Transformers config prior to this commit are also affected. Please use the correct config for best performance.</p></blockquote>
+<h2>Key Features</h2>
+<p>Mistral Medium 3.5 includes the following architectural choices:</p>
+<ul>
+<li><strong>Dense 128B parameters</strong>.</li>
+<li><strong>256k context length</strong>.</li>
+<li><strong>Multimodal input</strong>: Accepts both text and image input, with text output.</li>
+<li><strong>Instruct and Reasoning functionalities</strong> with function calls (reasoning effort configurable per request).</li>
+</ul>
+<p>Mistral Medium 3.5 offers the following capabilities:</p>
+<ul>
+<li><strong>Reasoning Mode</strong>: Toggle between fast instant reply mode and reasoning mode, boosting performance with test-time compute when requested.</li>
+<li><strong>Vision</strong>: Analyzes images and provides insights based on visual content, in addition to text.</li>
+<li><strong>Multilingual</strong>: Supports dozens of languages, including English, French, Spanish, German, Italian, Portuguese, Dutch, Chinese, Japanese, Korean, and Arabic.</li>
+<li><strong>System Prompt</strong>: Strong adherence and support for system prompts.</li>
+<li><strong>Agentic</strong>: Best-in-class agentic capabilities with native function calling and JSON output.</li>
+<li><strong>Large Context Window</strong>: Supports a 256k context window.</li>
+</ul>
+<p>We release this model under a <strong><a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/blob/main/LICENSE">Modified MIT License</a></strong>: Open-source license for both commercial and non-commercial use with exceptions for companies with large revenue.</p>
+<h2>Recommended Settings</h2>
+<ul>
+<li><strong>Reasoning Effort</strong>:<ul>
+<li><code>'none'</code> → Do not use reasoning</li>
+<li><code>'high'</code> → Use reasoning (recommended for complex prompts and agentic usage)</li>
+</ul></li>
+</ul>
+<p>  Use <code>reasoning_effort="high"</code> for complex tasks and agentic coding.</p>
+<ul>
+<li><strong>Temperature</strong>: 0.7 for <code>reasoning_effort="high"</code>. Temp between 0.0 and 0.7 for <code>reasoning_effort="none"</code> depending on the task.</li>
+</ul>
+<p>  Generally, lower means answer that are more to the point and higher allows the model to be more creative. It is a good practice to try different values in order to   improve the model performance to meet your demands.</p>
+<ul>
+<li><strong>Top p</strong>: 0.95 for <code>reasoning_effort="high"</code>. You can try different values but staying close should achieve best performance. Leave it to <code>None</code> (or <code>1.0</code>) for <code>reasoning_effort="none"</code>.</li>
+</ul>
+<h2>Benchmarks</h2>
+<h3>Agentic Benchmarks</h3>
+<p>Mistral Medium 3.5 supersedes all our previous coding models, namely Devstral, across all benchmarks. It scores <strong>91.4%</strong> on τ³-Telecom and <strong>77.6%</strong> on SWE-Bench Verified. Due to its stronger agentic capabilities, Mistral Medium 3.5 replaces Devstral 2 in our coding agent, Vibe CLI.</p>
+<p><img src="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/resolve/main/images/image2.png" alt="Mistral agentic benchmark"> <img src="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/resolve/main/images/image3.png" alt="Mistral agentic benchmark SWE-bench"> <img src="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/resolve/main/images/image4.png" alt="Mistral agentic vs competiting models benchmark"></p>
+<h3>Instruction Following, Reasoning, and Coding Benchmarks</h3>
+<p>We compared Mistral Medium 3.5 with competing models on instruction following, reasoning (math), and coding benchmarks. Thanks to its unified capabilities, it achieves strong results across all these tasks and Mistral Medium 3.5 is now powering Le Chat.</p>
+<p><img src="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/resolve/main/images/image1.png" alt="instruct reasoning and agentic benchmark"></p>
+<h2>Usage</h2>
+<p>You can find Mistral Medium 3.5 support on multiple libraries for inference and fine-tuning.</p>
+<p>We here <strong>thank</strong> every contributors and maintainers that helped us making it happen.</p>
+<h3>Mistral-Vibe</h3>
+<p>Use <code>Mistral Medium 3.5</code> with <a href="https://github.com/mistralai/mistral-vibe">Mistral Vibe</a>. </p>
+<h4>Install</h4>
+<p>Install the latest version:</p>
+<pre><code>uv pip install mistral-vibe --upgrade</code></pre>
+<h4>API Usage</h4>
+<p>Mistral Medium 3.5 can be selected by starting <code>vibe</code>. If it is the first time you launch <code>vibe</code>, it will:</p>
+<ul>
+<li>Create a default configuration file at ~/.vibe/config.toml.</li>
+<li>Prompt you to enter your API key if it's not already configured.</li>
+<li>Save your API key to ~/.vibe/.env for future use.</li>
+</ul>
+<p>Now select <code>mistral-medium-3.5</code> and start building !</p>
+<h4>Local server</h4>
+<p>If instead of pinging the Mistral API, you want to use a local vLLM server, you can do the following:</p>
+<ul>
+<li>1. Spin up a vllm server as explained in <a href="#vllm-recommended"><code>Usage - vllm</code></a></li>
+<li>2. Add the model configuration in <code>~/.vibe/config.toml</code>:</li>
+</ul>
+<pre><code>display_name = "Mistral Medium 3.5 (local vLLM)"
+description = "Mistral Medium 3.5 mode using local vLLM"
+safety = "neutral"
+
+active_model = "mistral-medium-3.5" # Make sure this is the only active_model entry
+[[providers]]
+name = "vllm"
+api_base = "http://&lt;your-host-url&gt;:8000/v1"
+api_key_env_var = ""
+backend = "generic"
+api_style = "reasoning"
+
+[[models]]
+name = "mistralai/Mistral-Medium-3.5-128B"
+provider = "vllm"
+alias = "mistral-medium-3.5"
+thinking = "high"
+temperature = 0.7
+auto_compact_threshold = 168000
+
+[tools.bash]
+default_timeout = 1200</code></pre>
+<p><strong>Notes</strong>:</p>
+<ul>
+<li>Make sure to overwrite <code>&lt;your-host-url&gt;</code> with your server's url.</li>
+<li>Other inference backends are also supported. Please look at <a href="https://github.com/mistralai/mistral-vibe">Mistral Vibe repo</a> for more info.</li>
+</ul>
+<p>Then restart <code>vibe</code> and "tab-shift" to "mistral-medium-3.5" mode.</p>
+<p>Give it a try on some coding agentic tasks and start building some cool stuff !</p>
+<h3>Inference</h3>
+<p>The model can be deployed with:</p>
+<ul>
+<li><a href="https://github.com/vllm-project/vllm"><code>vllm (recommended)</code></a>: See <a href="#vllm-recommended">here</a>.</li>
+<li><a href="https://github.com/ggml-org/llama.cpp"><code>llama.cpp</code></a>: See <a href="https://huggingface.co/unsloth/Mistral-Medium-3.5-128B-GGUF">here</a> for Unsloth's GGUFs.</li>
+<li><a href="https://lmstudio.ai/"><code>LM studio</code></a>: WIP stay tuned !</li>
+<li><a href="https://ollama.com//"><code>Ollama</code></a>: See <a href="https://ollama.com/library/mistral-medium-3.5">here</a>.</li>
+<li><a href="https://github.com/sgl-project/sglang"><code>SGLang</code></a>: See <a href="#sglang">here</a>.</li>
+<li><a href="https://github.com/huggingface/transformers"><code>transformers</code></a>: See <a href="#transformers">here</a>.</li>
+</ul>
+<blockquote><p>[!Note] For optimal performance, we recommend using the Mistral AI API if local serving is subpar.</p></blockquote>
+<blockquote><p>[!Warning] Make sure that frameworks relying on the Transformers configuration, including GGUF files, are up to date with the fixes introduced in this <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/commit/c4be198050fb5789774a55b92ed697becfbf20ae">commit</a>. Otherwise, you will experience subpar performance, especially in long-context sessions.</p></blockquote>
+<h3>Fine-Tuning</h3>
+<p>Fine-tune the model via:</p>
+<ul>
+<li><a href="https://github.com/axolotl-ai-cloud/axolotl"><code>Axolotl</code></a>: See <a href="https://docs.axolotl.ai/docs/models/mistral-medium-3_5.html">here</a>.</li>
+<li><a href="https://unsloth.ai/"><code>Unsloth</code></a>: See <a href="https://unsloth.ai/docs/models/mistral-3.5">here</a>.</li>
+</ul>
+<h2>vLLM (Recommended)</h2>
+<p>We recommend using Mistral Medium 3.5 with the <a href="https://github.com/vllm-project/vllm">vLLM library</a> for production-ready inference.</p>
+<blockquote><p>[!Note] To speed up local inference using vLLM, check out our released <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B-EAGLE">EAGLE model</a></p></blockquote>
+<h3>Installation</h3>
+<p>Make sure to install <strong>vllm nightly</strong>:</p>
+<pre><code>uv pip install -U vllm \
+   --torch-backend=auto \
+   --extra-index-url https://wheels.vllm.ai/nightly</code></pre>
+<p>Doing so should automatically install <a href="https://github.com/mistralai/mistral-common/releases/tag/v1.11.0"><code>mistral_common &gt;= 1.11.1</code></a> and <code>transformers &gt;= 5.4.0</code>.</p>
+<p>To check:</p>
+<pre><code>python -c "import mistral_common; print(mistral_common.__version__)"
+python -c "import transformers; print(transformers.__version__)"</code></pre>
+<p>You can also make use of a ready-to-go <a href="https://github.com/vllm-project/vllm/blob/main/docker/Dockerfile">docker image</a> or on the <a href="https://hub.docker.com/layers/vllm/vllm-openai/nightly">docker hub</a>.</p>
+<h3>Serve the Model</h3>
+<p>We recommend a server/client setup:</p>
+<pre><code>vllm serve mistralai/Mistral-Medium-3.5-128B --tensor-parallel-size 8 \
+  --tool-call-parser mistral --enable-auto-tool-choice --reasoning-parser mistral --max_num_batched_tokens 16384 --max_num_seqs 128 \
+  --gpu_memory_utilization 0.8</code></pre>
+<h3>Ping the Server</h3>
+<details>
+  <summary>Instruction Following</summary>
+<p>Mistral Medium 3.5 can follow your instructions to the letter.</p>
+<pre><code>from datetime import datetime, timedelta
+
+from huggingface_hub import hf_hub_download
+from openai import OpenAI
+
+# Modify OpenAI's API key and API base to use vLLM's API server.
+openai_api_key = "EMPTY"
+openai_api_base = "http://localhost:8000/v1"
+
+REASONING_EFFORT = "none" # Toggle reasoning with 'high'.
+
+match REASONING_EFFORT:
+    case "none":
+        TEMP = 0.1
+        TOP_P = None
+    case "high":
+        TEMP = 0.7
+        TOP_P = 0.95
+    case _:
+        raise ValueError("Only REASONING_EFFORT in ['none', 'high'] are supported.")
+
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url=openai_api_base,
+)
+
+models = client.models.list()
+model = models.data[0].id
+
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, "r") as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+
+SYSTEM_PROMPT = load_system_prompt(model, "SYSTEM_PROMPT.txt")
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": "Write me a sentence where every word starts with the next letter in the alphabet - start with 'a' and end with 'z'.",
+    },
+]
+
+response = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    reasoning_effort=REASONING_EFFORT,
+    temperature=TEMP,
+    top_p=TOP_P,
+)
+
+print("==============================================================")
+print(f"Request with {REASONING_EFFORT=}, {TEMP=} and {TOP_P=}.")
+print("==============================================================")
+print("REASONING")
+print("~~~~~~~~~")
+print(response.choices[0].message.reasoning)
+print("==============================================================")
+print("CONTENT")
+print("~~~~~~~")
+print(response.choices[0].message.content)</code></pre>
+</details>
+<details>
+  <summary>Tool Call</summary>
+<p>Let's solve some equations thanks to our simple Python calculator tool.</p>
+<pre><code>import json
+from datetime import datetime, timedelta
+
+from openai import OpenAI
+from huggingface_hub import hf_hub_download
+
+# Modify OpenAI's API key and API base to use vLLM's API server.
+openai_api_key = "EMPTY"
+openai_api_base = "http://localhost:8000/v1"
+
+REASONING_EFFORT = "none" # Toggle reasoning with 'high'.
+
+match REASONING_EFFORT:
+    case "none":
+        TEMP = 0.1
+        TOP_P = None
+    case "high":
+        TEMP = 0.7
+        TOP_P = 0.95
+    case _:
+        raise ValueError("Only REASONING_EFFORT in ['none', 'high'] are supported.")
+
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url=openai_api_base,
+)
+
+models = client.models.list()
+model = models.data[0].id
+
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, "r") as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+
+SYSTEM_PROMPT = load_system_prompt(model, "SYSTEM_PROMPT.txt")
+
+image_url = "https://math-coaching.com/img/fiche/46/expressions-mathematiques.jpg"
+
+
+def my_calculator(expression: str) -&gt; str:
+    return str(eval(expression))
+
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "my_calculator",
+            "description": "A calculator that can evaluate a mathematical expression.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "type": "string",
+                        "description": "The mathematical expression to evaluate.",
+                    },
+                },
+                "required": ["expression"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "rewrite",
+            "description": "Rewrite a given text for improved clarity",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The input text to rewrite",
+                    }
+                },
+            },
+        },
+    },
+]
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Thanks to your calculator, compute the results for the equations that involve numbers displayed in the image.",
+            },
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": image_url,
+                },
+            },
+        ],
+    },
+]
+
+response = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    tools=tools,
+    tool_choice="auto",
+    reasoning_effort=REASONING_EFFORT,
+    temperature=TEMP,
+    top_p=TOP_P,
+)
+
+tool_calls = response.choices[0].message.tool_calls
+
+results = []
+for tool_call in tool_calls:
+    function_name = tool_call.function.name
+    function_args = tool_call.function.arguments
+    if function_name == "my_calculator":
+        result = my_calculator(**json.loads(function_args))
+        results.append(result)
+
+messages.append({"role": "assistant", "tool_calls": tool_calls})
+for tool_call, result in zip(tool_calls, results):
+    messages.append(
+        {
+            "role": "tool",
+            "tool_call_id": tool_call.id,
+            "name": tool_call.function.name,
+            "content": result,
+        }
+    )
+
+
+response = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    reasoning_effort=REASONING_EFFORT,
+    temperature=TEMP,
+    top_p=TOP_P,
+)
+
+print("==============================================================")
+print(f"Request with {REASONING_EFFORT=}, {TEMP=} and {TOP_P=}.")
+print("==============================================================")
+print("REASONING")
+print("~~~~~~~~~")
+print(response.choices[0].message.reasoning)
+print("==============================================================")
+print("CONTENT")
+print("~~~~~~~")
+print(response.choices[0].message.content)</code></pre>
+</details>
+<details>
+  <summary>Vision Reasoning</summary>
+<p>Let's see if the Mistral Medium 3.5 knows when to pick a fight !</p>
+<pre><code>from datetime import datetime, timedelta
+
+from openai import OpenAI
+from huggingface_hub import hf_hub_download
+
+# Modify OpenAI's API key and API base to use vLLM's API server.
+openai_api_key = "EMPTY"
+openai_api_base = "http://localhost:8000/v1"
+
+REASONING_EFFORT = "high" # Remove reasoning with 'none'.
+
+match REASONING_EFFORT:
+    case "none":
+        TEMP = 0.1
+        TOP_P = None
+    case "high":
+        TEMP = 0.7
+        TOP_P = 0.95
+    case _:
+        raise ValueError("Only REASONING_EFFORT in ['none', 'high'] are supported.")
+
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url=openai_api_base,
+)
+
+models = client.models.list()
+model = models.data[0].id
+
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, "r") as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+
+SYSTEM_PROMPT = load_system_prompt(model, "SYSTEM_PROMPT.txt")
+image_url = "https://static.wikia.nocookie.net/essentialsdocs/images/7/70/Battle.png/revision/latest?cb=20220523172438"
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "What action do you think I should take in this situation? List all the possible actions and explain why you think they are good or bad.",
+            },
+            {"type": "image_url", "image_url": {"url": image_url}},
+        ],
+    },
+]
+
+
+response = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    reasoning_effort=REASONING_EFFORT,
+    temperature=TEMP,
+    top_p=TOP_P,
+)
+
+print("==============================================================")
+print(f"Request with {REASONING_EFFORT=}, {TEMP=} and {TOP_P=}.")
+print("==============================================================")
+print("REASONING")
+print("~~~~~~~~~")
+print(response.choices[0].message.reasoning)
+print("==============================================================")
+print("CONTENT")
+print("~~~~~~~")
+print(response.choices[0].message.content)</code></pre>
+</details>
+<h2>SGLang</h2>
+<p>Serve Mistral Medium 3.5 with the <a href="https://github.com/sgl-project/sglang">SGLang library</a> for production-ready inference.</p>
+<blockquote><p>[!Note] To speed up local inference using SGLang, check out our released <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B-EAGLE">EAGLE model</a>.</p></blockquote>
+<h3>Installation</h3>
+<p>Day-zero support ships in dedicated docker tags:</p>
+<pre><code>docker pull lmsysorg/sglang:dev-mistral-medium-3.5         # H100 / H200 (Hopper, CUDA 12.9)
+docker pull lmsysorg/sglang:dev-cu13-mistral-medium-3.5    # B200 / B300 (Blackwell, CUDA 13.0)</code></pre>
+<p>Or follow the <a href="https://docs.sglang.io/docs/get-started/install">SGLang installation guide</a>. Requires <code>transformers &gt;= 5.4.0</code>.</p>
+<h3>Serve the Model</h3>
+<pre><code>python -m sglang.launch_server --model-path mistralai/Mistral-Medium-3.5-128B \
+  --tp 8 --tool-call-parser mistral --reasoning-parser mistral</code></pre>
+<p>For the full deployment guide, benchmarks, and per-request examples (reasoning effort, tool calls, vision, streaming), see the <a href="https://docs.sglang.io/cookbook/autoregressive/Mistral/Mistral-Medium-3.5">SGLang cookbook entry for Mistral Medium 3.5</a>.</p>
+<h2>Transformers</h2>
+<h3>Installation</h3>
+<p>First install the <a href="https://github.com/huggingface/transformers/">Transformers framework</a> to use Mistral Medium 3.5:</p>
+<pre><code>uv pip install transformers</code></pre>
+<h3>Inference</h3>
+<details>
+<summary>Python Inference Snippet</summary>
+<pre><code>import torch
+from transformers import AutoProcessor, Mistral3ForConditionalGeneration
+
+
+REASONING_EFFORT = "high" # Remove reasoning with 'none'.
+
+match REASONING_EFFORT:
+    case "none":
+        TEMP = 0.1
+        TOP_P = 1.0
+    case "high":
+        TEMP = 0.7
+        TOP_P = 0.95
+    case _:
+        raise ValueError("Only REASONING_EFFORT in ['none', 'high'] are supported.")
+
+model_id = "mistralai/Mistral-Medium-3.5-128B"
+
+processor = AutoProcessor.from_pretrained(model_id)
+model = Mistral3ForConditionalGeneration.from_pretrained(
+    model_id, device_map="auto"
+)
+
+image_url = "https://static.wikia.nocookie.net/essentialsdocs/images/7/70/Battle.png/revision/latest?cb=20220523172438"
+
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "What action do you think I should take in this situation? List all the possible actions and explain why you think they are good or bad.",
+            },
+            {"type": "image_url", "image_url": {"url": image_url}},
+        ],
+    },
+]
+
+
+inputs = processor.apply_chat_template(messages, return_tensors="pt", tokenize=True, return_dict=True, reasoning_effort=REASONING_EFFORT)
+inputs = inputs.to(model.device)
+
+output = model.generate(
+    **inputs,
+    max_new_tokens=1024,
+    do_sample=True,
+    temperature=TEMP,
+    top_p=TOP_P,
+)[0]
+
+# Setting `skip_special_tokens=False` to visualize reasoning trace between [THINK] [/THINK] tags.
+decoded_output = processor.decode(output[len(inputs["input_ids"][0]):], skip_special_tokens=False) 
+print(decoded_output)</code></pre>
+</details>
+<h2>License</h2>
+<p>This model is licensed under a <a href="https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/blob/main/LICENSE">Modified MIT License</a>.</p>
+<p><em>You must not use this model in a manner that infringes, misappropriates, or otherwise violates any third party’s rights, including intellectual property rights.</em></p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

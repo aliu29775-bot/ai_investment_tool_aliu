@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bigscience__bloom__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>bigscience__bloom__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<img src="https://cdn-uploads.huggingface.co/production/uploads/1657124309515-5f17f0a0925b9863e28ad517.png" alt="BigScience Logo" width="800" style="margin-left:'auto' margin-right:'auto' display:'block'"/>
+<p>BigScience Large Open-science Open-access Multilingual Language Model   Version 1.3 / 6 July 2022</p>
+<p>Current Checkpoint: <strong>Training Iteration  95000</strong></p>
+<p>Link to paper: <a href="https://arxiv.org/abs/2211.05100">here</a></p>
+<p>Total seen tokens: <strong>366B</strong></p>
+<hr>
+<h1>Model Details</h1>
+<p>BLOOM is an autoregressive Large Language Model (LLM), trained to continue text from a prompt on vast amounts of text data using industrial-scale computational resources. As such, it is able to output coherent text in 46 languages and 13 programming languages that is hardly distinguishable from text written by humans. BLOOM can also be instructed to perform text tasks it hasn't been explicitly trained for, by casting them as text generation tasks.</p>
+<h2>Basics</h2>
+<p><em>This section provides information about the model type, version, license, funders, release date, developers, and contact information.</em> <em>It is useful for anyone who wants to reference the model.</em></p>
+<details>
+<summary>Click to expand</summary>
+<p><strong>Developed by:</strong> BigScience (<a href="https://bigscience.huggingface.co">website</a>)</p>
+<p><em>All collaborators are either volunteers or have an agreement with their employer. (Further breakdown of participants forthcoming.)</em></p>
+<p><strong>Model Type:</strong> Transformer-based Language Model</p>
+<p><strong>Checkpoints format:</strong> <code>transformers</code> (Megatron-DeepSpeed format available <a href="https://huggingface.co/bigscience/bloom-optimizer-states">here</a>)</p>
+<p><strong>Version:</strong> 1.0.0</p>
+<p><strong>Languages:</strong> Multiple; see <a href="#training-data">training data</a></p>
+<p><strong>License:</strong> RAIL License v1.0 (<a href="https://huggingface.co/spaces/bigscience/license">link</a> / <a href="https://bigscience.huggingface.co/blog/the-bigscience-rail-license">article and FAQ</a>)</p>
+<p><strong>Release Date Estimate:</strong> Monday, 11.July.2022</p>
+<p><strong>Send Questions to:</strong> bigscience-contact@googlegroups.com</p>
+<p><strong>Cite as:</strong> BigScience, _BigScience Language Open-science Open-access Multilingual (BLOOM) Language Model_. International, May 2021-May 2022</p>
+<p><strong>Funded by:</strong> </p>
+<ul>
+<li>The French government.</li>
+</ul>
+<ul>
+<li>Hugging Face (<a href="https://huggingface.co">website</a>).</li>
+</ul>
+<ul>
+<li>Organizations of contributors.  <em>(Further breakdown of organizations forthcoming.)</em></li>
+</ul>
+</details>
+<h2>Technical Specifications</h2>
+<p><em>This section includes details about the model objective and architecture, and the compute infrastructure.</em> <em>It is useful for people interested in model development.</em></p>
+<details>
+<summary>Click to expand</summary>
+<p>Please see <a href="https://github.com/bigscience-workshop/bigscience/tree/master/train/tr11-176B-ml#readme">the BLOOM training README</a> for full details on replicating training.</p>
+<h3>Model Architecture and Objective</h3>
+<ul>
+<li>Modified from Megatron-LM GPT2 (see <a href="https://arxiv.org/abs/1909.08053">paper</a>, <a href="https://github.com/bigscience-workshop/Megatron-DeepSpeed">BLOOM Megatron code</a>):</li>
+</ul>
+<ul>
+<li>Decoder-only architecture</li>
+</ul>
+<ul>
+<li>Layer normalization applied to word embeddings layer (<code>StableEmbedding</code>; see <a href="https://github.com/facebookresearch/bitsandbytes">code</a>, <a href="https://arxiv.org/pdf/2110.02861.pdf">paper</a>)</li>
+</ul>
+<ul>
+<li>ALiBI positional encodings (see <a href="https://arxiv.org/pdf/2108.12409.pdf">paper</a>), with GeLU activation functions</li>
+</ul>
+<ul>
+<li>176,247,271,424 parameters:</li>
+</ul>
+<ul>
+<li>3,596,615,680 embedding parameters</li>
+</ul>
+<ul>
+<li>70 layers, 112 attention heads</li>
+</ul>
+<ul>
+<li>Hidden layers are 14336-dimensional</li>
+</ul>
+<ul>
+<li>Sequence length of 2048 tokens used (see <a href="https://huggingface.co/bigscience/tokenizer">BLOOM tokenizer</a>, <a href="#tokenization">tokenizer description</a>)</li>
+</ul>
+<p><strong>Objective Function:</strong> Cross Entropy with mean reduction (see <a href="https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html#torch.nn.CrossEntropyLoss">API documentation</a>).</p>
+<h3>Compute infrastructure</h3>
+<p>Jean Zay Public Supercomputer, provided by the French government (see <a href="https://www.enseignementsup-recherche.gouv.fr/fr/signature-du-marche-d-acquisition-de-l-un-des-supercalculateurs-les-plus-puissants-d-europe-46733">announcement</a>).</p>
+<h4>Hardware</h4>
+<ul>
+<li>384 A100 80GB GPUs (48 nodes)</li>
+</ul>
+<ul>
+<li>Additional 32 A100 80GB GPUs (4 nodes) in reserve</li>
+</ul>
+<ul>
+<li>8 GPUs per node Using NVLink 4 inter-gpu connects, 4 OmniPath links</li>
+</ul>
+<ul>
+<li>CPU: AMD</li>
+</ul>
+<ul>
+<li>CPU memory: 512GB per node</li>
+</ul>
+<ul>
+<li>GPU memory: 640GB per node</li>
+</ul>
+<ul>
+<li>Inter-node connect: Omni-Path Architecture (OPA)</li>
+</ul>
+<ul>
+<li>NCCL-communications network: a fully dedicated subnet</li>
+</ul>
+<ul>
+<li>Disc IO network: shared network with other types of nodes</li>
+</ul>
+<h4>Software</h4>
+<ul>
+<li>Megatron-DeepSpeed (<a href="https://github.com/bigscience-workshop/Megatron-DeepSpeed">Github link</a>)</li>
+</ul>
+<ul>
+<li>DeepSpeed (<a href="https://github.com/microsoft/DeepSpeed">Github link</a>)</li>
+</ul>
+<ul>
+<li>PyTorch (pytorch-1.11 w/ CUDA-11.5; see <a href="https://github.com/pytorch/pytorch">Github link</a>)</li>
+</ul>
+<ul>
+<li>apex (<a href="https://github.com/NVIDIA/apex">Github link</a>)</li>
+</ul>
+</details>
+<hr>
+<h1>Training</h1>
+<p><em>This section provides information about the training data, the speed and size of training elements, and the environmental impact of training.</em> <em>It is useful for people who want to learn more about the model inputs and training footprint.</em></p>
+<details>
+<summary>Click to expand</summary>
+<h2>Training Data</h2>
+<p><em>This section provides a high-level overview of the training data. It is relevant for anyone who wants to know the basics of what the model is learning.</em></p>
+<p>Details for each dataset are provided in individual <a href="https://huggingface.co/spaces/bigscience/BigScienceCorpus">Data Cards</a>, and the sizes of each of their contributions to the aggregated training data are presented in an <a href="https://huggingface.co/spaces/bigscience-catalogue-lm-data/corpus-map">Interactive Corpus Map</a>.</p>
+<p>Training data includes:</p>
+<ul>
+<li>46 natural languages</li>
+</ul>
+<ul>
+<li>13 programming languages</li>
+</ul>
+<ul>
+<li>In 1.6TB of pre-processed text, converted into 350B unique tokens (see <a href="#tokenization">the tokenizer section</a> for more.)</li>
+</ul>
+<h3>Languages</h3>
+<p>The pie chart shows the distribution of languages in training data.</p>
+<p><img src="https://github.com/bigscience-workshop/model_card/blob/main/assets/data/pie_v2.svg?raw=true" alt="pie chart showing the distribution of languages in training data"></p>
+<p>The following tables shows the further distribution of Niger-Congo &amp; Indic languages and programming languages in the training data.</p>
+<p>Distribution of Niger Congo and Indic languages.</p>
+<table><thead><tr><th>Niger Congo</th><th>Percentage</th><th></th><th>Indic</th><th>Percentage</th></tr></thead><tbody><tr><td>Chi Tumbuka</td><td>0.00002</td><td></td><td>Assamese</td><td>0.01</td></tr><tr><td>Kikuyu</td><td>0.00004</td><td></td><td>Odia</td><td>0.04</td></tr><tr><td>Bambara</td><td>0.00004</td><td></td><td>Gujarati</td><td>0.04</td></tr><tr><td>Akan</td><td>0.00007</td><td></td><td>Marathi</td><td>0.05</td></tr><tr><td>Xitsonga</td><td>0.00007</td><td></td><td>Punjabi</td><td>0.05</td></tr><tr><td>Sesotho</td><td>0.00007</td><td></td><td>Kannada</td><td>0.06</td></tr><tr><td>Chi Chewa</td><td>0.0001</td><td></td><td>Nepali</td><td>0.07</td></tr><tr><td>Setswana</td><td>0.0002</td><td></td><td>Telugu</td><td>0.09</td></tr><tr><td>Lingala</td><td>0.0002</td><td></td><td>Malayalam</td><td>0.10</td></tr><tr><td>Northern Sotho</td><td>0.0002</td><td></td><td>Urdu</td><td>0.10</td></tr><tr><td>Fon</td><td>0.0002</td><td></td><td>Tamil</td><td>0.20</td></tr><tr><td>Kirundi</td><td>0.0003</td><td></td><td>Bengali</td><td>0.50</td></tr><tr><td>Wolof</td><td>0.0004</td><td></td><td>Hindi</td><td>0.70</td></tr><tr><td>Luganda</td><td>0.0004</td><td></td><td></td><td></td></tr><tr><td>Chi Shona</td><td>0.001</td><td></td><td></td><td></td></tr><tr><td>Isi Zulu</td><td>0.001</td><td></td><td></td><td></td></tr><tr><td>Igbo</td><td>0.001</td><td></td><td></td><td></td></tr><tr><td>Xhosa</td><td>0.001</td><td></td><td></td><td></td></tr><tr><td>Kinyarwanda</td><td>0.003</td><td></td><td></td><td></td></tr><tr><td>Yoruba</td><td>0.006</td><td></td><td></td><td></td></tr><tr><td>Swahili</td><td>0.02</td><td></td><td></td><td></td></tr></tbody></table>
+<p>Distribution of programming languages.</p>
+<table><thead><tr><th>Extension</th><th>Language</th><th>Number of files</th></tr></thead><tbody><tr><td>java</td><td>Java</td><td>5,407,724</td></tr><tr><td>php</td><td>PHP</td><td>4,942,186</td></tr><tr><td>cpp</td><td>C++</td><td>2,503,930</td></tr><tr><td>py</td><td>Python</td><td>2,435,072</td></tr><tr><td>js</td><td>JavaScript</td><td>1,905,518</td></tr><tr><td>cs</td><td>C#</td><td>1,577,347</td></tr><tr><td>rb</td><td>Ruby</td><td>6,78,413</td></tr><tr><td>cc</td><td>C++</td><td>443,054</td></tr><tr><td>hpp</td><td>C++</td><td>391,048</td></tr><tr><td>lua</td><td>Lua</td><td>352,317</td></tr><tr><td>go</td><td>GO</td><td>227,763</td></tr><tr><td>ts</td><td>TypeScript</td><td>195,254</td></tr><tr><td>C</td><td>C</td><td>134,537</td></tr><tr><td>scala</td><td>Scala</td><td>92,052</td></tr><tr><td>hh</td><td>C++</td><td>67,161</td></tr><tr><td>H</td><td>C++</td><td>55,899</td></tr><tr><td>tsx</td><td>TypeScript</td><td>33,107</td></tr><tr><td>rs</td><td>Rust</td><td>29,693</td></tr><tr><td>phpt</td><td>PHP</td><td>9,702</td></tr><tr><td>c++</td><td>C++</td><td>1,342</td></tr><tr><td>h++</td><td>C++</td><td>791</td></tr><tr><td>php3</td><td>PHP</td><td>540</td></tr><tr><td>phps</td><td>PHP</td><td>270</td></tr><tr><td>php5</td><td>PHP</td><td>166</td></tr><tr><td>php4</td><td>PHP</td><td>29</td></tr></tbody></table>
+<h3>Preprocessing</h3>
+<p><strong>Tokenization:</strong> The BLOOM tokenizer (<a href="https://huggingface.co/bigscience/tokenizer">link</a>), a learned subword tokenizer trained using:</p>
+<ul>
+<li>A byte-level Byte Pair Encoding (BPE) algorithm </li>
+</ul>
+<ul>
+<li>A simple pre-tokenization rule, no normalization</li>
+</ul>
+<ul>
+<li>A vocabulary size of 250,680</li>
+</ul>
+<p>It was trained on a subset of a preliminary version of the corpus using alpha-weighting per language.  </p>
+<h2>Speeds, Sizes, Times</h2>
+<p>Training logs: <a href="https://huggingface.co/tensorboard/bigscience/tr11-176B-ml-logs/">Tensorboard link</a></p>
+<ul>
+<li>Dates:</li>
+</ul>
+<ul>
+<li>Started 11th March, 2022 11:42am PST</li>
+</ul>
+<ul>
+<li>Estimated end: 5th July, 2022</li>
+</ul>
+<ul>
+<li>Checkpoint size:</li>
+</ul>
+<ul>
+<li>Bf16 weights: 329GB</li>
+</ul>
+<ul>
+<li>Full checkpoint with optimizer states: 2.3TB</li>
+</ul>
+<ul>
+<li>Training throughput: About 150 TFLOP per GPU per second</li>
+</ul>
+<ul>
+<li>Number of epochs: 1</li>
+</ul>
+<ul>
+<li>Estimated cost of training: Equivalent of $2-5M in cloud computing (including preliminary experiments)</li>
+</ul>
+<ul>
+<li>Server training location: Île-de-France, France</li>
+</ul>
+<h2>Environmental Impact</h2>
+<p>The training supercomputer, Jean Zay (<a href="http://www.idris.fr/eng/jean-zay/jean-zay-presentation-eng.html">website</a>), uses mostly nuclear energy. The heat generated by it is reused for heating campus housing.</p>
+<p><strong>Estimated carbon emissions:</strong>  <em>(Forthcoming.)</em></p>
+<p><strong>Estimated electricity usage:</strong> <em>(Forthcoming.)</em></p>
+</details>
+<hr>
+<h1>Uses</h1>
+<p><em>This section addresses questions around how the model is intended to be used, discusses the foreseeable users of the model (including those affected by the model), and describes uses that are considered out of scope or misuse of the model.</em> <em>It is useful for anyone considering using the model or who is affected by the model.</em></p>
+<details>
+<summary>Click to expand</summary>
+<h2>How to use</h2>
+<p>This model can be easily used and deployed using HuggingFace's ecosystem. This needs <code>transformers</code> and <code>accelerate</code> installed. The model can be downloaded as follows:</p>
+ <img src="https://s3.amazonaws.com/moonup/production/uploads/1657271608456-62441d1d9fdefb55a0b7d12c.png" width="800" style="margin-left:'auto' margin-right:'auto' display:'block'"/>
+<h2>Intended Use</h2>
+<p>This model is being created in order to enable public research on large language models (LLMs). LLMs are intended to be used for language generation or as a pretrained base model that can be further fine-tuned for specific tasks. Use cases below are not exhaustive.</p>
+<h3>Direct Use</h3>
+<ul>
+<li>Text generation</li>
+</ul>
+<ul>
+<li>Exploring characteristics of language generated by a language model</li>
+</ul>
+<ul>
+<li>Examples: Cloze tests, counterfactuals, generations with reframings</li>
+</ul>
+<h3>Downstream Use</h3>
+<ul>
+<li>Tasks that leverage language models include: Information Extraction, Question Answering, Summarization</li>
+</ul>
+<h3>Misuse and Out-of-scope Use</h3>
+<p><em>This section addresses what users ought not do with the model.</em></p>
+<p>See the <a href="https://huggingface.co/spaces/bigscience/license">BLOOM License</a>, Attachment A, for detailed usage restrictions. The below list is non-exhaustive, but lists some easily foreseeable problematic use cases.</p>
+<h4>Out-of-scope Uses</h4>
+<p>Using the model in <a href="#high-stakes">high-stakes</a> settings is out of scope for this model.  The model is not designed for <a href="#critical-decisions">critical decisions</a> nor uses with any material consequences on an individual's livelihood or wellbeing. The model outputs content that appears factual but may not be correct.  </p>
+<p>Out-of-scope Uses Include:</p>
+<ul>
+<li>Usage in biomedical domains, political and legal domains, or finance domains</li>
+</ul>
+<ul>
+<li>Usage for evaluating or scoring individuals, such as for employment, education, or credit</li>
+</ul>
+<ul>
+<li>Applying the model for critical automatic decisions, generating factual content, creating reliable summaries, or generating predictions that must be correct</li>
+</ul>
+<h4>Misuse</h4>
+<p>Intentionally using the model for harm, violating <a href="#human-rights">human rights</a>, or other kinds of malicious activities, is a misuse of this model. This includes:</p>
+<ul>
+<li>Spam generation</li>
+</ul>
+<ul>
+<li>Disinformation and influence operations</li>
+</ul>
+<ul>
+<li>Disparagement and defamation</li>
+</ul>
+<ul>
+<li>Harassment and abuse</li>
+</ul>
+<ul>
+<li><a href="#deception">Deception</a></li>
+</ul>
+<ul>
+<li>Unconsented impersonation and imitation</li>
+</ul>
+<ul>
+<li>Unconsented surveillance </li>
+</ul>
+<ul>
+<li>Generating content without attribution to the model, as specified in the <a href="https://huggingface.co/spaces/bigscience/license">RAIL License, Use Restrictions</a></li>
+</ul>
+<h2>Intended Users</h2>
+<h3>Direct Users</h3>
+<ul>
+<li>General Public</li>
+</ul>
+<ul>
+<li>Researchers</li>
+</ul>
+<ul>
+<li>Students</li>
+</ul>
+<ul>
+<li>Educators</li>
+</ul>
+<ul>
+<li>Engineers/developers</li>
+</ul>
+<ul>
+<li>Non-commercial entities</li>
+</ul>
+<ul>
+<li>Community advocates, including human and civil rights groups</li>
+</ul>
+<h3>Indirect Users</h3>
+<ul>
+<li>Users of derivatives created by Direct Users, such as those using software with an <a href="#intended-use">intended use</a></li>
+</ul>
+<ul>
+<li>Users of <a href="https://huggingface.co/spaces/bigscience/license">Derivatives of the Model, as described in the License</a></li>
+</ul>
+<h3>Others Affected (Parties Prenantes)</h3>
+<ul>
+<li>People and groups referred to by the LLM</li>
+</ul>
+<ul>
+<li>People and groups exposed to outputs of, or decisions based on, the LLM</li>
+</ul>
+<ul>
+<li>People and groups whose original work is included in the LLM</li>
+</ul>
+</details>
+<hr>
+<h1>Risks and Limitations</h1>
+<p><em>This section identifies foreseeable harms and misunderstandings.</em></p>
+<details>
+<summary>Click to expand</summary>
+<p>Model may:</p>
+<ul>
+<li>Overrepresent some viewpoints and underrepresent others</li>
+</ul>
+<ul>
+<li>Contain stereotypes</li>
+</ul>
+<ul>
+<li>Contain <a href="#personal-data-and-information">personal information</a></li>
+</ul>
+<ul>
+<li>Generate:</li>
+</ul>
+<ul>
+<li>Hateful, abusive, or violent language</li>
+</ul>
+<ul>
+<li>Discriminatory or prejudicial language</li>
+</ul>
+<ul>
+<li>Content that may not be appropriate for all settings, including sexual content</li>
+</ul>
+<ul>
+<li>Make errors, including producing incorrect information as if it were factual</li>
+</ul>
+<ul>
+<li>Generate irrelevant or repetitive outputs</li>
+</ul>
+<ul>
+<li>Induce users into attributing human traits to it, such as sentience or consciousness</li>
+</ul>
+</details>
+<hr>
+<h1>Evaluation</h1>
+<p><em>This section describes the evaluation protocols and provides the results.</em></p>
+<details>
+<summary>Click to expand</summary>
+<h2>Metrics</h2>
+<p><em>This section describes the different ways performance is calculated and why.</em></p>
+<p>Includes:</p>
+<table><thead><tr><th>Metric</th><th>Why chosen</th></tr></thead><tbody><tr><td><a href="#perplexity">Perplexity</a></td><td>Standard metric for quantifying model improvements during training</td></tr><tr><td>Cross Entropy <a href="#loss">Loss</a></td><td>Standard objective for language models.</td></tr></tbody></table>
+<p>And multiple different metrics for specific tasks. _(More evaluation metrics forthcoming upon completion of evaluation protocol.)_</p>
+<h2>Factors</h2>
+<p><em>This section lists some different aspects of BLOOM models. Its focus is on aspects that are likely to give rise to high variance in model behavior.</em></p>
+<ul>
+<li>Language, such as English or Yoruba</li>
+</ul>
+<ul>
+<li>Domain, such as newswire or stories</li>
+</ul>
+<ul>
+<li>Demographic characteristics, such as gender or nationality</li>
+</ul>
+<h2>Results</h2>
+<p><em>Results are based on the <a href="#factors">Factors</a> and <a href="#metrics">Metrics</a>.</em></p>
+<p><strong>Zero-shot evaluations:</strong></p>
+<span style="color:red"><b>WARNING:</b> This section used to contain much more results, however they were not correct and we released without the approval of the evaluation working group. We are currently in the process of fixing the evaluations.</span>
+<p>See this repository for JSON files: https://github.com/bigscience-workshop/evaluation-results</p>
+<table><thead><tr><th>Task</th><th>Language</th><th>Metric</th><th>BLOOM-176B</th><th>OPT-175B*</th></tr></thead><tbody><tr><td>humaneval</td><td>python</td><td>pass@1 ↑</td><td>0.155</td><td>0.0</td></tr><tr><td>humaneval</td><td>python</td><td>pass@10 ↑</td><td>0.328</td><td>0.0</td></tr><tr><td>humaneval</td><td>python</td><td>pass@100 ↑</td><td>0.572</td><td>0.003</td></tr></tbody></table>
+<p><strong>Train-time Evaluation:</strong></p>
+<p>Final checkpoint after 95K steps:</p>
+<ul>
+<li>Training Loss: 1.939</li>
+</ul>
+<ul>
+<li>Validation Loss: 2.061</li>
+</ul>
+<ul>
+<li>Perplexity: 7.045</li>
+</ul>
+<p>For more see: https://huggingface.co/bigscience/tr11-176B-ml-logs</p>
+</details>
+<hr>
+<h1>Recommendations</h1>
+<p><em>This section provides information on warnings and potential mitigations.</em></p>
+<details>
+<summary>Click to expand</summary>
+<ul>
+<li>Indirect users should be made aware when the content they're working with is created by the LLM.</li>
+</ul>
+<ul>
+<li>Users should be aware of <a href="#risks-and-limitations">Risks and Limitations</a>, and include an appropriate age disclaimer or blocking interface as necessary.</li>
+</ul>
+<ul>
+<li>Models trained or finetuned downstream of BLOOM LM should include an updated Model Card.</li>
+</ul>
+<ul>
+<li>Users of the model should provide mechanisms for those affected to provide feedback, such as an email address for comments.</li>
+</ul>
+</details>
+<hr>
+<h1>Glossary and Calculations</h1>
+<p><em>This section defines common terms and how metrics are calculated.</em></p>
+<details>
+<summary>Click to expand</summary>
+<ul>
+<li><a name="loss"><strong>Loss:</strong></a> A calculation of the difference between what the model has learned and what the data shows ("groundtruth"). The lower the loss, the better. The training process aims to minimize the loss. </li>
+</ul>
+<ul>
+<li><a name="perplexity"><strong>Perplexity:</strong></a> This is based on what the model estimates the probability of new data is. The lower the perplexity, the better.  If the model is 100% correct at predicting the next token it will see, then the perplexity is 1. Mathematically this is calculated using entropy. </li>
+</ul>
+<ul>
+<li><a name="high-stakes"><strong>High-stakes settings:</strong></a> Such as those identified as "high-risk AI systems" and "unacceptable risk AI systems" in the European Union's proposed <a href="https://artificialintelligenceact.eu/annexes/">Artificial Intelligence (AI) Act</a>.</li>
+</ul>
+<ul>
+<li><a name="critical-decisions"><strong>Critical decisions:</strong></a> Such as those defined in <a href="https://www.congress.gov/117/bills/s3572/BILLS-117s3572is.pdf">the United States' proposed Algorithmic Accountability Act</a>.</li>
+</ul>
+<ul>
+<li><a name="human-rights"><strong>Human rights:</strong></a> Includes those rights defined in the <a href="https://www.un.org/sites/un2.un.org/files/2021/03/udhr.pdf">Universal Declaration of Human Rights</a>.</li>
+</ul>
+<ul>
+<li><a name="personal-data-and-information"><strong>Personal Data and Personal Information:</strong></a> Personal data and information is defined in multiple data protection regulations, such as "<a href="https://gdpr-info.eu/issues/personal-data/">personal data</a>" in the <a href="https://gdpr-info.eu">European Union's General Data Protection Regulation</a>; and "personal information" in the Republic of South Africa's <a href="https://www.gov.za/sites/default/files/gcis_document/201409/3706726-11act4of2013popi.pdf">Protection of Personal Information Act</a>, The People's Republic of China's <a href="http://en.npc.gov.cn.cdurl.cn/2021-12/29/c_694559.htm">Personal information protection law</a>.</li>
+</ul>
+<ul>
+<li><a name="sensitive-characteristics"><strong>Sensitive characteristics:</strong></a> This includes specifically protected categories in human rights (see <a href="https://www.un.org/sites/un2.un.org/files/2021/03/udhr.pdf">UHDR, Article 2</a>) and personal information regulation (see GDPR, <a href="https://www.gov.za/sites/default/files/gcis_document/201409/3706726-11act4of2013popi.pdf">Article 9; Protection of Personal Information Act, Chapter 1</a>)</li>
+</ul>
+<ul>
+<li><a name="deception"><strong>Deception:</strong></a> Doing something to intentionally mislead individuals to believe something that is false, such as by creating deadbots or chatbots on social media posing as real people, or generating text documents without making consumers aware that the text is machine generated.</li>
+</ul>
+</details>
+<hr>
+<h1>More Information</h1>
+<p><em>This section provides links to writing on dataset creation, technical specifications, lessons learned, and initial results.</em></p>
+<details>
+<summary>Click to expand</summary>
+<h2>Intermediate checkpoints</h2>
+<p>For academic (or any) usage, we published the intermediate checkpoints, corresponding to the model state at each 5000 steps. Please follow <a href="https://huggingface.co/bigscience/bloom-176-intermediate">this link</a> to get these checkpoints.</p>
+<h2>Dataset Creation</h2>
+<p>Blog post detailing the design choices during the dataset creation: https://bigscience.huggingface.co/blog/building-a-tb-scale-multilingual-dataset-for-language-modeling</p>
+<h2>Technical Specifications</h2>
+<p>Blog post summarizing how the architecture, size, shape, and pre-training duration where selected: https://bigscience.huggingface.co/blog/what-language-model-to-train-if-you-have-two-million-gpu-hours</p>
+<p>More details on the architecture/optimizer: https://github.com/bigscience-workshop/bigscience/tree/master/train/tr11-176B-ml</p>
+<p>Blog post on the hardware/engineering side: https://bigscience.huggingface.co/blog/which-hardware-to-train-a-176b-parameters-model</p>
+<p>Details on the distributed setup used for the training: https://github.com/bigscience-workshop/bigscience/tree/master/train/tr11-176B-ml</p>
+<p>Tensorboard updated during the training: https://huggingface.co/bigscience/tr11-176B-ml-logs/tensorboard#scalars&amp;tagFilter=loss</p>
+<h2>Lessons</h2>
+<p>Insights on how to approach training, negative results: https://github.com/bigscience-workshop/bigscience/blob/master/train/lessons-learned.md</p>
+<p>Details on the obstacles overcome during the preparation on the engineering side (instabilities, optimization of training throughput, so many technical tricks and questions): https://github.com/bigscience-workshop/bigscience/blob/master/train/tr11-176B-ml/chronicles.md</p>
+<h2>Initial Results</h2>
+<p>Initial prompting experiments using interim checkpoints: https://huggingface.co/spaces/bigscience/bloom-book</p>
+</details>
+<h2>Original checkpoints</h2>
+<p>The checkpoints in this repo correspond to the HuggingFace Transformers format. If you want to use our fork of <a href="https://github.com/bigscience-workshop/Megatron-DeepSpeed">Megatron-DeepSpeed</a> that the model was trained with, you'd want to use <a href="https://huggingface.co/bigscience/bloom-optimizer-states">this repo instead</a>.</p>
+<p>Many intermediate checkpoints are available at https://huggingface.co/bigscience/bloom-intermediate/</p>
+<hr>
+<h1>Model Card Authors</h1>
+<p><em>Ordered roughly chronologically and by amount of time spent on creating this model card.</em></p>
+<p>Margaret Mitchell, Giada Pistilli, Yacine Jernite, Ezinwanne Ozoani, Marissa Gerchick, Nazneen Rajani, Sasha Luccioni, Irene Solaiman, Maraim Masoud, Somaieh Nikpoor, Carlos Muñoz Ferrandis, Stas Bekman, Christopher Akiki, Danish Contractor, David Lansky, Angelina McMillan-Major, Tristan Thrush, Suzana Ilić, Gérard Dupont, Shayne Longpre, Manan Dey, Stella Biderman, Douwe Kiela, Emi Baylor, Teven Le Scao, Aaron Gokaslan, Julien Launay, Niklas Muennighoff</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

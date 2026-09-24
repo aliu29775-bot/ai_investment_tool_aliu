@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研究報告總覽 — AI Berkshire 投研網站</title>
+<meta name="description" content="2,354 份投資研究報告索引：按公司、專題、類型篩選與搜尋。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="reports">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AI Berkshire <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">實盤</a>
+    </nav>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">研究報告總覽</h1>
+    <span class="more" id="rp-count" style="font-size:14px; color: var(--muted);"></span>
+  </div>
+  <p class="section-desc">全部報告按日期倒序排列，可依關鍵字、類型、分類篩選。點擊標題閱讀全文。</p>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="icon">🔍</span>
+      <input id="rp-search" type="search" placeholder="搜尋標題或公司／專題…" aria-label="搜尋報告">
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="chip on" data-type="all">全部類型</button>
+    <button class="chip" data-type="研究">研究</button>
+    <button class="chip" data-type="深度系列">深度系列</button>
+    <button class="chip" data-type="篩選">篩選</button>
+    <button class="chip" data-type="財報">財報</button>
+    <button class="chip" data-type="估值倉位">估值倉位</button>
+    <button class="chip" data-type="橫評對比">橫評對比</button>
+    <button class="chip" data-type="組織管理">組織管理</button>
+    <button class="chip" data-type="公眾號">公眾號</button>
+    <button class="chip" data-type="底稿">底稿</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="chip on" data-bucket="all">全部分類</button>
+    <button class="chip" data-bucket="公司">公司</button>
+    <button class="chip" data-bucket="專題">專題</button>
+    <button class="chip" data-bucket="大師研究">大師研究</button>
+    <button class="chip" data-bucket="篩選池">篩選池</button>
+  </div>
+
+  <div class="card report-list" id="report-list" style="padding: 4px 6px;"></div>
+  <button class="load-more" id="load-more" style="display:none;">顯示更多</button>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">GitHub：xbtlin/ai-berkshire</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

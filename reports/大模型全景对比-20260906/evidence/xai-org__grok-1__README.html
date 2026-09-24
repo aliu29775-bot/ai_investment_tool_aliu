@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grok-1 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>Grok-1</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>Grok-1</h1>
+<p>This repository contains the weights of the Grok-1 open-weights model. You can find the code in the <a href="https://github.com/xai-org/grok-1/tree/main">GitHub Repository</a>.</p>
+<h1>Download instruction</h1>
+<p>Clone the repo &amp; download the <code>int8</code> checkpoint to the <code>checkpoints</code> directory by executing this command in the repo root directory:</p>
+<pre><code>git clone https://github.com/xai-org/grok-1.git &amp;&amp; cd grok-1
+pip install huggingface_hub[hf_transfer]
+huggingface-cli download xai-org/grok-1 --repo-type model --include ckpt-0/* --local-dir checkpoints --local-dir-use-symlinks False</code></pre>
+<p>Then, you can run:</p>
+<pre><code>pip install -r requirements.txt
+python run.py</code></pre>
+<p>You should be seeing output from the language model.</p>
+<p>Due to the large size of the model (314B parameters), a multi-GPU machine is required to test the model with the example code.</p>
+<p>p.s. we're hiring: https://x.ai/careers</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

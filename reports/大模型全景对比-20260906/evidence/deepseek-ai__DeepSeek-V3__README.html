@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>deepseek-ai__DeepSeek-V3__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>deepseek-ai__DeepSeek-V3__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<!-- markdownlint-disable first-line-h1 -->
+<!-- markdownlint-disable html -->
+<!-- markdownlint-disable no-duplicate-header -->
+<div align="center">
+  <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/logo.svg?raw=true" width="60%" alt="DeepSeek-V3" />
+</div>
+<hr>
+<div align="center" style="line-height: 1;">
+  <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Homepage" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://chat.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Chat" src="https://img.shields.io/badge/🤖%20Chat-DeepSeek%20V3-536af5?color=536af5&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://huggingface.co/deepseek-ai" target="_blank" style="margin: 2px;">
+    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-DeepSeek%20AI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://discord.gg/Tc7c45Zzu5" target="_blank" style="margin: 2px;">
+    <img alt="Discord" src="https://img.shields.io/badge/Discord-DeepSeek%20AI-7289da?logo=discord&logoColor=white&color=7289da" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/qr.jpeg?raw=true" target="_blank" style="margin: 2px;">
+    <img alt="Wechat" src="https://img.shields.io/badge/WeChat-DeepSeek%20AI-brightgreen?logo=wechat&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://twitter.com/deepseek_ai" target="_blank" style="margin: 2px;">
+    <img alt="Twitter Follow" src="https://img.shields.io/badge/Twitter-deepseek_ai-white?logo=x&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://github.com/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-CODE" style="margin: 2px;">
+    <img alt="Code License" src="https://img.shields.io/badge/Code_License-MIT-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://github.com/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-MODEL" style="margin: 2px;">
+    <img alt="Model License" src="https://img.shields.io/badge/Model_License-Model_Agreement-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<p align="center">
+  <a href="https://github.com/deepseek-ai/DeepSeek-V3/blob/main/DeepSeek_V3.pdf"><b>Paper Link</b>👁️</a>
+</p>
+<h2>1. Introduction</h2>
+<p>We present DeepSeek-V3, a strong Mixture-of-Experts (MoE) language model with 671B total parameters with 37B activated for each token.  To achieve efficient inference and cost-effective training, DeepSeek-V3 adopts Multi-head Latent Attention (MLA) and DeepSeekMoE architectures, which were thoroughly validated in DeepSeek-V2.  Furthermore, DeepSeek-V3 pioneers an auxiliary-loss-free strategy for load balancing and sets a multi-token prediction training objective for stronger performance.  We pre-train DeepSeek-V3 on 14.8 trillion diverse and high-quality tokens, followed by Supervised Fine-Tuning and Reinforcement Learning stages to fully harness its capabilities.  Comprehensive evaluations reveal that DeepSeek-V3 outperforms other open-source models and achieves performance comparable to leading closed-source models. Despite its excellent performance, DeepSeek-V3 requires only 2.788M H800 GPU hours for its full training. In addition, its training process is remarkably stable.  Throughout the entire training process, we did not experience any irrecoverable loss spikes or perform any rollbacks. </p>
+<p align="center">
+  <img width="80%" src="figures/benchmark.png">
+</p>
+<h2>2. Model Summary</h2>
+<hr>
+<p><strong>Architecture: Innovative Load Balancing Strategy and Training Objective</strong></p>
+<ul>
+<li>On top of the efficient architecture of DeepSeek-V2, we pioneer an auxiliary-loss-free strategy for load balancing, which minimizes the performance degradation that arises from encouraging load balancing.</li>
+<li>We investigate a Multi-Token Prediction (MTP) objective and prove it beneficial to model performance. </li>
+</ul>
+<p>    It can also be used for speculative decoding for inference acceleration. </p>
+<hr>
+<p><strong>Pre-Training: Towards Ultimate Training Efficiency</strong></p>
+<ul>
+<li>We design an FP8 mixed precision training framework and, for the first time, validate the feasibility and effectiveness of FP8 training on an extremely large-scale model.  </li>
+<li>Through co-design of algorithms, frameworks, and hardware, we overcome the communication bottleneck in cross-node MoE training, nearly achieving full computation-communication overlap.  </li>
+</ul>
+<p>  This significantly enhances our training efficiency and reduces the training costs, enabling us to further scale up the model size without additional overhead.  </p>
+<ul>
+<li>At an economical cost of only 2.664M H800 GPU hours, we complete the pre-training of DeepSeek-V3 on 14.8T tokens, producing the currently strongest open-source base model. The subsequent training stages after pre-training require only 0.1M GPU hours.</li>
+</ul>
+<hr>
+<p><strong>Post-Training: Knowledge Distillation from DeepSeek-R1</strong></p>
+<ul>
+<li>We introduce an innovative methodology to distill reasoning capabilities from the long-Chain-of-Thought (CoT) model, specifically from one of the DeepSeek R1 series models, into standard LLMs, particularly DeepSeek-V3. Our pipeline elegantly incorporates the verification and reflection patterns of R1 into DeepSeek-V3 and notably improves its reasoning performance. Meanwhile, we also maintain a control over the output style and length of DeepSeek-V3.</li>
+</ul>
+<hr>
+<h2>3. Model Downloads</h2>
+<div align="center">
+<table><thead><tr><th><strong>Model</strong></th><th><strong>#Total Params</strong></th><th><strong>#Activated Params</strong></th><th><strong>Context Length</strong></th><th><strong>Download</strong></th></tr></thead><tbody><tr><td>DeepSeek-V3-Base</td><td>671B</td><td>37B</td><td>128K</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-Base">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-V3</td><td>671B</td><td>37B</td><td>128K</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V3">🤗 HuggingFace</a></td></tr></tbody></table>
+</div>
+<p><strong>NOTE: The total size of DeepSeek-V3 models on HuggingFace is 685B, which includes 671B of the Main Model weights and 14B of the Multi-Token Prediction (MTP) Module weights.</strong></p>
+<p>To ensure optimal performance and flexibility, we have partnered with open-source communities and hardware vendors to provide multiple ways to run the model locally. For step-by-step guidance, check out Section 6: <a href="#6-how-to-run-locally">How_to Run_Locally</a>.</p>
+<p>For developers looking to dive deeper, we recommend exploring <a href="./README_WEIGHTS.html">README_WEIGHTS.md</a> for details on the Main Model weights and the Multi-Token Prediction (MTP) Modules. Please note that MTP support is currently under active development within the community, and we welcome your contributions and feedback.</p>
+<h2>4. Evaluation Results</h2>
+<h3>Base Model</h3>
+<h4>Standard Benchmarks</h4>
+<div align="center">
+<table><thead><tr><th></th><th>Benchmark (Metric)</th><th># Shots</th><th>DeepSeek-V2</th><th>Qwen2.5 72B</th><th>LLaMA3.1 405B</th><th>DeepSeek-V3</th></tr></thead><tbody><tr><td></td><td>Architecture</td><td>-</td><td>MoE</td><td>Dense</td><td>Dense</td><td>MoE</td></tr><tr><td></td><td># Activated Params</td><td>-</td><td>21B</td><td>72B</td><td>405B</td><td>37B</td></tr><tr><td></td><td># Total Params</td><td>-</td><td>236B</td><td>72B</td><td>405B</td><td>671B</td></tr><tr><td>English</td><td>Pile-test (BPB)</td><td>-</td><td>0.606</td><td>0.638</td><td><strong>0.542</strong></td><td>0.548</td></tr><tr><td></td><td>BBH (EM)</td><td>3-shot</td><td>78.8</td><td>79.8</td><td>82.9</td><td><strong>87.5</strong></td></tr><tr><td></td><td>MMLU (Acc.)</td><td>5-shot</td><td>78.4</td><td>85.0</td><td>84.4</td><td><strong>87.1</strong></td></tr><tr><td></td><td>MMLU-Redux (Acc.)</td><td>5-shot</td><td>75.6</td><td>83.2</td><td>81.3</td><td><strong>86.2</strong></td></tr><tr><td></td><td>MMLU-Pro (Acc.)</td><td>5-shot</td><td>51.4</td><td>58.3</td><td>52.8</td><td><strong>64.4</strong></td></tr><tr><td></td><td>DROP (F1)</td><td>3-shot</td><td>80.4</td><td>80.6</td><td>86.0</td><td><strong>89.0</strong></td></tr><tr><td></td><td>ARC-Easy (Acc.)</td><td>25-shot</td><td>97.6</td><td>98.4</td><td>98.4</td><td><strong>98.9</strong></td></tr><tr><td></td><td>ARC-Challenge (Acc.)</td><td>25-shot</td><td>92.2</td><td>94.5</td><td><strong>95.3</strong></td><td><strong>95.3</strong></td></tr><tr><td></td><td>HellaSwag (Acc.)</td><td>10-shot</td><td>87.1</td><td>84.8</td><td><strong>89.2</strong></td><td>88.9</td></tr><tr><td></td><td>PIQA (Acc.)</td><td>0-shot</td><td>83.9</td><td>82.6</td><td><strong>85.9</strong></td><td>84.7</td></tr><tr><td></td><td>WinoGrande (Acc.)</td><td>5-shot</td><td><strong>86.3</strong></td><td>82.3</td><td>85.2</td><td>84.9</td></tr><tr><td></td><td>RACE-Middle (Acc.)</td><td>5-shot</td><td>73.1</td><td>68.1</td><td><strong>74.2</strong></td><td>67.1</td></tr><tr><td></td><td>RACE-High (Acc.)</td><td>5-shot</td><td>52.6</td><td>50.3</td><td><strong>56.8</strong></td><td>51.3</td></tr><tr><td></td><td>TriviaQA (EM)</td><td>5-shot</td><td>80.0</td><td>71.9</td><td><strong>82.7</strong></td><td><strong>82.9</strong></td></tr><tr><td></td><td>NaturalQuestions (EM)</td><td>5-shot</td><td>38.6</td><td>33.2</td><td><strong>41.5</strong></td><td>40.0</td></tr><tr><td></td><td>AGIEval (Acc.)</td><td>0-shot</td><td>57.5</td><td>75.8</td><td>60.6</td><td><strong>79.6</strong></td></tr><tr><td>Code</td><td>HumanEval (Pass@1)</td><td>0-shot</td><td>43.3</td><td>53.0</td><td>54.9</td><td><strong>65.2</strong></td></tr><tr><td></td><td>MBPP (Pass@1)</td><td>3-shot</td><td>65.0</td><td>72.6</td><td>68.4</td><td><strong>75.4</strong></td></tr><tr><td></td><td>LiveCodeBench-Base (Pass@1)</td><td>3-shot</td><td>11.6</td><td>12.9</td><td>15.5</td><td><strong>19.4</strong></td></tr><tr><td></td><td>CRUXEval-I (Acc.)</td><td>2-shot</td><td>52.5</td><td>59.1</td><td>58.5</td><td><strong>67.3</strong></td></tr><tr><td></td><td>CRUXEval-O (Acc.)</td><td>2-shot</td><td>49.8</td><td>59.9</td><td>59.9</td><td><strong>69.8</strong></td></tr><tr><td>Math</td><td>GSM8K (EM)</td><td>8-shot</td><td>81.6</td><td>88.3</td><td>83.5</td><td><strong>89.3</strong></td></tr><tr><td></td><td>MATH (EM)</td><td>4-shot</td><td>43.4</td><td>54.4</td><td>49.0</td><td><strong>61.6</strong></td></tr><tr><td></td><td>MGSM (EM)</td><td>8-shot</td><td>63.6</td><td>76.2</td><td>69.9</td><td><strong>79.8</strong></td></tr><tr><td></td><td>CMath (EM)</td><td>3-shot</td><td>78.7</td><td>84.5</td><td>77.3</td><td><strong>90.7</strong></td></tr><tr><td>Chinese</td><td>CLUEWSC (EM)</td><td>5-shot</td><td>82.0</td><td>82.5</td><td><strong>83.0</strong></td><td>82.7</td></tr><tr><td></td><td>C-Eval (Acc.)</td><td>5-shot</td><td>81.4</td><td>89.2</td><td>72.5</td><td><strong>90.1</strong></td></tr><tr><td></td><td>CMMLU (Acc.)</td><td>5-shot</td><td>84.0</td><td><strong>89.5</strong></td><td>73.7</td><td>88.8</td></tr><tr><td></td><td>CMRC (EM)</td><td>1-shot</td><td><strong>77.4</strong></td><td>75.8</td><td>76.0</td><td>76.3</td></tr><tr><td></td><td>C3 (Acc.)</td><td>0-shot</td><td>77.4</td><td>76.7</td><td><strong>79.7</strong></td><td>78.6</td></tr><tr><td></td><td>CCPM (Acc.)</td><td>0-shot</td><td><strong>93.0</strong></td><td>88.5</td><td>78.6</td><td>92.0</td></tr><tr><td>Multilingual</td><td>MMMLU-non-English (Acc.)</td><td>5-shot</td><td>64.0</td><td>74.8</td><td>73.8</td><td><strong>79.4</strong></td></tr></tbody></table>
+</div>
+<p>Note: Best results are shown in bold. Scores with a gap not exceeding 0.3 are considered to be at the same level. DeepSeek-V3 achieves the best performance on most benchmarks, especially on math and code tasks. For more evaluation details, please check our paper. </p>
+<h4>Context Window</h4>
+<p align="center">
+  <img width="80%" src="figures/niah.png">
+</p>
+<p>Evaluation results on the `<code>Needle In A Haystack</code>` (NIAH) tests.  DeepSeek-V3 performs well across all context window lengths up to <strong>128K</strong>. </p>
+<h3>Chat Model</h3>
+<h4>Standard Benchmarks (Models larger than 67B)</h4>
+<div align="center">
+<table><thead><tr><th></th><th><strong>Benchmark (Metric)</strong></th><th><strong>DeepSeek V2-0506</strong></th><th><strong>DeepSeek V2.5-0905</strong></th><th><strong>Qwen2.5 72B-Inst.</strong></th><th><strong>Llama3.1 405B-Inst.</strong></th><th><strong>Claude-3.5-Sonnet-1022</strong></th><th><strong>GPT-4o 0513</strong></th><th><strong>DeepSeek V3</strong></th></tr></thead><tbody><tr><td></td><td>Architecture</td><td>MoE</td><td>MoE</td><td>Dense</td><td>Dense</td><td>-</td><td>-</td><td>MoE</td></tr><tr><td></td><td># Activated Params</td><td>21B</td><td>21B</td><td>72B</td><td>405B</td><td>-</td><td>-</td><td>37B</td></tr><tr><td></td><td># Total Params</td><td>236B</td><td>236B</td><td>72B</td><td>405B</td><td>-</td><td>-</td><td>671B</td></tr><tr><td>English</td><td>MMLU (EM)</td><td>78.2</td><td>80.6</td><td>85.3</td><td><strong>88.6</strong></td><td><strong>88.3</strong></td><td>87.2</td><td><strong>88.5</strong></td></tr><tr><td></td><td>MMLU-Redux (EM)</td><td>77.9</td><td>80.3</td><td>85.6</td><td>86.2</td><td><strong>88.9</strong></td><td>88.0</td><td><strong>89.1</strong></td></tr><tr><td></td><td>MMLU-Pro (EM)</td><td>58.5</td><td>66.2</td><td>71.6</td><td>73.3</td><td><strong>78.0</strong></td><td>72.6</td><td>75.9</td></tr><tr><td></td><td>DROP (3-shot F1)</td><td>83.0</td><td>87.8</td><td>76.7</td><td>88.7</td><td>88.3</td><td>83.7</td><td><strong>91.6</strong></td></tr><tr><td></td><td>IF-Eval (Prompt Strict)</td><td>57.7</td><td>80.6</td><td>84.1</td><td>86.0</td><td><strong>86.5</strong></td><td>84.3</td><td>86.1</td></tr><tr><td></td><td>GPQA-Diamond (Pass@1)</td><td>35.3</td><td>41.3</td><td>49.0</td><td>51.1</td><td><strong>65.0</strong></td><td>49.9</td><td>59.1</td></tr><tr><td></td><td>SimpleQA (Correct)</td><td>9.0</td><td>10.2</td><td>9.1</td><td>17.1</td><td>28.4</td><td><strong>38.2</strong></td><td>24.9</td></tr><tr><td></td><td>FRAMES (Acc.)</td><td>66.9</td><td>65.4</td><td>69.8</td><td>70.0</td><td>72.5</td><td><strong>80.5</strong></td><td>73.3</td></tr><tr><td></td><td>LongBench v2 (Acc.)</td><td>31.6</td><td>35.4</td><td>39.4</td><td>36.1</td><td>41.0</td><td>48.1</td><td><strong>48.7</strong></td></tr><tr><td>Code</td><td>HumanEval-Mul (Pass@1)</td><td>69.3</td><td>77.4</td><td>77.3</td><td>77.2</td><td>81.7</td><td>80.5</td><td><strong>82.6</strong></td></tr><tr><td></td><td>LiveCodeBench (Pass@1-COT)</td><td>18.8</td><td>29.2</td><td>31.1</td><td>28.4</td><td>36.3</td><td>33.4</td><td><strong>40.5</strong></td></tr><tr><td></td><td>LiveCodeBench (Pass@1)</td><td>20.3</td><td>28.4</td><td>28.7</td><td>30.1</td><td>32.8</td><td>34.2</td><td><strong>37.6</strong></td></tr><tr><td></td><td>Codeforces (Percentile)</td><td>17.5</td><td>35.6</td><td>24.8</td><td>25.3</td><td>20.3</td><td>23.6</td><td><strong>51.6</strong></td></tr><tr><td></td><td>SWE Verified (Resolved)</td><td>-</td><td>22.6</td><td>23.8</td><td>24.5</td><td><strong>50.8</strong></td><td>38.8</td><td>42.0</td></tr><tr><td></td><td>Aider-Edit (Acc.)</td><td>60.3</td><td>71.6</td><td>65.4</td><td>63.9</td><td><strong>84.2</strong></td><td>72.9</td><td>79.7</td></tr><tr><td></td><td>Aider-Polyglot (Acc.)</td><td>-</td><td>18.2</td><td>7.6</td><td>5.8</td><td>45.3</td><td>16.0</td><td><strong>49.6</strong></td></tr><tr><td>Math</td><td>AIME 2024 (Pass@1)</td><td>4.6</td><td>16.7</td><td>23.3</td><td>23.3</td><td>16.0</td><td>9.3</td><td><strong>39.2</strong></td></tr><tr><td></td><td>MATH-500 (EM)</td><td>56.3</td><td>74.7</td><td>80.0</td><td>73.8</td><td>78.3</td><td>74.6</td><td><strong>90.2</strong></td></tr><tr><td></td><td>CNMO 2024 (Pass@1)</td><td>2.8</td><td>10.8</td><td>15.9</td><td>6.8</td><td>13.1</td><td>10.8</td><td><strong>43.2</strong></td></tr><tr><td>Chinese</td><td>CLUEWSC (EM)</td><td>89.9</td><td>90.4</td><td><strong>91.4</strong></td><td>84.7</td><td>85.4</td><td>87.9</td><td>90.9</td></tr><tr><td></td><td>C-Eval (EM)</td><td>78.6</td><td>79.5</td><td>86.1</td><td>61.5</td><td>76.7</td><td>76.0</td><td><strong>86.5</strong></td></tr><tr><td></td><td>C-SimpleQA (Correct)</td><td>48.5</td><td>54.1</td><td>48.4</td><td>50.4</td><td>51.3</td><td>59.3</td><td><strong>64.8</strong></td></tr></tbody></table>
+<p>Note: All models are evaluated in a configuration that limits the output length to 8K. Benchmarks containing fewer than 1000 samples are tested multiple times using varying temperature settings to derive robust final results. DeepSeek-V3 stands as the best-performing open-source model, and also exhibits competitive performance against frontier closed-source models.</p>
+</div>
+<h4>Open Ended Generation Evaluation</h4>
+<div align="center">
+<table><thead><tr><th>Model</th><th>Arena-Hard</th><th>AlpacaEval 2.0</th></tr></thead><tbody><tr><td>DeepSeek-V2.5-0905</td><td>76.2</td><td>50.5</td></tr><tr><td>Qwen2.5-72B-Instruct</td><td>81.2</td><td>49.1</td></tr><tr><td>LLaMA-3.1 405B</td><td>69.3</td><td>40.5</td></tr><tr><td>GPT-4o-0513</td><td>80.4</td><td>51.1</td></tr><tr><td>Claude-Sonnet-3.5-1022</td><td>85.2</td><td>52.0</td></tr><tr><td>DeepSeek-V3</td><td><strong>85.5</strong></td><td><strong>70.0</strong></td></tr></tbody></table>
+<p>Note: English open-ended conversation evaluations. For AlpacaEval 2.0, we use the length-controlled win rate as the metric.</p>
+</div>
+<h2>5. Chat Website &amp; API Platform</h2>
+<p>You can chat with DeepSeek-V3 on DeepSeek's official website: <a href="https://chat.deepseek.com/sign_in">chat.deepseek.com</a></p>
+<p>We also provide OpenAI-Compatible API at DeepSeek Platform: <a href="https://platform.deepseek.com/">platform.deepseek.com</a></p>
+<h2>6. How to Run Locally</h2>
+<p>DeepSeek-V3 can be deployed locally using the following hardware and open-source community software:</p>
+<ol>
+<li><strong>DeepSeek-Infer Demo</strong>: We provide a simple and lightweight demo for FP8 and BF16 inference.</li>
+<li><strong>SGLang</strong>: Fully support the DeepSeek-V3 model in both BF16 and FP8 inference modes.</li>
+<li><strong>LMDeploy</strong>: Enables efficient FP8 and BF16 inference for local and cloud deployment.</li>
+<li><strong>TensorRT-LLM</strong>: Currently supports BF16 inference and INT4/8 quantization, with FP8 support coming soon.</li>
+<li><strong>vLLM</strong>: Support DeekSeek-V3 model with FP8 and BF16 modes for tensor parallelism and pipeline parallelism.</li>
+<li><strong>AMD GPU</strong>: Enables running the DeepSeek-V3 model on AMD GPUs via SGLang in both BF16 and FP8 modes.</li>
+<li><strong>Huawei Ascend NPU</strong>: Supports running DeepSeek-V3 on Huawei Ascend devices.</li>
+</ol>
+<p>Since FP8 training is natively adopted in our framework, we only provide FP8 weights. If you require BF16 weights for experimentation, you can use the provided conversion script to perform the transformation.</p>
+<p>Here is an example of converting FP8 weights to BF16:</p>
+<pre><code>cd inference
+python fp8_cast_bf16.py --input-fp8-hf-path /path/to/fp8_weights --output-bf16-hf-path /path/to/bf16_weights</code></pre>
+<p><strong>NOTE: Huggingface's Transformers has not been directly supported yet.</strong></p>
+<h3>6.1 Inference with DeepSeek-Infer Demo (example only)</h3>
+<h4>Model Weights &amp; Demo Code Preparation</h4>
+<p>First, clone our DeepSeek-V3 GitHub repository:</p>
+<pre><code>git clone https://github.com/deepseek-ai/DeepSeek-V3.git</code></pre>
+<p>Navigate to the <code>inference</code> folder and install dependencies listed in <code>requirements.txt</code>.</p>
+<pre><code>cd DeepSeek-V3/inference
+pip install -r requirements.txt</code></pre>
+<p>Download the model weights from HuggingFace, and put them into <code>/path/to/DeepSeek-V3</code> folder.</p>
+<h4>Model Weights Conversion</h4>
+<p>Convert HuggingFace model weights to a specific format:</p>
+<pre><code>python convert.py --hf-ckpt-path /path/to/DeepSeek-V3 --save-path /path/to/DeepSeek-V3-Demo --n-experts 256 --model-parallel 16</code></pre>
+<h4>Run</h4>
+<p>Then you can chat with DeepSeek-V3:</p>
+<pre><code>torchrun --nnodes 2 --nproc-per-node 8 generate.py --node-rank $RANK --master-addr $ADDR --ckpt-path /path/to/DeepSeek-V3-Demo --config configs/config_671B.json --interactive --temperature 0.7 --max-new-tokens 200</code></pre>
+<p>Or batch inference on a given file:</p>
+<pre><code>torchrun --nnodes 2 --nproc-per-node 8 generate.py --node-rank $RANK --master-addr $ADDR --ckpt-path /path/to/DeepSeek-V3-Demo --config configs/config_671B.json --input-file $FILE</code></pre>
+<h3>6.2 Inference with SGLang (recommended)</h3>
+<p><a href="https://github.com/sgl-project/sglang">SGLang</a> currently supports MLA optimizations, FP8 (W8A8), FP8 KV Cache, and Torch Compile, delivering state-of-the-art latency and throughput performance among open-source frameworks.</p>
+<p>Notably, <a href="https://github.com/sgl-project/sglang/releases/tag/v0.4.1">SGLang v0.4.1</a> fully supports running DeepSeek-V3 on both <strong>NVIDIA and AMD GPUs</strong>, making it a highly versatile and robust solution.</p>
+<p>Here are the launch instructions from the SGLang team: https://github.com/sgl-project/sglang/tree/main/benchmark/deepseek_v3</p>
+<h3>6.3 Inference with LMDeploy (recommended)</h3>
+<p><a href="https://github.com/InternLM/lmdeploy">LMDeploy</a>, a flexible and high-performance inference and serving framework tailored for large language models, now supports DeepSeek-V3. It offers both offline pipeline processing and online deployment capabilities, seamlessly integrating with PyTorch-based workflows.</p>
+<p>For comprehensive step-by-step instructions on running DeepSeek-V3 with LMDeploy, please refer to here: https://github.com/InternLM/lmdeploy/issues/2960</p>
+<h3>6.4 Inference with TRT-LLM (recommended)</h3>
+<p><a href="https://github.com/NVIDIA/TensorRT-LLM">TensorRT-LLM</a> now supports the DeepSeek-V3 model, offering precision options such as BF16 and INT4/INT8 weight-only. Support for FP8 is currently in progress and will be released soon. You can access the custom branch of TRTLLM specifically for DeepSeek-V3 support through the following link to experience the new features directly: https://github.com/NVIDIA/TensorRT-LLM/tree/deepseek/examples/deepseek_v3. </p>
+<h3>6.5 Inference with vLLM (recommended)</h3>
+<p><a href="https://github.com/vllm-project/vllm">vLLM</a> v0.6.6 supports DeepSeek-V3 inference for FP8 and BF16 modes on both NVIDIA and AMD GPUs. Aside from standard techniques, vLLM offers _pipeline parallelism_ allowing you to run this model on multiple machines connected by networks. For detailed guidance, please refer to the <a href="https://docs.vllm.ai/en/latest/serving/distributed_serving.html">vLLM instructions</a>. Please feel free to follow <a href="https://github.com/vllm-project/vllm/issues/11539">the enhancement plan</a> as well.</p>
+<h3>6.6 Recommended Inference Functionality with AMD GPUs</h3>
+<p>In collaboration with the AMD team, we have achieved Day-One support for AMD GPUs using SGLang, with full compatibility for both FP8 and BF16 precision. For detailed guidance, please refer to the <a href="#63-inference-with-lmdeploy-recommended">SGLang instructions</a>.</p>
+<h3>6.7 Recommended Inference Functionality with Huawei Ascend NPUs</h3>
+<p>The <a href="https://www.hiascend.com/en/software/mindie">MindIE</a> framework from the Huawei Ascend community has successfully adapted the BF16 version of DeepSeek-V3. For step-by-step guidance on Ascend NPUs, please follow the <a href="https://modelers.cn/models/MindIE/deepseekv3">instructions here</a>.</p>
+<h2>7. License</h2>
+<p>This code repository is licensed under <a href="LICENSE-CODE">the MIT License</a>. The use of DeepSeek-V3 Base/Chat models is subject to <a href="LICENSE-MODEL">the Model License</a>. DeepSeek-V3 series (including Base and Chat) supports commercial use.</p>
+<h2>8. Citation</h2>
+<pre><code>@misc{deepseekai2024deepseekv3technicalreport,
+      title={DeepSeek-V3 Technical Report}, 
+      author={DeepSeek-AI},
+      year={2024},
+      eprint={2412.19437},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2412.19437}, 
+}</code></pre>
+<h2>9. Contact</h2>
+<p>If you have any questions, please raise an issue or contact us at <a href="service@deepseek.com">service@deepseek.com</a>.</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

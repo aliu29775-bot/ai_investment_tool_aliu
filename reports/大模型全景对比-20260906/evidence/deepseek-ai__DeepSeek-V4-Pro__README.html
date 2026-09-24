@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</h1>
+<!-- markdownlint-disable first-line-h1 -->
+<!-- markdownlint-disable html -->
+<!-- markdownlint-disable no-duplicate-header -->
+<div align="center">
+  <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/logo.svg?raw=true" width="60%" alt="DeepSeek-V4" />
+</div>
+<hr>
+<div align="center" style="line-height: 1;">
+  <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Homepage" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://chat.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Chat" src="https://img.shields.io/badge/🤖%20Chat-DeepSeek%20V4-536af5?color=536af5&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://huggingface.co/deepseek-ai" target="_blank" style="margin: 2px;">
+    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-DeepSeek%20AI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://twitter.com/deepseek_ai" target="_blank" style="margin: 2px;">
+    <img alt="Twitter Follow" src="https://img.shields.io/badge/Twitter-deepseek_ai-white?logo=x&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="LICENSE" style="margin: 2px;">
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<p align="center">
+  <a href="https://arxiv.org/abs/2606.19348"><b>Technical Report</b>👁️</a>
+</p>
+<h2>Introduction</h2>
+<p>We present a preview version of <strong>DeepSeek-V4</strong> series, including two strong Mixture-of-Experts (MoE) language models — <strong>DeepSeek-V4-Pro</strong> with 1.6T parameters (49B activated) and <strong>DeepSeek-V4-Flash</strong> with 284B parameters (13B activated) — both supporting a context length of <strong>one million tokens</strong>.</p>
+<p>DeepSeek-V4 series incorporate several key upgrades in architecture and optimization:</p>
+<ol>
+<li><strong>Hybrid Attention Architecture:</strong> We design a hybrid attention mechanism combining Compressed Sparse Attention (CSA) and Heavily Compressed Attention (HCA) to dramatically improve long-context efficiency. In the 1M-token context setting, DeepSeek-V4-Pro requires only <strong>27% of single-token inference FLOPs</strong> and <strong>10% of KV cache</strong> compared with DeepSeek-V3.2.</li>
+<li><strong>Manifold-Constrained Hyper-Connections (mHC):</strong> We incorporate mHC to strengthen conventional residual connections, enhancing stability of signal propagation across layers while preserving model expressivity.</li>
+<li><strong>Muon Optimizer:</strong> We employ the Muon optimizer for faster convergence and greater training stability.</li>
+</ol>
+<p>We pre-train both models on more than <strong>32T</strong> diverse and high-quality tokens, followed by a comprehensive post-training pipeline. The post-training features a two-stage paradigm: independent cultivation of domain-specific experts (through SFT and RL with GRPO), followed by unified model consolidation via on-policy distillation, integrating distinct proficiencies across diverse domains into a single model.</p>
+<p><strong>DeepSeek-V4-Pro-Max</strong>, the maximum reasoning effort mode of DeepSeek-V4-Pro, significantly advances the knowledge capabilities of open-source models, firmly establishing itself as the best open-source model available today. It achieves top-tier performance in coding benchmarks and significantly bridges the gap with leading closed-source models on reasoning and agentic tasks. Meanwhile, <strong>DeepSeek-V4-Flash-Max</strong> achieves comparable reasoning performance to the Pro version when given a larger thinking budget, though its smaller parameter scale naturally places it slightly behind on pure knowledge tasks and the most complex agentic workflows.</p>
+<div align="center">
+ <img src="assets/dsv4_performance.png" >
+</div>
+<h2>Model Downloads</h2>
+<div align="center">
+<table><thead><tr><th><strong>Model</strong></th><th><strong>#Total Params</strong></th><th><strong>#Activated Params</strong></th><th><strong>Context Length</strong></th><th><strong>Precision</strong></th><th><strong>Download</strong></th></tr></thead><tbody><tr><td>DeepSeek-V4-Flash-Base</td><td>284B</td><td>13B</td><td>1M</td><td>FP8 Mixed</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Base">HuggingFace</a> \</td></tr><tr><td>DeepSeek-V4-Flash</td><td>284B</td><td>13B</td><td>1M</td><td>FP4 + FP8 Mixed*</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash">HuggingFace</a> \</td></tr><tr><td>DeepSeek-V4-Pro-Base</td><td>1.6T</td><td>49B</td><td>1M</td><td>FP8 Mixed</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-Base">HuggingFace</a> \</td></tr><tr><td>DeepSeek-V4-Pro</td><td>1.6T</td><td>49B</td><td>1M</td><td>FP4 + FP8 Mixed*</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">HuggingFace</a> \</td></tr></tbody></table>
+</div>
+<p><em>\</em>FP4 + FP8 Mixed: MoE expert parameters use FP4 precision; most other parameters use FP8.*</p>
+<h2>Evaluation Results</h2>
+<h3>Base Model</h3>
+<div align="center">
+<table><thead><tr><th>Benchmark (Metric)</th><th># Shots</th><th>DeepSeek-V3.2-Base</th><th>DeepSeek-V4-Flash-Base</th><th>DeepSeek-V4-Pro-Base</th></tr></thead><tbody><tr><td>Architecture</td><td>-</td><td>MoE</td><td>MoE</td><td>MoE</td></tr><tr><td># Activated Params</td><td>-</td><td>37B</td><td>13B</td><td>49B</td></tr><tr><td># Total Params</td><td>-</td><td>671B</td><td>284B</td><td>1.6T</td></tr><tr><td><strong>World Knowledge</strong></td><td></td><td></td><td></td><td></td></tr><tr><td>AGIEval (EM)</td><td>0-shot</td><td>80.1</td><td>82.6</td><td><strong>83.1</strong></td></tr><tr><td>MMLU (EM)</td><td>5-shot</td><td>87.8</td><td>88.7</td><td><strong>90.1</strong></td></tr><tr><td>MMLU-Redux (EM)</td><td>5-shot</td><td>87.5</td><td>89.4</td><td><strong>90.8</strong></td></tr><tr><td>MMLU-Pro (EM)</td><td>5-shot</td><td>65.5</td><td>68.3</td><td><strong>73.5</strong></td></tr><tr><td>MMMLU (EM)</td><td>5-shot</td><td>87.9</td><td>88.8</td><td><strong>90.3</strong></td></tr><tr><td>C-Eval (EM)</td><td>5-shot</td><td>90.4</td><td>92.1</td><td><strong>93.1</strong></td></tr><tr><td>CMMLU (EM)</td><td>5-shot</td><td>88.9</td><td>90.4</td><td><strong>90.8</strong></td></tr><tr><td>MultiLoKo (EM)</td><td>5-shot</td><td>38.7</td><td>42.2</td><td><strong>51.1</strong></td></tr><tr><td>Simple-QA verified (EM)</td><td>25-shot</td><td>28.3</td><td>30.1</td><td><strong>55.2</strong></td></tr><tr><td>SuperGPQA (EM)</td><td>5-shot</td><td>45.0</td><td>46.5</td><td><strong>53.9</strong></td></tr><tr><td>FACTS Parametric (EM)</td><td>25-shot</td><td>27.1</td><td>33.9</td><td><strong>62.6</strong></td></tr><tr><td>TriviaQA (EM)</td><td>5-shot</td><td>83.3</td><td>82.8</td><td><strong>85.6</strong></td></tr><tr><td><strong>Language &amp; Reasoning</strong></td><td></td><td></td><td></td><td></td></tr><tr><td>BBH (EM)</td><td>3-shot</td><td><strong>87.6</strong></td><td>86.9</td><td>87.5</td></tr><tr><td>DROP (F1)</td><td>1-shot</td><td>88.2</td><td>88.6</td><td><strong>88.7</strong></td></tr><tr><td>HellaSwag (EM)</td><td>0-shot</td><td>86.4</td><td>85.7</td><td><strong>88.0</strong></td></tr><tr><td>WinoGrande (EM)</td><td>0-shot</td><td>78.9</td><td>79.5</td><td><strong>81.5</strong></td></tr><tr><td>CLUEWSC (EM)</td><td>5-shot</td><td>83.5</td><td>82.2</td><td><strong>85.2</strong></td></tr><tr><td><strong>Code &amp; Math</strong></td><td></td><td></td><td></td><td></td></tr><tr><td>BigCodeBench (Pass@1)</td><td>3-shot</td><td><strong>63.9</strong></td><td>56.8</td><td>59.2</td></tr><tr><td>HumanEval (Pass@1)</td><td>0-shot</td><td>62.8</td><td>69.5</td><td><strong>76.8</strong></td></tr><tr><td>GSM8K (EM)</td><td>8-shot</td><td>91.1</td><td>90.8</td><td><strong>92.6</strong></td></tr><tr><td>MATH (EM)</td><td>4-shot</td><td>60.5</td><td>57.4</td><td><strong>64.5</strong></td></tr><tr><td>MGSM (EM)</td><td>8-shot</td><td>81.3</td><td><strong>85.7</strong></td><td>84.4</td></tr><tr><td>CMath (EM)</td><td>3-shot</td><td>92.6</td><td><strong>93.6</strong></td><td>90.9</td></tr><tr><td><strong>Long Context</strong></td><td></td><td></td><td></td><td></td></tr><tr><td>LongBench-V2 (EM)</td><td>1-shot</td><td>40.2</td><td>44.7</td><td><strong>51.5</strong></td></tr></tbody></table>
+</div>
+<h3>Instruct Model</h3>
+<p>DeepSeek-V4-Pro and DeepSeek-V4-Flash both support three reasoning effort modes:</p>
+<table><thead><tr><th>Reasoning Mode</th><th>Characteristics</th><th>Typical Use Cases</th><th>Response Format</th></tr></thead><tbody><tr><td>Non-think</td><td>Fast, intuitive responses</td><td>Routine daily tasks, low-risk decisions</td><td><code>&lt;/think&gt;</code> summary</td></tr><tr><td>Think High</td><td>Conscious logical analysis, slower but more accurate</td><td>Complex problem-solving, planning</td><td><code>&lt;think&gt;</code> thinking <code>&lt;/think&gt;</code> summary</td></tr><tr><td>Think Max</td><td>Push reasoning to its fullest extent</td><td>Exploring the boundary of model reasoning capability</td><td>Special system prompt + <code>&lt;think&gt;</code> thinking <code>&lt;/think&gt;</code> summary</td></tr></tbody></table>
+<h4>DeepSeek-V4-Pro-Max vs Frontier Models</h4>
+<div align="center">
+<table><thead><tr><th>Benchmark (Metric)</th><th>Opus-4.6 Max</th><th>GPT-5.4 xHigh</th><th>Gemini-3.1-Pro High</th><th>K2.6 Thinking</th><th>GLM-5.1 Thinking</th><th>DS-V4-Pro Max</th></tr></thead><tbody><tr><td><strong>Knowledge &amp; Reasoning</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MMLU-Pro (EM)</td><td>89.1</td><td>87.5</td><td><strong>91.0</strong></td><td>87.1</td><td>86.0</td><td>87.5</td></tr><tr><td>SimpleQA-Verified (Pass@1)</td><td>46.2</td><td>45.3</td><td><strong>75.6</strong></td><td>36.9</td><td>38.1</td><td>57.9</td></tr><tr><td>Chinese-SimpleQA (Pass@1)</td><td>76.4</td><td>76.8</td><td><strong>85.9</strong></td><td>75.9</td><td>75.0</td><td>84.4</td></tr><tr><td>GPQA Diamond (Pass@1)</td><td>91.3</td><td>93.0</td><td><strong>94.3</strong></td><td>90.5</td><td>86.2</td><td>90.1</td></tr><tr><td>HLE (Pass@1)</td><td>40.0</td><td>39.8</td><td><strong>44.4</strong></td><td>36.4</td><td>34.7</td><td>37.7</td></tr><tr><td>LiveCodeBench (Pass@1)</td><td>88.8</td><td>-</td><td>91.7</td><td>89.6</td><td>-</td><td><strong>93.5</strong></td></tr><tr><td>Codeforces (Rating)</td><td>-</td><td>3168</td><td>3052</td><td>-</td><td>-</td><td><strong>3206</strong></td></tr><tr><td>HMMT 2026 Feb (Pass@1)</td><td>96.2</td><td><strong>97.7</strong></td><td>94.7</td><td>92.7</td><td>89.4</td><td>95.2</td></tr><tr><td>IMOAnswerBench (Pass@1)</td><td>75.3</td><td><strong>91.4</strong></td><td>81.0</td><td>86.0</td><td>83.8</td><td>89.8</td></tr><tr><td>Apex (Pass@1)</td><td>34.5</td><td>54.1</td><td><strong>60.9</strong></td><td>24.0</td><td>11.5</td><td>38.3</td></tr><tr><td>Apex Shortlist (Pass@1)</td><td>85.9</td><td>78.1</td><td>89.1</td><td>75.5</td><td>72.4</td><td><strong>90.2</strong></td></tr><tr><td><strong>Long Context</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MRCR 1M (MMR)</td><td><strong>92.9</strong></td><td>-</td><td>76.3</td><td>-</td><td>-</td><td>83.5</td></tr><tr><td>CorpusQA 1M (ACC)</td><td><strong>71.7</strong></td><td>-</td><td>53.8</td><td>-</td><td>-</td><td>62.0</td></tr><tr><td><strong>Agentic</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Terminal Bench 2.0 (Acc)</td><td>65.4</td><td><strong>75.1</strong></td><td>68.5</td><td>66.7</td><td>63.5</td><td>67.9</td></tr><tr><td>SWE Verified (Resolved)</td><td><strong>80.8</strong></td><td>-</td><td>80.6</td><td>80.2</td><td>-</td><td>80.6</td></tr><tr><td>SWE Pro (Resolved)</td><td>57.3</td><td>57.7</td><td>54.2</td><td><strong>58.6</strong></td><td>58.4</td><td>55.4</td></tr><tr><td>SWE Multilingual (Resolved)</td><td><strong>77.5</strong></td><td>-</td><td>-</td><td>76.7</td><td>73.3</td><td>76.2</td></tr><tr><td>BrowseComp (Pass@1)</td><td>83.7</td><td>82.7</td><td><strong>85.9</strong></td><td>83.2</td><td>79.3</td><td>83.4</td></tr><tr><td>HLE w/ tools (Pass@1)</td><td>53.1</td><td>52.0</td><td>51.6</td><td><strong>54.0</strong></td><td>50.4</td><td>48.2</td></tr><tr><td>GDPval-AA (Elo)</td><td>1619</td><td><strong>1674</strong></td><td>1314</td><td>1482</td><td>1535</td><td>1554</td></tr><tr><td>MCPAtlas Public (Pass@1)</td><td><strong>73.8</strong></td><td>67.2</td><td>69.2</td><td>66.6</td><td>71.8</td><td>73.6</td></tr><tr><td>Toolathlon (Pass@1)</td><td>47.2</td><td><strong>54.6</strong></td><td>48.8</td><td>50.0</td><td>40.7</td><td>51.8</td></tr></tbody></table>
+</div>
+<h4>Comparison across Modes</h4>
+<div align="center">
+<table><thead><tr><th>Benchmark (Metric)</th><th>V4-Flash Non-Think</th><th>V4-Flash High</th><th>V4-Flash Max</th><th>V4-Pro Non-Think</th><th>V4-Pro High</th><th>V4-Pro Max</th></tr></thead><tbody><tr><td><strong>Knowledge &amp; Reasoning</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MMLU-Pro (EM)</td><td>83.0</td><td>86.4</td><td>86.2</td><td>82.9</td><td>87.1</td><td><strong>87.5</strong></td></tr><tr><td>SimpleQA-Verified (Pass@1)</td><td>23.1</td><td>28.9</td><td>34.1</td><td>45.0</td><td>46.2</td><td><strong>57.9</strong></td></tr><tr><td>Chinese-SimpleQA (Pass@1)</td><td>71.5</td><td>73.2</td><td>78.9</td><td>75.8</td><td>77.7</td><td><strong>84.4</strong></td></tr><tr><td>GPQA Diamond (Pass@1)</td><td>71.2</td><td>87.4</td><td>88.1</td><td>72.9</td><td>89.1</td><td><strong>90.1</strong></td></tr><tr><td>HLE (Pass@1)</td><td>8.1</td><td>29.4</td><td>34.8</td><td>7.7</td><td>34.5</td><td><strong>37.7</strong></td></tr><tr><td>LiveCodeBench (Pass@1)</td><td>55.2</td><td>88.4</td><td>91.6</td><td>56.8</td><td>89.8</td><td><strong>93.5</strong></td></tr><tr><td>Codeforces (Rating)</td><td>-</td><td>2816</td><td>3052</td><td>-</td><td>2919</td><td><strong>3206</strong></td></tr><tr><td>HMMT 2026 Feb (Pass@1)</td><td>40.8</td><td>91.9</td><td>94.8</td><td>31.7</td><td>94.0</td><td><strong>95.2</strong></td></tr><tr><td>IMOAnswerBench (Pass@1)</td><td>41.9</td><td>85.1</td><td>88.4</td><td>35.3</td><td>88.0</td><td><strong>89.8</strong></td></tr><tr><td>Apex (Pass@1)</td><td>1.0</td><td>19.1</td><td>33.0</td><td>0.4</td><td>27.4</td><td><strong>38.3</strong></td></tr><tr><td>Apex Shortlist (Pass@1)</td><td>9.3</td><td>72.1</td><td>85.7</td><td>9.2</td><td>85.5</td><td><strong>90.2</strong></td></tr><tr><td><strong>Long Context</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>MRCR 1M (MMR)</td><td>37.5</td><td>76.9</td><td>78.7</td><td>44.7</td><td>83.3</td><td><strong>83.5</strong></td></tr><tr><td>CorpusQA 1M (ACC)</td><td>15.5</td><td>59.3</td><td>60.5</td><td>35.6</td><td>56.5</td><td><strong>62.0</strong></td></tr><tr><td><strong>Agentic</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Terminal Bench 2.0 (Acc)</td><td>49.1</td><td>56.6</td><td>56.9</td><td>59.1</td><td>63.3</td><td><strong>67.9</strong></td></tr><tr><td>SWE Verified (Resolved)</td><td>73.7</td><td>78.6</td><td>79.0</td><td>73.6</td><td>79.4</td><td><strong>80.6</strong></td></tr><tr><td>SWE Pro (Resolved)</td><td>49.1</td><td>52.3</td><td>52.6</td><td>52.1</td><td>54.4</td><td><strong>55.4</strong></td></tr><tr><td>SWE Multilingual (Resolved)</td><td>69.7</td><td>70.2</td><td>73.3</td><td>69.8</td><td>74.1</td><td><strong>76.2</strong></td></tr><tr><td>BrowseComp (Pass@1)</td><td>-</td><td>53.5</td><td>73.2</td><td>-</td><td>80.4</td><td><strong>83.4</strong></td></tr><tr><td>HLE w/ tools (Pass@1)</td><td>-</td><td>40.3</td><td>45.1</td><td>-</td><td>44.7</td><td><strong>48.2</strong></td></tr><tr><td>MCPAtlas (Pass@1)</td><td>64.0</td><td>67.4</td><td>69.0</td><td>69.4</td><td><strong>74.2</strong></td><td>73.6</td></tr><tr><td>GDPval-AA (Elo)</td><td>-</td><td>-</td><td>1395</td><td>-</td><td>-</td><td><strong>1554</strong></td></tr><tr><td>Toolathlon (Pass@1)</td><td>40.7</td><td>43.5</td><td>47.8</td><td>46.3</td><td>49.0</td><td><strong>51.8</strong></td></tr></tbody></table>
+</div>
+<h2>Chat Template</h2>
+<p>This release does not include a Jinja-format chat template. Instead, we provide a dedicated <code>encoding</code> folder with Python scripts and test cases demonstrating how to encode messages in OpenAI-compatible format into input strings for the model, and how to parse the model's text output. Please refer to the <a href="encoding/README.html"><code>encoding</code></a> folder for full documentation.</p>
+<p>A brief example:</p>
+<pre><code>from encoding_dsv4 import encode_messages, parse_message_from_completion_text
+
+messages = [
+    {"role": "user", "content": "hello"},
+    {"role": "assistant", "content": "Hello! I am DeepSeek.", "reasoning_content": "thinking..."},
+    {"role": "user", "content": "1+1=?"}
+]
+
+# messages -&gt; string
+prompt = encode_messages(messages, thinking_mode="thinking")
+
+# string -&gt; tokens
+import transformers
+tokenizer = transformers.AutoTokenizer.from_pretrained("deepseek-ai/DeepSeek-V4-Pro")
+tokens = tokenizer.encode(prompt)</code></pre>
+<h2>How to Run Locally</h2>
+<p>Please refer to the <a href="inference/README.html">inference</a> folder for detailed instructions on running DeepSeek-V4 locally, including model weight conversion and interactive chat demos.</p>
+<p>For local deployment, we recommend setting the sampling parameters to <code>temperature = 1.0, top_p = 1.0</code>. For the Think Max reasoning mode, we recommend setting the context window to at least <strong>384K</strong> tokens.</p>
+<h2>License</h2>
+<p>This repository and the model weights are licensed under the <a href="LICENSE">MIT License</a>.</p>
+<h2>Citation</h2>
+<pre><code>@misc{deepseekai2026deepseekv4,
+      title={DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence},
+      author={DeepSeek-AI},
+      year={2026},
+}</code></pre>
+<h2>Contact</h2>
+<p>If you have any questions, please raise an issue or contact us at <a href="service@deepseek.com">service@deepseek.com</a>.</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

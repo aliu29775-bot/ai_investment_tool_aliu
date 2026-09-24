@@ -1,0 +1,167 @@
+/* ============================================================
+   報告正文樣式（由 build_site.py 預渲染的 HTML 使用）
+   ============================================================ */
+
+.report-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.crumbs {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.report-head { margin-bottom: 26px; }
+.report-head h1 {
+  font-size: clamp(22px, 4vw, 30px);
+  margin: 0 0 12px;
+  line-height: 1.35;
+}
+.report-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.badge {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand-ink);
+  background: var(--brand-tint);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.badge-type {
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.meta-item { color: var(--muted); font-size: 13px; }
+
+/* ---------- 正文 ---------- */
+
+.report-body { font-size: 15.5px; color: var(--ink); }
+
+.report-body h1, .report-body h2, .report-body h3,
+.report-body h4, .report-body h5, .report-body h6 {
+  margin: 1.6em 0 0.6em;
+  line-height: 1.35;
+}
+.report-body h1 { font-size: 24px; }
+.report-body h2 {
+  font-size: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.report-body h3 { font-size: 17px; }
+.report-body h4 { font-size: 15.5px; }
+.report-body h1:first-child, .report-body h2:first-child { margin-top: 0.2em; }
+
+.report-body p { margin: 0.8em 0; }
+
+.report-body a { color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
+
+.report-body strong { font-weight: 700; }
+
+.report-body blockquote {
+  margin: 1em 0;
+  padding: 10px 18px;
+  border-left: 3px solid var(--brand);
+  background: var(--surface-2);
+  border-radius: 0 10px 10px 0;
+  color: var(--ink-2);
+}
+.report-body blockquote p { margin: 0.4em 0; }
+.report-body blockquote blockquote { margin-left: 0; }
+
+.report-body table {
+  border-collapse: collapse;
+  margin: 1.1em 0;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.report-body th {
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.report-body td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.report-body tr:last-child td { border-bottom: none; }
+.report-body tr:hover td { background: color-mix(in srgb, var(--surface-2) 60%, transparent); }
+
+.report-body ul, .report-body ol { margin: 0.8em 0; padding-left: 1.6em; }
+.report-body li { margin: 0.3em 0; }
+.report-body li input[type="checkbox"] { margin-right: 6px; }
+
+.report-body code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 0.88em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.report-body pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+.report-body pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+}
+
+.report-body img { max-width: 100%; border-radius: 8px; }
+
+.report-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.6em 0;
+}
+
+.report-body details {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin: 1em 0;
+  background: var(--surface);
+}
+.report-body summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.report-body div[align="center"] { text-align: center; }
+
+.report-foot {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .report-body { font-size: 15px; }
+  .report-body th, .report-body td { padding: 7px 10px; }
+}

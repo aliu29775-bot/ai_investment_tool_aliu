@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek-R1 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>DeepSeek-R1</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>DeepSeek-R1</h1>
+<!-- markdownlint-disable first-line-h1 -->
+<!-- markdownlint-disable html -->
+<!-- markdownlint-disable no-duplicate-header -->
+<div align="center">
+  <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/logo.svg?raw=true" width="60%" alt="DeepSeek-V3" />
+</div>
+<hr>
+<div align="center" style="line-height: 1;">
+  <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Homepage" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://chat.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Chat" src="https://img.shields.io/badge/🤖%20Chat-DeepSeek%20R1-536af5?color=536af5&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://huggingface.co/deepseek-ai" target="_blank" style="margin: 2px;">
+    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-DeepSeek%20AI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://discord.gg/Tc7c45Zzu5" target="_blank" style="margin: 2px;">
+    <img alt="Discord" src="https://img.shields.io/badge/Discord-DeepSeek%20AI-7289da?logo=discord&logoColor=white&color=7289da" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/qr.jpeg?raw=true" target="_blank" style="margin: 2px;">
+    <img alt="Wechat" src="https://img.shields.io/badge/WeChat-DeepSeek%20AI-brightgreen?logo=wechat&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://twitter.com/deepseek_ai" target="_blank" style="margin: 2px;">
+    <img alt="Twitter Follow" src="https://img.shields.io/badge/Twitter-deepseek_ai-white?logo=x&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE" style="margin: 2px;">
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<p align="center">
+  <a href="https://github.com/deepseek-ai/DeepSeek-R1/blob/main/DeepSeek_R1.pdf"><b>Paper Link</b>👁️</a>
+</p>
+<h2>1. Introduction</h2>
+<p>We introduce our first-generation reasoning models, DeepSeek-R1-Zero and DeepSeek-R1.  DeepSeek-R1-Zero, a model trained via large-scale reinforcement learning (RL) without supervised fine-tuning (SFT) as a preliminary step, demonstrated remarkable performance on reasoning. With RL, DeepSeek-R1-Zero naturally emerged with numerous powerful and interesting reasoning behaviors. However, DeepSeek-R1-Zero encounters challenges such as endless repetition, poor readability, and language mixing. To address these issues and further enhance reasoning performance, we introduce DeepSeek-R1, which incorporates cold-start data before RL. DeepSeek-R1 achieves performance comparable to OpenAI-o1 across math, code, and reasoning tasks.  To support the research community, we have open-sourced DeepSeek-R1-Zero, DeepSeek-R1, and six dense models distilled from DeepSeek-R1 based on Llama and Qwen. DeepSeek-R1-Distill-Qwen-32B outperforms OpenAI-o1-mini across various benchmarks, achieving new state-of-the-art results for dense models.</p>
+<p><strong>NOTE: Before running DeepSeek-R1 series models locally, we kindly recommend reviewing the <a href="#usage-recommendations">Usage Recommendation</a> section.</strong></p>
+<p align="center">
+  <img width="80%" src="figures/benchmark.jpg">
+</p>
+<h2>2. Model Summary</h2>
+<hr>
+<p><strong>Post-Training: Large-Scale Reinforcement Learning on the Base Model</strong></p>
+<ul>
+<li>We directly apply reinforcement learning (RL) to the base model without relying on supervised fine-tuning (SFT) as a preliminary step. This approach allows the model to explore chain-of-thought (CoT) for solving complex problems, resulting in the development of DeepSeek-R1-Zero. DeepSeek-R1-Zero demonstrates capabilities such as self-verification, reflection, and generating long CoTs, marking a significant milestone for the research community. Notably, it is the first open research to validate that reasoning capabilities of LLMs can be incentivized purely through RL, without the need for SFT. This breakthrough paves the way for future advancements in this area.</li>
+</ul>
+<ul>
+<li>We introduce our pipeline to develop DeepSeek-R1. The pipeline incorporates two RL stages aimed at discovering improved reasoning patterns and aligning with human preferences, as well as two SFT stages that serve as the seed for the model's reasoning and non-reasoning capabilities.</li>
+</ul>
+<p>    We believe the pipeline will benefit the industry by creating better models. </p>
+<hr>
+<p><strong>Distillation: Smaller Models Can Be Powerful Too</strong></p>
+<ul>
+<li>We demonstrate that the reasoning patterns of larger models can be distilled into smaller models, resulting in better performance compared to the reasoning patterns discovered through RL on small models. The open source DeepSeek-R1, as well as its API, will benefit the research community to distill better smaller models in the future. </li>
+<li>Using the reasoning data generated by DeepSeek-R1, we fine-tuned several dense models that are widely used in the research community. The evaluation results demonstrate that the distilled smaller dense models perform exceptionally well on benchmarks. We open-source distilled 1.5B, 7B, 8B, 14B, 32B, and 70B checkpoints based on Qwen2.5 and Llama3 series to the community.</li>
+</ul>
+<h2>3. Model Downloads</h2>
+<h3>DeepSeek-R1 Models</h3>
+<div align="center">
+<table><thead><tr><th><strong>Model</strong></th><th><strong>#Total Params</strong></th><th><strong>#Activated Params</strong></th><th><strong>Context Length</strong></th><th><strong>Download</strong></th></tr></thead><tbody><tr><td>DeepSeek-R1-Zero</td><td>671B</td><td>37B</td><td>128K</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Zero">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1</td><td>671B</td><td>37B</td><td>128K</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1">🤗 HuggingFace</a></td></tr></tbody></table>
+</div>
+<p>DeepSeek-R1-Zero &amp; DeepSeek-R1 are trained based on DeepSeek-V3-Base.  For more details regarding the model architecture, please refer to <a href="https://github.com/deepseek-ai/DeepSeek-V3">DeepSeek-V3</a> repository.</p>
+<h3>DeepSeek-R1-Distill Models</h3>
+<div align="center">
+<table><thead><tr><th><strong>Model</strong></th><th><strong>Base Model</strong></th><th><strong>Download</strong></th></tr></thead><tbody><tr><td>DeepSeek-R1-Distill-Qwen-1.5B</td><td><a href="https://huggingface.co/Qwen/Qwen2.5-Math-1.5B">Qwen2.5-Math-1.5B</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1-Distill-Qwen-7B</td><td><a href="https://huggingface.co/Qwen/Qwen2.5-Math-7B">Qwen2.5-Math-7B</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1-Distill-Llama-8B</td><td><a href="https://huggingface.co/meta-llama/Llama-3.1-8B">Llama-3.1-8B</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1-Distill-Qwen-14B</td><td><a href="https://huggingface.co/Qwen/Qwen2.5-14B">Qwen2.5-14B</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1-Distill-Qwen-32B</td><td><a href="https://huggingface.co/Qwen/Qwen2.5-32B">Qwen2.5-32B</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-R1-Distill-Llama-70B</td><td><a href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct">Llama-3.3-70B-Instruct</a></td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B">🤗 HuggingFace</a></td></tr></tbody></table>
+</div>
+<p>DeepSeek-R1-Distill models are fine-tuned based on open-source models, using samples generated by DeepSeek-R1. We slightly change their configs and tokenizers. Please use our setting to run these models.</p>
+<h2>4. Evaluation Results</h2>
+<h3>DeepSeek-R1-Evaluation</h3>
+<p> For all our models, the maximum generation length is set to 32,768 tokens. For benchmarks requiring sampling, we use a temperature of $0.6$, a top-p value of $0.95$, and generate 64 responses per query to estimate pass@1.</p>
+<div align="center">
+<table><thead><tr><th>Category</th><th>Benchmark (Metric)</th><th>Claude-3.5-Sonnet-1022</th><th>GPT-4o 0513</th><th>DeepSeek V3</th><th>OpenAI o1-mini</th><th>OpenAI o1-1217</th><th>DeepSeek R1</th></tr></thead><tbody><tr><td></td><td>Architecture</td><td>-</td><td>-</td><td>MoE</td><td>-</td><td>-</td><td>MoE</td></tr><tr><td></td><td># Activated Params</td><td>-</td><td>-</td><td>37B</td><td>-</td><td>-</td><td>37B</td></tr><tr><td></td><td># Total Params</td><td>-</td><td>-</td><td>671B</td><td>-</td><td>-</td><td>671B</td></tr><tr><td>English</td><td>MMLU (Pass@1)</td><td>88.3</td><td>87.2</td><td>88.5</td><td>85.2</td><td><strong>91.8</strong></td><td>90.8</td></tr><tr><td></td><td>MMLU-Redux (EM)</td><td>88.9</td><td>88.0</td><td>89.1</td><td>86.7</td><td>-</td><td><strong>92.9</strong></td></tr><tr><td></td><td>MMLU-Pro (EM)</td><td>78.0</td><td>72.6</td><td>75.9</td><td>80.3</td><td>-</td><td><strong>84.0</strong></td></tr><tr><td></td><td>DROP (3-shot F1)</td><td>88.3</td><td>83.7</td><td>91.6</td><td>83.9</td><td>90.2</td><td><strong>92.2</strong></td></tr><tr><td></td><td>IF-Eval (Prompt Strict)</td><td><strong>86.5</strong></td><td>84.3</td><td>86.1</td><td>84.8</td><td>-</td><td>83.3</td></tr><tr><td></td><td>GPQA-Diamond (Pass@1)</td><td>65.0</td><td>49.9</td><td>59.1</td><td>60.0</td><td><strong>75.7</strong></td><td>71.5</td></tr><tr><td></td><td>SimpleQA (Correct)</td><td>28.4</td><td>38.2</td><td>24.9</td><td>7.0</td><td><strong>47.0</strong></td><td>30.1</td></tr><tr><td></td><td>FRAMES (Acc.)</td><td>72.5</td><td>80.5</td><td>73.3</td><td>76.9</td><td>-</td><td><strong>82.5</strong></td></tr><tr><td></td><td>AlpacaEval2.0 (LC-winrate)</td><td>52.0</td><td>51.1</td><td>70.0</td><td>57.8</td><td>-</td><td><strong>87.6</strong></td></tr><tr><td></td><td>ArenaHard (GPT-4-1106)</td><td>85.2</td><td>80.4</td><td>85.5</td><td>92.0</td><td>-</td><td><strong>92.3</strong></td></tr><tr><td>Code</td><td>LiveCodeBench (Pass@1-COT)</td><td>33.8</td><td>34.2</td><td>-</td><td>53.8</td><td>63.4</td><td><strong>65.9</strong></td></tr><tr><td></td><td>Codeforces (Percentile)</td><td>20.3</td><td>23.6</td><td>58.7</td><td>93.4</td><td><strong>96.6</strong></td><td>96.3</td></tr><tr><td></td><td>Codeforces (Rating)</td><td>717</td><td>759</td><td>1134</td><td>1820</td><td><strong>2061</strong></td><td>2029</td></tr><tr><td></td><td>SWE Verified (Resolved)</td><td><strong>50.8</strong></td><td>38.8</td><td>42.0</td><td>41.6</td><td>48.9</td><td>49.2</td></tr><tr><td></td><td>Aider-Polyglot (Acc.)</td><td>45.3</td><td>16.0</td><td>49.6</td><td>32.9</td><td><strong>61.7</strong></td><td>53.3</td></tr><tr><td>Math</td><td>AIME 2024 (Pass@1)</td><td>16.0</td><td>9.3</td><td>39.2</td><td>63.6</td><td>79.2</td><td><strong>79.8</strong></td></tr><tr><td></td><td>MATH-500 (Pass@1)</td><td>78.3</td><td>74.6</td><td>90.2</td><td>90.0</td><td>96.4</td><td><strong>97.3</strong></td></tr><tr><td></td><td>CNMO 2024 (Pass@1)</td><td>13.1</td><td>10.8</td><td>43.2</td><td>67.6</td><td>-</td><td><strong>78.8</strong></td></tr><tr><td>Chinese</td><td>CLUEWSC (EM)</td><td>85.4</td><td>87.9</td><td>90.9</td><td>89.9</td><td>-</td><td><strong>92.8</strong></td></tr><tr><td></td><td>C-Eval (EM)</td><td>76.7</td><td>76.0</td><td>86.5</td><td>68.9</td><td>-</td><td><strong>91.8</strong></td></tr><tr><td></td><td>C-SimpleQA (Correct)</td><td>55.4</td><td>58.7</td><td><strong>68.0</strong></td><td>40.3</td><td>-</td><td>63.7</td></tr></tbody></table>
+</div>
+<h3>Distilled Model Evaluation</h3>
+<div align="center">
+<table><thead><tr><th>Model</th><th>AIME 2024 pass@1</th><th>AIME 2024 cons@64</th><th>MATH-500 pass@1</th><th>GPQA Diamond pass@1</th><th>LiveCodeBench pass@1</th><th>CodeForces rating</th></tr></thead><tbody><tr><td>GPT-4o-0513</td><td>9.3</td><td>13.4</td><td>74.6</td><td>49.9</td><td>32.9</td><td>759</td></tr><tr><td>Claude-3.5-Sonnet-1022</td><td>16.0</td><td>26.7</td><td>78.3</td><td>65.0</td><td>38.9</td><td>717</td></tr><tr><td>o1-mini</td><td>63.6</td><td>80.0</td><td>90.0</td><td>60.0</td><td>53.8</td><td><strong>1820</strong></td></tr><tr><td>QwQ-32B-Preview</td><td>44.0</td><td>60.0</td><td>90.6</td><td>54.5</td><td>41.9</td><td>1316</td></tr><tr><td>DeepSeek-R1-Distill-Qwen-1.5B</td><td>28.9</td><td>52.7</td><td>83.9</td><td>33.8</td><td>16.9</td><td>954</td></tr><tr><td>DeepSeek-R1-Distill-Qwen-7B</td><td>55.5</td><td>83.3</td><td>92.8</td><td>49.1</td><td>37.6</td><td>1189</td></tr><tr><td>DeepSeek-R1-Distill-Qwen-14B</td><td>69.7</td><td>80.0</td><td>93.9</td><td>59.1</td><td>53.1</td><td>1481</td></tr><tr><td>DeepSeek-R1-Distill-Qwen-32B</td><td><strong>72.6</strong></td><td>83.3</td><td>94.3</td><td>62.1</td><td>57.2</td><td>1691</td></tr><tr><td>DeepSeek-R1-Distill-Llama-8B</td><td>50.4</td><td>80.0</td><td>89.1</td><td>49.0</td><td>39.6</td><td>1205</td></tr><tr><td>DeepSeek-R1-Distill-Llama-70B</td><td>70.0</td><td><strong>86.7</strong></td><td><strong>94.5</strong></td><td><strong>65.2</strong></td><td><strong>57.5</strong></td><td>1633</td></tr></tbody></table>
+</div>
+<h2>5. Chat Website &amp; API Platform</h2>
+<p>You can chat with DeepSeek-R1 on DeepSeek's official website: <a href="https://chat.deepseek.com">chat.deepseek.com</a>, and switch on the button "DeepThink"</p>
+<p>We also provide OpenAI-Compatible API at DeepSeek Platform: <a href="https://platform.deepseek.com/">platform.deepseek.com</a></p>
+<h2>6. How to Run Locally</h2>
+<h3>DeepSeek-R1 Models</h3>
+<p>Please visit <a href="https://github.com/deepseek-ai/DeepSeek-V3">DeepSeek-V3</a> repo for more information about running DeepSeek-R1 locally.</p>
+<p><strong>NOTE: Hugging Face's Transformers has not been directly supported yet.</strong></p>
+<h3>DeepSeek-R1-Distill Models</h3>
+<p>DeepSeek-R1-Distill models can be utilized in the same manner as Qwen or Llama models.</p>
+<p>For instance, you can easily start a service using <a href="https://github.com/vllm-project/vllm">vLLM</a>:</p>
+<pre><code>vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-32B --tensor-parallel-size 2 --max-model-len 32768 --enforce-eager</code></pre>
+<p>You can also easily start a service using <a href="https://github.com/sgl-project/sglang">SGLang</a></p>
+<pre><code>python3 -m sglang.launch_server --model deepseek-ai/DeepSeek-R1-Distill-Qwen-32B --trust-remote-code --tp 2</code></pre>
+<h3>Usage Recommendations</h3>
+<p><strong>We recommend adhering to the following configurations when utilizing the DeepSeek-R1 series models, including benchmarking, to achieve the expected performance:</strong></p>
+<ol>
+<li>Set the temperature within the range of 0.5-0.7 (0.6 is recommended) to prevent endless repetitions or incoherent outputs.</li>
+<li><strong>Avoid adding a system prompt; all instructions should be contained within the user prompt.</strong></li>
+<li>For mathematical problems, it is advisable to include a directive in your prompt such as: "Please reason step by step, and put your final answer within \boxed{}."</li>
+<li>When evaluating model performance, it is recommended to conduct multiple tests and average the results.</li>
+</ol>
+<p>Additionally, we have observed that the DeepSeek-R1 series models tend to bypass thinking pattern (i.e., outputting "\&lt;think\&gt;\n\n\&lt;/think\&gt;") when responding to certain queries, which can adversely affect the model's performance. <strong>To ensure that the model engages in thorough reasoning, we recommend enforcing the model to initiate its response with "\&lt;think\&gt;\n" at the beginning of every output.</strong></p>
+<h2>7. License</h2>
+<p>This code repository and the model weights are licensed under the <a href="https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE">MIT License</a>. DeepSeek-R1 series support commercial use, allow for any modifications and derivative works, including, but not limited to, distillation for training other LLMs. Please note that:</p>
+<ul>
+<li>DeepSeek-R1-Distill-Qwen-1.5B, DeepSeek-R1-Distill-Qwen-7B, DeepSeek-R1-Distill-Qwen-14B and DeepSeek-R1-Distill-Qwen-32B are derived from <a href="https://github.com/QwenLM/Qwen2.5">Qwen-2.5 series</a>, which are originally licensed under <a href="https://huggingface.co/Qwen/Qwen2.5-1.5B/blob/main/LICENSE">Apache 2.0 License</a>, and now finetuned with 800k samples curated with DeepSeek-R1.</li>
+<li>DeepSeek-R1-Distill-Llama-8B is derived from Llama3.1-8B-Base and is originally licensed under <a href="https://huggingface.co/meta-llama/Llama-3.1-8B/blob/main/LICENSE">llama3.1 license</a>.</li>
+<li>DeepSeek-R1-Distill-Llama-70B is derived from Llama3.3-70B-Instruct and is originally licensed under <a href="https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/blob/main/LICENSE">llama3.3 license</a>.</li>
+</ul>
+<h2>8. Citation</h2>
+<pre><code>@misc{deepseekai2025deepseekr1incentivizingreasoningcapability,
+      title={DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning}, 
+      author={DeepSeek-AI},
+      year={2025},
+      eprint={2501.12948},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2501.12948}, 
+}
+</code></pre>
+<h2>9. Contact</h2>
+<p>If you have any questions, please raise an issue or contact us at <a href="service@deepseek.com">service@deepseek.com</a>.</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

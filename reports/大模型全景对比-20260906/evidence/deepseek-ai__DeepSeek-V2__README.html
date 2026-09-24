@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>deepseek-ai__DeepSeek-V2__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>deepseek-ai__DeepSeek-V2__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<!-- markdownlint-disable first-line-h1 -->
+<!-- markdownlint-disable html -->
+<!-- markdownlint-disable no-duplicate-header -->
+<div align="center">
+  <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/logo.svg?raw=true" width="60%" alt="DeepSeek-V2" />
+</div>
+<hr>
+<div align="center" style="line-height: 1;">
+  <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Homepage" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://chat.deepseek.com/" target="_blank" style="margin: 2px;">
+    <img alt="Chat" src="https://img.shields.io/badge/🤖%20Chat-DeepSeek%20V2-536af5?color=536af5&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://huggingface.co/deepseek-ai" target="_blank" style="margin: 2px;">
+    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-DeepSeek%20AI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://discord.gg/Tc7c45Zzu5" target="_blank" style="margin: 2px;">
+    <img alt="Discord" src="https://img.shields.io/badge/Discord-DeepSeek%20AI-7289da?logo=discord&logoColor=white&color=7289da" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/qr.jpeg?raw=true" target="_blank" style="margin: 2px;">
+    <img alt="Wechat" src="https://img.shields.io/badge/WeChat-DeepSeek%20AI-brightgreen?logo=wechat&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://twitter.com/deepseek_ai" target="_blank" style="margin: 2px;">
+    <img alt="Twitter Follow" src="https://img.shields.io/badge/Twitter-deepseek_ai-white?logo=x&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<div align="center" style="line-height: 1;">
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/LICENSE-CODE" style="margin: 2px;">
+    <img alt="Code License" src="https://img.shields.io/badge/Code_License-MIT-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/LICENSE-MODEL" style="margin: 2px;">
+    <img alt="Model License" src="https://img.shields.io/badge/Model_License-Model_Agreement-f5de53?&color=f5de53" style="display: inline-block; vertical-align: middle;"/>
+  </a>
+</div>
+<p align="center">
+  <a href="#2-model-downloads">Model Download</a> |
+  <a href="#3-evaluation-results">Evaluation Results</a> |
+  <a href="#4-model-architecture">Model Architecture</a> |
+  <a href="#6-api-platform">API Platform</a> |
+  <a href="#8-license">License</a> |
+  <a href="#9-citation">Citation</a>
+</p>
+<p align="center">
+  <a href="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/deepseek-v2-tech-report.pdf"><b>Paper Link</b>👁️</a>
+</p>
+<h1>DeepSeek-V2:  A Strong, Economical, and Efficient Mixture-of-Experts Language Model</h1>
+<h2>1. Introduction</h2>
+<p>Today, we’re introducing DeepSeek-V2, a strong Mixture-of-Experts (MoE) language model characterized by economical training and efficient inference. It comprises 236B total parameters, of which 21B are activated for each token. Compared with DeepSeek 67B, DeepSeek-V2 achieves stronger performance, and meanwhile saves 42.5% of training costs, reduces the KV cache by 93.3%, and boosts the maximum generation throughput to 5.76 times. </p>
+<p align="center">
+<div style="display: flex; justify-content: center;">
+    <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/activationparameters.png?raw=true" style="height:300px; width:auto; margin-right:10px">
+    <img src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/trainingcost.png?raw=true" style="height:300px; width:auto; margin-left:10px">
+</div>
+</p>
+<p>We pretrained DeepSeek-V2 on a diverse and high-quality corpus comprising 8.1 trillion tokens. This comprehensive pretraining was followed by a process of Supervised Fine-Tuning (SFT) and Reinforcement Learning (RL) to fully unleash the model's capabilities. The evaluation results validate the effectiveness of our approach as DeepSeek-V2 achieves remarkable performance on both standard benchmarks and open-ended generation evaluation.</p>
+<h2>2. Model Downloads</h2>
+<div align="center">
+<table><thead><tr><th><strong>Model</strong></th><th><strong>Context Length</strong></th><th><strong>Download</strong></th></tr></thead><tbody><tr><td>DeepSeek-V2</td><td>128k</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V2">🤗 HuggingFace</a></td></tr><tr><td>DeepSeek-V2-Chat (RL)</td><td>128k</td><td><a href="https://huggingface.co/deepseek-ai/DeepSeek-V2-Chat">🤗 HuggingFace</a></td></tr></tbody></table>
+</div>
+<p>Due to the constraints of HuggingFace, the open-source code currently experiences slower performance than our internal codebase when running on GPUs with Huggingface. To facilitate the efficient execution of our model, we offer a dedicated vllm solution that optimizes performance for running our model effectively.</p>
+<h2>3. Evaluation Results</h2>
+<h3>Base Model</h3>
+<h4>Standard Benchmark</h4>
+<div align="center">
+<table><thead><tr><th><strong>Benchmark</strong></th><th><strong>Domain</strong></th><th><strong>LLaMA3 70B</strong></th><th><strong>Mixtral 8x22B</strong></th><th><strong>DeepSeek-V1 (Dense-67B)</strong></th><th><strong>DeepSeek-V2 (MoE-236B)</strong></th></tr></thead><tbody><tr><td><strong>MMLU</strong></td><td>English</td><td>78.9</td><td>77.6</td><td>71.3</td><td>78.5</td></tr><tr><td><strong>BBH</strong></td><td>English</td><td>81.0</td><td>78.9</td><td>68.7</td><td>78.9</td></tr><tr><td><strong>C-Eval</strong></td><td>Chinese</td><td>67.5</td><td>58.6</td><td>66.1</td><td>81.7</td></tr><tr><td><strong>CMMLU</strong></td><td>Chinese</td><td>69.3</td><td>60.0</td><td>70.8</td><td>84.0</td></tr><tr><td><strong>HumanEval</strong></td><td>Code</td><td>48.2</td><td>53.1</td><td>45.1</td><td>48.8</td></tr><tr><td><strong>MBPP</strong></td><td>Code</td><td>68.6</td><td>64.2</td><td>57.4</td><td>66.6</td></tr><tr><td><strong>GSM8K</strong></td><td>Math</td><td>83.0</td><td>80.3</td><td>63.4</td><td>79.2</td></tr><tr><td><strong>Math</strong></td><td>Math</td><td>42.2</td><td>42.5</td><td>18.7</td><td>43.6</td></tr></tbody></table>
+</div>
+<p>For more evaluation details, such as few-shot settings and prompts, please check our paper. </p>
+<h4>Context Window</h4>
+<p align="center">
+  <img width="80%" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/niah.png?raw=true">
+</p>
+<p>Evaluation results on the `<code>Needle In A Haystack</code>` (NIAH) tests.  DeepSeek-V2 performs well across all context window lengths up to <strong>128K</strong>. </p>
+<h3>Chat Model</h3>
+<h4>Standard Benchmark</h4>
+<div align="center">
+<table><thead><tr><th>Benchmark</th><th>Domain</th><th>QWen1.5 72B Chat</th><th>Mixtral 8x22B</th><th>LLaMA3 70B Instruct</th><th>DeepSeek-V1 Chat (SFT)</th><th>DeepSeek-V2 Chat (SFT)</th><th>DeepSeek-V2 Chat (RL)</th></tr></thead><tbody><tr><td><strong>MMLU</strong></td><td>English</td><td>76.2</td><td>77.8</td><td>80.3</td><td>71.1</td><td>78.4</td><td>77.8</td></tr><tr><td><strong>BBH</strong></td><td>English</td><td>65.9</td><td>78.4</td><td>80.1</td><td>71.7</td><td>81.3</td><td>79.7</td></tr><tr><td><strong>C-Eval</strong></td><td>Chinese</td><td>82.2</td><td>60.0</td><td>67.9</td><td>65.2</td><td>80.9</td><td>78.0</td></tr><tr><td><strong>CMMLU</strong></td><td>Chinese</td><td>82.9</td><td>61.0</td><td>70.7</td><td>67.8</td><td>82.4</td><td>81.6</td></tr><tr><td><strong>HumanEval</strong></td><td>Code</td><td>68.9</td><td>75.0</td><td>76.2</td><td>73.8</td><td>76.8</td><td>81.1</td></tr><tr><td><strong>MBPP</strong></td><td>Code</td><td>52.2</td><td>64.4</td><td>69.8</td><td>61.4</td><td>70.4</td><td>72.0</td></tr><tr><td><strong>LiveCodeBench  (0901-0401)</strong></td><td>Code</td><td>18.8</td><td>25.0</td><td>30.5</td><td>18.3</td><td>28.7</td><td>32.5</td></tr><tr><td><strong>GSM8K</strong></td><td>Math</td><td>81.9</td><td>87.9</td><td>93.2</td><td>84.1</td><td>90.8</td><td>92.2</td></tr><tr><td><strong>Math</strong></td><td>Math</td><td>40.6</td><td>49.8</td><td>48.5</td><td>32.6</td><td>52.7</td><td>53.9</td></tr></tbody></table>
+</div>
+<h4>English Open Ended Generation Evaluation</h4>
+<p>We evaluate our model on AlpacaEval 2.0 and MTBench, showing the competitive performance of DeepSeek-V2-Chat-RL on English conversation generation. </p>
+<p align="center">
+  <img width="50%" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/mtbench.png?raw=true" />
+</p>
+<h4>Chinese Open Ended Generation Evaluation</h4>
+<p><strong>Alignbench</strong> (https://arxiv.org/abs/2311.18743)</p>
+<div align="center">
+<table><thead><tr><th><strong>模型</strong></th><th><strong>开源/闭源</strong></th><th><strong>总分</strong></th><th><strong>中文推理</strong></th><th><strong>中文语言</strong></th></tr></thead><tbody><tr><td>gpt-4-1106-preview</td><td>闭源</td><td>8.01</td><td>7.73</td><td>8.29</td></tr><tr><td>DeepSeek-V2 Chat (RL)</td><td>开源</td><td>7.91</td><td>7.45</td><td>8.35</td></tr><tr><td>erniebot-4.0-202404 (文心一言)</td><td>闭源</td><td>7.89</td><td>7.61</td><td>8.17</td></tr><tr><td>DeepSeek-V2 Chat (SFT)</td><td>开源</td><td>7.74</td><td>7.30</td><td>8.17</td></tr><tr><td>gpt-4-0613</td><td>闭源</td><td>7.53</td><td>7.47</td><td>7.59</td></tr><tr><td>erniebot-4.0-202312 (文心一言)</td><td>闭源</td><td>7.36</td><td>6.84</td><td>7.88</td></tr><tr><td>moonshot-v1-32k-202404 (月之暗面)</td><td>闭源</td><td>7.22</td><td>6.42</td><td>8.02</td></tr><tr><td>Qwen1.5-72B-Chat (通义千问)</td><td>开源</td><td>7.19</td><td>6.45</td><td>7.93</td></tr><tr><td>DeepSeek-67B-Chat</td><td>开源</td><td>6.43</td><td>5.75</td><td>7.11</td></tr><tr><td>Yi-34B-Chat (零一万物)</td><td>开源</td><td>6.12</td><td>4.86</td><td>7.38</td></tr><tr><td>gpt-3.5-turbo-0613</td><td>闭源</td><td>6.08</td><td>5.35</td><td>6.71</td></tr></tbody></table>
+</div>
+<h4>Coding Benchmarks</h4>
+<p>We evaluate our model on LiveCodeBench (0901-0401), a benchmark designed for live coding challenges. As illustrated, DeepSeek-V2 demonstrates considerable proficiency in LiveCodeBench, achieving a Pass@1 score that surpasses several other sophisticated models. This performance highlights the model's effectiveness in tackling live coding tasks.</p>
+<p align="center">
+  <img width="50%" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/code_benchmarks.png?raw=true">
+</p>
+<h2>4. Model Architecture</h2>
+<p>DeepSeek-V2 adopts innovative architectures to guarantee economical training and efficient inference： </p>
+<ul>
+<li>For attention, we design MLA (Multi-head Latent Attention), which utilizes low-rank key-value union compression to eliminate the bottleneck of inference-time key-value cache, thus supporting efficient inference. </li>
+<li>For Feed-Forward Networks (FFNs), we adopt DeepSeekMoE architecture, a high-performance MoE architecture that enables training stronger models at lower costs. </li>
+</ul>
+<p align="center">
+  <img width="90%" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/architecture.png?raw=true" />
+</p>
+<h2>5. Chat Website</h2>
+<p>You can chat with the DeepSeek-V2 on DeepSeek's official website: <a href="https://chat.deepseek.com/sign_in">chat.deepseek.com</a></p>
+<h2>6. API Platform</h2>
+<p>We also provide OpenAI-Compatible API at DeepSeek Platform: <a href="https://platform.deepseek.com/">platform.deepseek.com</a>. Sign up for over millions of free tokens. And you can also pay-as-you-go at an unbeatable price.</p>
+<p align="center">
+  <img width="40%" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/model_price.png?raw=true">
+</p>
+<h2>7. How to run locally</h2>
+<p>**To utilize DeepSeek-V2 in BF16 format for inference, 80GB*8 GPUs are required.**</p>
+<h3>Inference with Huggingface's Transformers</h3>
+<p>You can directly employ <a href="https://github.com/huggingface/transformers">Huggingface's Transformers</a> for model inference.</p>
+<h4>Text Completion</h4>
+<pre><code>import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
+
+model_name = "deepseek-ai/DeepSeek-V2"
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+# `max_memory` should be set based on your devices
+max_memory = {i: "75GB" for i in range(8)}
+# `device_map` cannot be set to `auto`
+model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, device_map="sequential", torch_dtype=torch.bfloat16, max_memory=max_memory, attn_implementation="eager")
+model.generation_config = GenerationConfig.from_pretrained(model_name)
+model.generation_config.pad_token_id = model.generation_config.eos_token_id
+
+text = "An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is"
+inputs = tokenizer(text, return_tensors="pt")
+outputs = model.generate(**inputs.to(model.device), max_new_tokens=100)
+
+result = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(result)</code></pre>
+<h4>Chat Completion</h4>
+<pre><code>import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
+
+model_name = "deepseek-ai/DeepSeek-V2-Chat"
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+# `max_memory` should be set based on your devices
+max_memory = {i: "75GB" for i in range(8)}
+# `device_map` cannot be set to `auto`
+model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, device_map="sequential", torch_dtype=torch.bfloat16, max_memory=max_memory, attn_implementation="eager")
+model.generation_config = GenerationConfig.from_pretrained(model_name)
+model.generation_config.pad_token_id = model.generation_config.eos_token_id
+
+messages = [
+    {"role": "user", "content": "Write a piece of quicksort code in C++"}
+]
+input_tensor = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
+outputs = model.generate(input_tensor.to(model.device), max_new_tokens=100)
+
+result = tokenizer.decode(outputs[0][input_tensor.shape[1]:], skip_special_tokens=True)
+print(result)</code></pre>
+<p>The complete chat template can be found within <code>tokenizer_config.json</code> located in the huggingface model repository.</p>
+<p>An example of chat template is as belows:</p>
+<pre><code>&lt;｜begin▁of▁sentence｜&gt;User: {user_message_1}
+
+Assistant: {assistant_message_1}&lt;｜end▁of▁sentence｜&gt;User: {user_message_2}
+
+Assistant:</code></pre>
+<p>You can also add an optional system message:</p>
+<pre><code>&lt;｜begin▁of▁sentence｜&gt;{system_message}
+
+User: {user_message_1}
+
+Assistant: {assistant_message_1}&lt;｜end▁of▁sentence｜&gt;User: {user_message_2}
+
+Assistant:</code></pre>
+<h3>Inference with vLLM (recommended)</h3>
+<p>To utilize <a href="https://github.com/vllm-project/vllm">vLLM</a> for model inference, please merge this Pull Request into your vLLM codebase: https://github.com/vllm-project/vllm/pull/4650.</p>
+<pre><code>from transformers import AutoTokenizer
+from vllm import LLM, SamplingParams
+
+max_model_len, tp_size = 8192, 8
+model_name = "deepseek-ai/DeepSeek-V2-Chat"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+llm = LLM(model=model_name, tensor_parallel_size=tp_size, max_model_len=max_model_len, trust_remote_code=True, enforce_eager=True)
+sampling_params = SamplingParams(temperature=0.3, max_tokens=256, stop_token_ids=[tokenizer.eos_token_id])
+
+messages_list = [
+    [{"role": "user", "content": "Who are you?"}],
+    [{"role": "user", "content": "Translate the following content into Chinese directly: DeepSeek-V2 adopts innovative architectures to guarantee economical training and efficient inference."}],
+    [{"role": "user", "content": "Write a piece of quicksort code in C++."}],
+]
+
+prompt_token_ids = [tokenizer.apply_chat_template(messages, add_generation_prompt=True) for messages in messages_list]
+
+outputs = llm.generate(prompt_token_ids=prompt_token_ids, sampling_params=sampling_params)
+
+generated_text = [output.outputs[0].text for output in outputs]
+print(generated_text)</code></pre>
+<h2>8. License</h2>
+<p>This code repository is licensed under <a href="LICENSE-CODE">the MIT License</a>. The use of DeepSeek-V2 Base/Chat models is subject to <a href="LICENSE-MODEL">the Model License</a>. DeepSeek-V2 series (including Base and Chat) supports commercial use.</p>
+<h2>9. Citation</h2>
+<pre><code>@misc{deepseekv2,
+      title={DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model}, 
+      author={DeepSeek-AI},
+      year={2024},
+      eprint={2405.04434},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}</code></pre>
+<h2>10. Contact</h2>
+<p>If you have any questions, please raise an issue or contact us at <a href="service@deepseek.com">service@deepseek.com</a>.</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

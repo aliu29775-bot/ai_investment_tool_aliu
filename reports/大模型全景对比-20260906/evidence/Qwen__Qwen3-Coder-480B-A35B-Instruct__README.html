@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qwen3-Coder-480B-A35B-Instruct — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>Qwen3-Coder-480B-A35B-Instruct</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>Qwen3-Coder-480B-A35B-Instruct</h1>
+<a href="https://chat.qwen.ai/" target="_blank" style="margin: 2px;">
+    <img alt="Chat" src="https://img.shields.io/badge/%F0%9F%92%9C%EF%B8%8F%20Qwen%20Chat%20-536af5" style="display: inline-block; vertical-align: middle;"/>
+</a>
+<h2>Highlights</h2>
+<p>Today, we're announcing <strong>Qwen3-Coder</strong>, our most agentic code model to date. <strong>Qwen3-Coder</strong> is available in multiple sizes, but we're excited to introduce its most powerful variant first: <strong>Qwen3-Coder-480B-A35B-Instruct</strong>. featuring the following key enhancements:  </p>
+<ul>
+<li><strong>Significant Performance</strong> among open models on <strong>Agentic Coding</strong>, <strong>Agentic Browser-Use</strong>, and other foundational coding tasks, achieving results comparable to Claude Sonnet.</li>
+<li><strong>Long-context Capabilities</strong> with native support for <strong>256K</strong> tokens, extendable up to <strong>1M</strong> tokens using Yarn, optimized for repository-scale understanding.</li>
+<li><strong>Agentic Coding</strong> supporting for most platform such as <strong>Qwen Code</strong>, <strong>CLINE</strong>, featuring a specially designed function call format.</li>
+</ul>
+<p><img src="https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen3-Coder/qwen3-coder-main.jpg" alt="image/jpeg"></p>
+<h2>Model Overview</h2>
+<p><strong>Qwen3-480B-A35B-Instruct</strong> has the following features:</p>
+<ul>
+<li>Type: Causal Language Models</li>
+<li>Training Stage: Pretraining &amp; Post-training</li>
+<li>Number of Parameters: 480B in total and 35B activated</li>
+<li>Number of Layers: 62</li>
+<li>Number of Attention Heads (GQA): 96 for Q and 8 for KV</li>
+<li>Number of Experts: 160</li>
+<li>Number of Activated Experts: 8</li>
+<li>Context Length: <strong>262,144 natively</strong>. </li>
+</ul>
+<p><strong>NOTE: This model supports only non-thinking mode and does not generate `<code>&lt;think&gt;&lt;/think&gt;</code><code> blocks in its output. Meanwhile, specifying </code>enable_thinking=False` is no longer required.</strong></p>
+<p>For more details, including benchmark evaluation, hardware requirements, and inference performance, please refer to our <a href="https://qwenlm.github.io/blog/qwen3-coder/">blog</a>, <a href="https://github.com/QwenLM/Qwen3-Coder">GitHub</a>, and <a href="https://qwen.readthedocs.io/en/latest/">Documentation</a>.</p>
+<h2>Quickstart</h2>
+<p>We advise you to use the latest version of <code>transformers</code>.</p>
+<p>With <code>transformers&lt;4.51.0</code>, you will encounter the following error:</p>
+<pre><code>KeyError: 'qwen3_moe'</code></pre>
+<p>The following contains a code snippet illustrating how to use the model generate content based on given inputs. </p>
+<pre><code>from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_name = "Qwen/Qwen3-480B-A35B-Instruct"
+
+# load the tokenizer and the model
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map="auto"
+)
+
+# prepare the model input
+prompt = "Write a quick sort algorithm."
+messages = [
+    {"role": "user", "content": prompt}
+]
+text = tokenizer.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+)
+model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+
+# conduct text completion
+generated_ids = model.generate(
+    **model_inputs,
+    max_new_tokens=65536
+)
+output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist() 
+
+content = tokenizer.decode(output_ids, skip_special_tokens=True)
+
+print("content:", content)</code></pre>
+<p><strong>Note: If you encounter out-of-memory (OOM) issues, consider reducing the context length to a shorter value, such as <code>32,768</code>.</strong></p>
+<p>For local use, applications such as Ollama, LMStudio, MLX-LM, llama.cpp, and KTransformers have also supported Qwen3.</p>
+<h2>Agentic Coding</h2>
+<p>Qwen3-Coder excels in tool calling capabilities. </p>
+<p>You can simply define or use any tools as following example.</p>
+<pre><code># Your tool implementation
+def square_the_number(num: float) -&gt; dict:
+    return num ** 2
+
+# Define Tools
+tools=[
+    {
+        "type":"function",
+        "function":{
+            "name": "square_the_number",
+            "description": "output the square of the number.",
+            "parameters": {
+                "type": "object",
+                "required": ["input_num"],
+                "properties": {
+                    'input_num': {
+                        'type': 'number', 
+                        'description': 'input_num is a number that will be squared'
+                        }
+                },
+            }
+        }
+    }
+]
+
+import OpenAI
+# Define LLM
+client = OpenAI(
+    # Use a custom endpoint compatible with OpenAI API
+    base_url='http://localhost:8000/v1',  # api_base
+    api_key="EMPTY"
+)
+ 
+messages = [{'role': 'user', 'content': 'square the number 1024'}]
+
+completion = client.chat.completions.create(
+    messages=messages,
+    model="Qwen3-Coder-480B-A35B-Instruct",
+    max_tokens=65536,
+    tools=tools,
+)
+
+print(completion.choice[0])</code></pre>
+<h2>Best Practices</h2>
+<p>To achieve optimal performance, we recommend the following settings:</p>
+<ol>
+<li><strong>Sampling Parameters</strong>:<ul>
+<li>We suggest using <code>temperature=0.7</code>, <code>top_p=0.8</code>, <code>top_k=20</code>, <code>repetition_penalty=1.05</code>.</li>
+</ul></li>
+</ol>
+<ol>
+<li><strong>Adequate Output Length</strong>: We recommend using an output length of 65,536 tokens for most queries, which is adequate for instruct models.</li>
+</ol>
+<h3>Citation</h3>
+<p>If you find our work helpful, feel free to give us a cite.</p>
+<pre><code>@misc{qwen3technicalreport,
+      title={Qwen3 Technical Report}, 
+      author={Qwen Team},
+      year={2025},
+      eprint={2505.09388},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2505.09388}, 
+}</code></pre>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

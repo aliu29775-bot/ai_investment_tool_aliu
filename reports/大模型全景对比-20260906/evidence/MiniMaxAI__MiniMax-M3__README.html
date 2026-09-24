@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiniMaxAI__MiniMax-M3__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>MiniMaxAI__MiniMax-M3__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<div align="center">
+  <img width="60%" src="figures/logo.svg" alt="MiniMax">
+</div>
+<hr>
+<p align="center">
+  <a href="https://agent.minimax.io/" target="_blank"><img src="https://img.shields.io/badge/MiniMax%20Agent-FF6C37?logo=minimax&logoColor=white" alt="MiniMax Agent"></a>
+  <a href="https://platform.minimax.io/docs/guides/text-generation" target="_blank"><img src="https://img.shields.io/badge/API-FF6C37?logo=minimax&logoColor=white" alt="API"></a>
+  <a href="https://www.minimax.io" target="_blank"><img src="https://img.shields.io/badge/MiniMax%20Website-FF6C37?logo=minimax&logoColor=white" alt="MiniMax Website"></a>
+  <br>
+  <a href="https://modelscope.cn/organization/minimax" target="_blank" rel="noopener noreferrer"><img alt="ModelScope MiniMax AI" src="https://img.shields.io/badge/ModelScope-MiniMax%20AI-white?labelColor=%23EF3D5D"></a>
+  <a href="https://platform.minimaxi.com/docs/faq/contact-us" target="_blank"><img src="https://img.shields.io/badge/WeChat-07C160?logo=wechat&logoColor=white" alt="WeChat"></a>
+  <a href="https://discord.com/invite/DPC4AHFCBw" target="_blank"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://huggingface.co/MiniMaxAI" target="_blank"><img src="https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=black" alt="Hugging Face"></a>
+  <a href="https://github.com/MiniMax-AI/MiniMax-M3" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://arxiv.org/abs/2606.13392" target="_blank"><img src="https://img.shields.io/badge/arXiv-2606.13392-B31B1B?logo=arxiv&logoColor=white" alt="arXiv Paper"></a>
+  <a href="https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/badge/LICENSE-4CAF50?logo=creativecommons&logoColor=white" alt="LICENSE"></a>
+</p>
+<p>MiniMax-M3 is a native multimodal model with 1M context. It has ~428B parameters and ~23B activated parameters.</p>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li><strong>Native Multimodality:</strong> M3 undergoes mixed-modality training from the very first step, enabling deeper semantic fusion across text, image, and video.</li>
+<li><strong>Context Scaling via Sparse Attention:</strong> M3 introduces MiniMax Sparse Attention (MSA) to improve long context efficiency. M3 delivers 9× prefill and 15× decode speedups compared to M2 at 1M context, reducing per-token compute to 1/20.</li>
+<li><strong>Coding &amp; Cowork Capability:</strong> M3 achieves frontier-level performance across long-horizon agentic benchmarks, excelling in both coding and cowork.</li>
+</ul>
+<p align="center">
+  <img width="100%" src="figures/benchmark.jpeg">
+</p>
+<h2>MiniMax Sparse Attention (MSA)</h2>
+<p>M3 is powered by <a href="https://github.com/MiniMax-AI/MSA"><strong>MiniMax Sparse Attention (MSA)</strong></a>, a high-performance sparse attention operator designed for million-token contexts. Compared with GQA, MSA dramatically reduces the attention compute and memory footprint while preserving model quality.</p>
+<p align="center">
+  <img width="100%" src="figures/efficiency_gqa_vs_msa.png" alt="GQA vs MSA Efficiency Comparison">
+</p>
+<blockquote><p>📄 Read the technical report: <a href="https://arxiv.org/abs/2606.13392">arXiv:2606.13392</a> · <a href="https://huggingface.co/papers/2606.13392">Hugging Face Papers</a></p></blockquote>
+<h2>How to Use</h2>
+<ul>
+<li><a href="https://agent.minimax.io/">MiniMax Agent</a></li>
+<li><a href="https://platform.minimax.io/">MiniMax API</a></li>
+</ul>
+<p>M3 supports three reasoning modes through the <code>thinking</code> parameter:</p>
+<ul>
+<li><strong><code>enabled</code></strong> — Reasoning is always enabled.</li>
+<li><strong><code>adaptive</code></strong> — M3 automatically determines when additional reasoning is beneficial.</li>
+<li><strong><code>disabled</code></strong> — Reasoning is disabled to minimize latency and maximize throughput.</li>
+</ul>
+<h2>Local Deployment</h2>
+<p>Download the model:</p>
+<pre><code>hf download MiniMaxAI/MiniMax-M3 --local-dir MiniMax-M3</code></pre>
+<p>We recommend the following inference frameworks to serve the model:</p>
+<ul>
+<li><a href="https://docs.sglang.io/">SGLang</a> - see  <a href="https://docs.sglang.io/cookbook/autoregressive/MiniMax/MiniMax-M3">SGLang cookbook</a>.</li>
+</ul>
+<ul>
+<li><a href="https://github.com/vllm-project/vllm">vLLM</a> - see <a href="https://recipes.vllm.ai/MiniMaxAI/MiniMax-M3">vLLM recipes</a>.</li>
+</ul>
+<ul>
+<li><a href="https://github.com/huggingface/transformers">Transformers</a> - see <a href="https://huggingface.co/docs/transformers/model_doc/minimax_m3_vl">Transformers docs</a>.</li>
+</ul>
+<ul>
+<li><a href="https://github.com/kvcache-ai/ktransformers">KTransformers</a> - see <a href="https://github.com/kvcache-ai/ktransformers/blob/main/doc/en/kt-kernel/MiniMax-M3-Tutorial.md">KTransformers MiniMax-M3 tutorial</a>.</li>
+</ul>
+<ul>
+<li><a href="https://unsloth.ai">unsloth</a> - see <a href="https://unsloth.ai/docs/models/minimax-m3">tutorial</a></li>
+</ul>
+<ul>
+<li><a href="https://github.com/ROCm/ATOM/tree/main">ATOM</a> - see <a href="https://github.com/ROCm/ATOM/blob/main/recipes/MiniMax-M3.md">MiniMax-M3 MXFP4/MXFP8 Usage Guide</a></li>
+</ul>
+<h3>Inference Parameters</h3>
+<p>We recommend the following parameters for best performance: <code>temperature=1.0</code>, <code>top_p=0.95</code>.</p>
+<h2>Contact Us</h2>
+<p>Contact us at <a href="mailto:model@minimax.io">model@minimax.io</a>.</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>

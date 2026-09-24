@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mistralai__Pixtral-Large-Instruct-2411__README — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">大模型全景对比-20260906</a>
+  </nav>
+  <div class="report-head">
+    <h1>mistralai__Pixtral-Large-Instruct-2411__README</h1>
+    <div class="report-meta">
+      <span class="badge">专题</span>
+      <span class="badge badge-type">横评对比</span>
+      <span class="meta-item">📅 2026-09-06</span>
+      <span class="meta-item">📁 大模型全景对比-20260906</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>Model Card for Pixtral-Large-Instruct-2411</h1>
+<p>Pixtral-Large-Instruct-2411 is a 124B multimodal model built on top of Mistral Large 2, i.e., <a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2407">Mistral-Large-Instruct-2407</a>. Pixtral Large is the second model in our multimodal family and demonstrates frontier-level image understanding. Particularly, the model is able to understand documents, charts and natural images, while maintaining the leading text-only understanding of Mistral Large 2.</p>
+<p>For more details about this model please refer to the <a href="https://mistral.ai/news/pixtral-large/">Pixtral Large blog post</a> and the <a href="https://mistral.ai/news/pixtral-12b/">Pixtral 12B blog post</a>.</p>
+<blockquote><p>[!IMPORTANT] ❗  The Transformers implementation is not yet working (see <a href="https://huggingface.co/mistralai/Pixtral-Large-Instruct-2411/discussions/3#673b8bfe55cb1761c8d50ce2">here</a>), please use the vLLM implementation as shown below.</p></blockquote>
+<h2>Key features</h2>
+<ul>
+<li>Frontier-class multimodal performance</li>
+<li>State-of-the-art on MathVista, DocVQA, VQAv2</li>
+<li>Extends Mistral Large 2 without compromising text performance</li>
+<li>123B multimodal decoder, 1B parameter vision encoder</li>
+<li>128K context window: fits minimum of 30 high-resolution images</li>
+</ul>
+<!-- 
+<ul>
+<li><strong>Multi-lingual by design:</strong> Dozens of languages supported, including English, French, German, Spanish, Italian, Chinese, Japanese, Korean, Portuguese, Dutch and Polish.</li>
+<li><strong>Proficient in coding:</strong> Trained on 80+ coding languages such as Python, Java, C, C++, Javacsript, and Bash. Also trained on more specific languages such as Swift and Fortran.</li>
+<li><strong>Agentic-centric:</strong> Best-in-class agentic capabilities with native function calling and JSON outputting.</li>
+<li><strong>Advanced Reasoning:</strong> State-of-the-art mathematical and reasoning capabilities.</li>
+<li><strong>Mistral Research License:</strong> Allows usage and modification for research and non-commercial usages.</li>
+<li><strong>Large Context:</strong> A large 128k context window.</li>
+<li><strong>System Prompt:</strong> Maintains strong adherence and support for more reliable system prompts.</li>
+<li><strong>Vision:</strong> A 1B parameter Vision Encoder achieving SOTA vision capabilities.</li>
+</ul>
+<p>--&gt;</p>
+<h3>System Prompt Handling</h3>
+<p>We appreciate the feedback received from our community regarding our system prompt handling.   In response, we have implemented stronger support for system prompts.   To achieve optimal results, we recommend always including a system prompt that clearly outlines the bot's purpose, even if it is minimal.</p>
+<h3>Basic Instruct Template (V7)</h3>
+<pre><code>&lt;s&gt;[SYSTEM_PROMPT] &lt;system prompt&gt;[/SYSTEM_PROMPT][INST] &lt;user message&gt;[/INST] &lt;assistant response&gt;&lt;/s&gt;[INST] &lt;user message&gt;[/INST]</code></pre>
+<p><strong>Be careful with subtle missing or trailing white spaces!</strong></p>
+<p><em>Please make sure to use <a href="https://github.com/mistralai/mistral-common">mistral-common</a> as the source of truth</em></p>
+<h2>Metrics</h2>
+<table><thead><tr><th>Model</th><th>MathVista (CoT)</th><th>MMMU (CoT)</th><th>ChartQA (CoT)</th><th>DocVQA (ANLS)</th><th>VQAv2 (VQA Match)</th><th>AI2D (BBox)</th><th>MM MT-Bench</th></tr></thead><tbody><tr><td><strong>Pixtral Large (124B)</strong></td><td><strong><u>69.4</u></strong></td><td>64.0</td><td>88.1</td><td><strong><u>93.3</u></strong></td><td><strong><u>80.9</u></strong></td><td>93.8</td><td><strong><u>7.4</u></strong></td></tr><tr><td>Gemini-1.5 Pro (measured)</td><td>67.8</td><td>66.3</td><td>83.8</td><td>92.3</td><td>70.6</td><td><strong><u>94.6</u></strong></td><td>6.8</td></tr><tr><td>GPT-4o (measured)</td><td>65.4</td><td><strong><u>68.6</u></strong></td><td>85.2</td><td>88.5</td><td>76.4</td><td>93.2</td><td>6.7</td></tr><tr><td>Claude-3.5 Sonnet (measured)</td><td>67.1</td><td>68.4</td><td><strong><u>89.1</u></strong></td><td>88.6</td><td>69.5</td><td>76.9</td><td>7.3</td></tr><tr><td>Llama-3.2 90B (measured)</td><td>49.1</td><td>53.7</td><td>70.8</td><td>85.7</td><td>67.0</td><td>-</td><td>5.5</td></tr></tbody></table>
+<p>Specific model versions evaluated: Claude-3.5 Sonnet (new) [Oct 24], Gemini-1.5 Pro (002) [Sep 24], GPT-4o (2024-08-06) [Aug 24].</p>
+<p>See <a href="https://github.com/mistralai/mistral-evals">mistral-evals</a> for open-source MM MT-Bench evaluation scripts.</p>
+<h2>Usage</h2>
+<p>The model can be used with the following frameworks</p>
+<ul>
+<li><a href="https://github.com/vllm-project/vllm"><code>vllm</code></a>: See <a href="#vLLM">here</a></li>
+</ul>
+<h3>vLLM</h3>
+<p>We recommend using Pixtral-Large-Instruct-2411 with the <a href="https://github.com/vllm-project/vllm">vLLM library</a> to implement production-ready inference pipelines with Pixtral-Large-Instruct-2411.</p>
+<p><strong>_Installation_</strong></p>
+<p>Make sure you install <a href="https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1"><code>vLLM &gt;= v0.6.4.post1</code></a>:</p>
+<pre><code>pip install --upgrade vllm</code></pre>
+<p>Also make sure you have <a href="https://github.com/mistralai/mistral-common/releases/tag/v1.5.0"><code>mistral_common &gt;= 1.5.0</code></a> installed:</p>
+<pre><code>pip install --upgrade mistral_common</code></pre>
+<p>You can also make use of a ready-to-go <a href="https://github.com/vllm-project/vllm/blob/main/Dockerfile">docker image</a> or on the <a href="https://hub.docker.com/layers/vllm/vllm-openai/latest/images/sha256-55a88146a4da0b6e193431b5b1d3492dfd7bebdc16919df4d031273e85a6157c?context=explore">docker hub</a>.</p>
+<h4>Server (Image)</h4>
+<p>We recommend to use Pixtral-Large-Instruct-2411 in a server/client setting. </p>
+<ol>
+<li>Spin up a server:</li>
+</ol>
+<pre><code>vllm serve mistralai/Pixtral-Large-Instruct-2411 --config-format mistral --load-format mistral --tokenizer_mode mistral --limit_mm_per_prompt 'image=10' --tensor-parallel-size 8</code></pre>
+<ol>
+<li>And ping the client:</li>
+</ol>
+<pre><code>import requests
+import json
+from huggingface_hub import hf_hub_download
+from datetime import datetime, timedelta
+
+url = "http://&lt;your-server-url&gt;:8000/v1/chat/completions"
+headers = {"Content-Type": "application/json", "Authorization": "Bearer token"}
+
+model = "mistralai/Pixtral-Large-Instruct-2411"
+
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, "r") as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+
+SYSTEM_PROMPT = load_system_prompt(model, "SYSTEM_PROMPT.txt")
+
+image_url = "https://huggingface.co/datasets/patrickvonplaten/random_img/resolve/main/europe.png"
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Which of the depicted countries has the best food? Which the second and third and fourth? Name the country, its color on the map and one its city that is visible on the map, but is not the capital. Make absolutely sure to only name a city that can be seen on the map.",
+            },
+            {"type": "image_url", "image_url": {"url": image_url}},
+        ],
+    },
+]
+
+data = {"model": model, "messages": messages}
+
+response = requests.post(url, headers=headers, data=json.dumps(data))
+print(response.json()["choices"][0]["message"]["content"])
+# Determining which country has the "best" food can be subjective and depends on personal preferences. However, based on popular culinary reputations, here are some countries known for their cuisine:
+
+#1. **Italy** (Brown) - Known for its pasta, pizza, and diverse regional dishes.
+#   - City: Milan
+
+#2. **France** (Dark Brown) - Renowned for its fine dining, pastries, and wine.
+#   - City: Lyon
+
+#3. **Spain** (Yellow) - Famous for tapas, paella, and a variety of seafood dishes.
+#   - City: Barcelona
+
+#4. **Greece** (Yellow) - Known for its Mediterranean cuisine, including moussaka, souvlaki, and fresh seafood.
+#   - City: Thessaloniki
+
+#These rankings are based on general culinary reputations and can vary widely depending on individual tastes.</code></pre>
+<h4>Server (Text-only)</h4>
+<p>You can also ping the client with a text-only example. The following example  shows how the system prompt can be used to make sure the model always knows the current date.</p>
+<pre><code>import requests
+import json
+from huggingface_hub import hf_hub_download
+from datetime import datetime, timedelta
+
+url = "http://&lt;your-server-url&gt;:8000/v1/chat/completions"
+headers = {"Content-Type": "application/json", "Authorization": "Bearer token"}
+
+model = "mistralai/Pixtral-Large-Instruct-2411"
+
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, "r") as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+
+SYSTEM_PROMPT = load_system_prompt(model, "SYSTEM_PROMPT.txt")
+
+image_url = "https://huggingface.co/datasets/patrickvonplaten/random_img/resolve/main/europe.png"
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": "Without browsing the web, how many days ago was Mistral founded?"
+    },
+]
+
+data = {"model": model, "messages": messages}
+
+response = requests.post(url, headers=headers, data=json.dumps(data))
+print(response.json()["choices"][0]["message"]["content"])
+# Mistral AI was founded in April 2023. Since the current date is November 18, 2024, we can calculate the number of days between April 2023 and November 18, 2024.
+
+#First, calculate the days from April 2023 to the end of 2023:
+#- April: 27 days (30 - 3)
+#- May: 31 days
+#- June: 30 days
+#- July: 31 days
+#- August: 31 days
+#- September: 30 days
+#- October: 31 days
+#- November: 30 days
+#- December: 31 days
+
+#Total days from April 2023 to December 31, 2023: 27 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31 = 272 days
+
+#Next, calculate the days from January 1, 2024, to November 18, 2024:
+#- January: 31 days
+#- February: 29 days (2024 is a leap year)
+#- March: 31 days
+#- April: 30 days
+#- May: 31 days
+#- June: 30 days
+#- July: 31 days
+#- August: 31 days
+#- September: 30 days
+#- October: 31 days
+#- November: 18 days
+
+#Total days from January 1, 2024, to November 18, 2024: 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 18 = 323 days
+
+#Adding the two periods together:
+#272 days (from April 2023 to December 2023) + 323 days (from January 2024 to November 18, 2024) = 595 days
+
+#Therefore, Mistral AI was founded 595 days ago from November 18, 2024.</code></pre>
+<h4>Offline Example</h4>
+<pre><code>from vllm import LLM
+from vllm.sampling_params import SamplingParams
+from huggingface_hub import hf_hub_download
+from datetime import datetime, timedelta
+
+model_name = "mistralai/Pixtral-Large-Instruct-2411"
+
+def load_system_prompt(repo_id: str, filename: str) -&gt; str:
+    file_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    with open(file_path, 'r') as file:
+        system_prompt = file.read()
+    today = datetime.today().strftime('%Y-%m-%d')
+    yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+    model_name = repo_id.split("/")[-1]
+    return system_prompt.format(name=model_name, today=today, yesterday=yesterday)
+
+SYSTEM_PROMPT = load_system_prompt(model_name, "SYSTEM_PROMPT.txt")
+
+image_url = "https://huggingface.co/datasets/patrickvonplaten/random_img/resolve/main/europe.png"
+
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "Which of the depicted countries has the best food? Which the second and third and fourth? Name the country, its color on the map and one its city that is visible on the map, but is not the capital. Make absolutely sure to only name a city that can be seen on the map.",
+            },
+            {"type": "image_url", "image_url": {"url": image_url}},
+        ],
+    },
+]
+
+sampling_params = SamplingParams(max_tokens=512)
+
+# note that running this model on GPU requires over 300 GB of GPU RAM
+llm = LLM(model=model_name, config_format="mistral", load_format="mistral", tokenizer_mode="mistral", tensor_parallel_size=8, limit_mm_per_prompt={"image": 4})
+
+outputs = llm.chat(messages, sampling_params=sampling_params)
+
+print(outputs[0].outputs[0].text)</code></pre>
+<h2>The Mistral AI Team</h2>
+<p>Albert Jiang, Alexandre Sablayrolles, Alexis Tacnet, Alok Kothari, Antoine Roux, Arthur Mensch, Audrey Herblin-Stoop, Augustin Garreau, Austin Birky, Bam4d, Baptiste Bout, Baudouin de Monicault, Blanche Savary, Carole Rambaud, Caroline Feldman, Devendra Singh Chaplot, Diego de las Casas, Diogo Costa, Eleonore Arcelin, Emma Bou Hanna, Etienne Metzger, Gaspard Blanchet, Gianna Lengyel, Guillaume Bour, Guillaume Lample, Harizo Rajaona, Henri Roussez, Hichem Sattouf, Ian Mack, Jean-Malo Delignon, Jessica Chudnovsky, Justus Murke, Kartik Khandelwal, Lawrence Stewart, Louis Martin, Louis Ternon, Lucile Saulnier, Lélio Renard Lavaud, Margaret Jennings, Marie Pellat, Marie Torelli, Marie-Anne Lachaux, Marjorie Janiewicz, Mickaël Seznec, Nicolas Schuhl, Niklas Muhs, Olivier de Garrigues, Patrick von Platen, Paul Jacob, Pauline Buche, Pavan Kumar Reddy, Perry Savas, Pierre Stock, Romain Sauvestre, Sagar Vaze, Sandeep Subramanian, Saurabh Garg, Soham Ghosh, Sophia Yang, Szymon Antoniak, Teven Le Scao, Thibault Schueller, Thibaut Lavril, Thomas Wang, Théophile Gervet, Timothée Lacroix, Valera Nemychnikova, Wendy Shang, William El Sayed, William Marshall</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>
