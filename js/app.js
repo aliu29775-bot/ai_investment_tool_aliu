@@ -82,6 +82,104 @@
           "</div>";
       }).join("");
     }
+
+    renderMarket();
+    renderPfSnapshot();
+    renderScoreDist();
+  }
+
+  /* ---------- 首頁：市場總覽（指數報價條＋近 5 日走勢線） ---------- */
+  function sparklineSVG(vals, up) {
+    if (!vals || vals.length < 2) return "";
+    var W = 64, H = 22, P = 2;
+    var mn = Math.min.apply(null, vals);
+    var mx = Math.max.apply(null, vals);
+    var rng = mx - mn || 1;
+    var pts = vals.map(function (v, i) {
+      var x = P + i * (W - 2 * P) / (vals.length - 1);
+      var y = H - P - (v - mn) / rng * (H - 2 * P);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    return '<svg class="spark" viewBox="0 0 ' + W + " " + H + '" aria-hidden="true">' +
+      '<polyline points="' + pts.join(" ") + '" fill="none" stroke="' +
+      (up ? "var(--good)" : "var(--crit)") +
+      '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+  }
+
+  function renderMarket() {
+    var strip = document.getElementById("market-strip");
+    if (!strip || !D.indices) return;
+    strip.innerHTML = D.indices.map(function (it) {
+      var q = D.market[it.sym];
+      if (!q) return "";
+      var up = q.change_pct >= 0;
+      return '<div class="ticker-card">' +
+        '<div class="tk-name">' + esc(it.label) + "</div>" +
+        '<div class="tk-price">' + q.price.toLocaleString() + "</div>" +
+        '<div class="tk-chg ' + (up ? "up" : "down") + '">' +
+        (up ? "▲" : "▼") + Math.abs(q.change_pct).toFixed(2) + "%</div>" +
+        sparklineSVG(q.closes, up) + "</div>";
+    }).join("");
+    var f = document.getElementById("market-asof");
+    if (f && D.market_asof) f.textContent = "⏱ 行情更新於 " + D.market_asof;
+  }
+
+  /* ---------- 首頁：實盤組合快照 ---------- */
+  function renderPfSnapshot() {
+    var box = document.getElementById("pf-snapshot");
+    if (!box || !D.portfolio) return;
+    var p = D.portfolio;
+    var maxW = Math.max.apply(null, p.holdings.map(function (h) { return h.weight; }));
+    var seq = ["#9ec5f4", "#86b6ef", "#6da7ec", "#5498e8", "#3b89e3"];
+    var sorted = p.holdings.slice().sort(function (a, b) { return b.weight - a.weight; });
+    var rows = sorted.map(function (h, i) {
+      var w = Math.round(h.weight / maxW * 100);
+      return '<div class="hbar-row">' +
+        '<span class="hname">' + esc(h.name) + "</span>" +
+        '<div class="track"><div class="fill" style="width:' + w + "%;background:" + seq[i] +
+        '"></div></div>' +
+        '<span class="hval">' + h.weight + "%</span></div>";
+    }).join("");
+    rows += '<div class="hbar-row"><span class="hname">現金（待配置）</span>' +
+      '<div class="track"><div class="fill" style="width:26%;background:var(--cash)"></div></div>' +
+      '<span class="hval">約 8%</span></div>';
+    box.innerHTML = rows +
+      '<div class="pf-foot">組合浮動盈虧約 <strong class="pnl-down">-3.6%</strong>（相對成本）·' +
+      "清倉泡泡瑪特回籠現金尚未再配置</div>";
+  }
+
+  /* ---------- 首頁：覆蓋公司評分分佈 ---------- */
+  function renderScoreDist() {
+    var box = document.getElementById("score-dist");
+    if (!box) return;
+    var buckets = [
+      { label: "4★ 及以上", min: 4, color: "var(--good)" },
+      { label: "3 ~ 4★", min: 3, color: "var(--s3)" },
+      { label: "3★ 以下", min: 0, color: "var(--warn)" },
+      { label: "未評分", min: null, color: "var(--text-muted)" },
+    ];
+    var counts = [0, 0, 0, 0];
+    D.companies.forEach(function (c) {
+      if (!c.score) counts[3]++;
+      else if (c.score.value >= 4) counts[0]++;
+      else if (c.score.value >= 3) counts[1]++;
+      else counts[2]++;
+    });
+    var total = D.companies.length || 1;
+    box.innerHTML = buckets.map(function (b, i) {
+      var w = Math.round(counts[i] / total * 100);
+      return '<div class="dist-row">' +
+        '<span class="dist-label">' + b.label + "</span>" +
+        '<div class="track"><div class="fill" style="width:' + w + "%;background:" + b.color +
+        '"></div></div>' +
+        '<span class="dist-num">' + counts[i] + " 家</span></div>";
+    }).join("");
+    var v = { positive: 0, neutral: 0, negative: 0 };
+    D.companies.forEach(function (c) {
+      if (c.verdict_class && v[c.verdict_class] != null) v[c.verdict_class]++;
+    });
+    box.innerHTML += '<div class="dist-verdict">結論分佈：✅ 通過 ' + v.positive +
+      " 家 · ❓ 灰色地帶 " + v.neutral + " 家 · ❌ 不通過 " + v.negative + " 家</div>";
   }
 
   /* ---------- 公司卡片 ---------- */
@@ -95,6 +193,7 @@
         '<a href="' + reportLink(r) + '">' + esc(r.title) + "</a></li>";
     }).join("");
     var more = c.reports.length > 40 ? "<li>… 另有 " + (c.reports.length - 40) + " 份報告</li>" : "";
+    var watched = getWatch().indexOf(c.name) >= 0;
     return '<div class="card co-card" data-name="' + esc(c.name) + '" tabindex="0">' +
       '<div class="co-top"><h3 class="co-name">' + esc(c.name) + "</h3>" +
       priceCell(c) + "</div>" +
@@ -102,18 +201,44 @@
       sum +
       '<div class="co-foot"><span>📄 ' + c.count + " 份報告</span>" +
       "<span>🕐 最近 " + c.latest + "</span></div>" +
+      '<div class="co-actions">' +
+        '<button class="watch-btn' + (watched ? " on" : "") + '" data-watch="' + esc(c.name) +
+          '" aria-pressed="' + watched + '">' + (watched ? "⭐" : "☆") + " 關注</button>" +
+        '<button class="cmp-btn" data-cmp="' + esc(c.name) + '">＋ 比較</button>' +
+      "</div>" +
       '<div class="co-reports"><ol>' + reports + more + "</ol></div>" +
       "</div>";
+  }
+
+  /* ---------- 我的關注（localStorage） ---------- */
+  function getWatch() {
+    try { return JSON.parse(localStorage.getItem("aiberkshire-watch") || "[]"); }
+    catch (e) { return []; }
+  }
+  function setWatch(list) {
+    try { localStorage.setItem("aiberkshire-watch", JSON.stringify(list)); } catch (e) {}
+  }
+
+  function exchangeOf(c) {
+    var t = c.ticker || "";
+    if (/\.HK$/i.test(t)) return "hk";
+    if (/\.(SS|SZ)$/i.test(t) || /^\d{6}\./.test(t)) return "cn";
+    if (t && t.indexOf(".") === -1) return "us";
+    return "other";
   }
 
   function initCompanies() {
     var grid = document.getElementById("co-grid");
     if (!grid) return;
     var q = document.getElementById("co-search");
-    var state = { filter: "all", q: "" };
+    var sortSel = document.getElementById("co-sort");
+    var counter = document.getElementById("co-count");
+    var state = { filter: "all", q: "", min: 0, exch: "all", watch: false, sort: "score" };
+    var cmpList = [];
 
     function apply() {
       var list = D.companies.slice();
+      var watch = getWatch();
       if (state.q) {
         var s = state.q.toLowerCase();
         list = list.filter(function (c) {
@@ -126,18 +251,131 @@
       if (state.filter === "positive") list = list.filter(function (c) { return c.verdict_class === "positive"; });
       if (state.filter === "neutral") list = list.filter(function (c) { return c.verdict_class === "neutral"; });
       if (state.filter === "negative") list = list.filter(function (c) { return c.verdict_class === "negative"; });
+      if (state.min) list = list.filter(function (c) { return c.score && c.score.value >= state.min; });
+      if (state.exch !== "all") list = list.filter(function (c) { return exchangeOf(c) === state.exch; });
+      if (state.watch) list = list.filter(function (c) { return watch.indexOf(c.name) >= 0; });
       list.sort(function (a, b) {
+        if (state.sort === "latest") return a.latest < b.latest ? 1 : -1;
+        if (state.sort === "count") return b.count - a.count;
         return (b.score ? b.score.value : -1) - (a.score ? a.score.value : -1);
       });
+      if (counter) counter.textContent = list.length + " / " + D.companies.length + " 家";
       grid.innerHTML = list.length ? list.map(coCardHTML).join("") :
         '<div class="empty">沒有符合條件的公司</div>';
-      grid.querySelectorAll(".co-card").forEach(function (card) {
-        card.addEventListener("click", function () { card.classList.toggle("open"); });
-        card.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault(); card.classList.toggle("open");
-          }
-        });
+      grid.querySelectorAll(".cmp-btn").forEach(function (b) {
+        var n = b.getAttribute("data-cmp");
+        if (cmpList.indexOf(n) >= 0) {
+          b.classList.add("on");
+          b.textContent = "✓ 已加入";
+        }
+      });
+    }
+
+    grid.addEventListener("click", function (e) {
+      var wBtn = e.target.closest(".watch-btn");
+      if (wBtn) {
+        var name = wBtn.getAttribute("data-watch");
+        var watch = getWatch();
+        var i = watch.indexOf(name);
+        if (i >= 0) watch.splice(i, 1); else watch.push(name);
+        setWatch(watch);
+        apply();
+        return;
+      }
+      var cBtn = e.target.closest(".cmp-btn");
+      if (cBtn) {
+        var n2 = cBtn.getAttribute("data-cmp");
+        var j = cmpList.indexOf(n2);
+        if (j >= 0) cmpList.splice(j, 1);
+        else if (cmpList.length < 3) cmpList.push(n2);
+        else { alert("最多同時比較 3 家公司"); return; }
+        updateCmpBar();
+        apply();
+        return;
+      }
+      var card = e.target.closest(".co-card");
+      if (card && !e.target.closest("a")) card.classList.toggle("open");
+    });
+
+    grid.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        var card = e.target.closest(".co-card");
+        if (card && !e.target.closest("button") && !e.target.closest("a")) {
+          e.preventDefault(); card.classList.toggle("open");
+        }
+      }
+    });
+
+    /* ---------- 比較列與彈窗 ---------- */
+    function updateCmpBar() {
+      var bar = document.getElementById("cmp-bar");
+      if (!bar) return;
+      document.getElementById("cmp-n").textContent = cmpList.length;
+      document.getElementById("cmp-chips").innerHTML = cmpList.map(function (name) {
+        return '<span class="cmp-chip">' + esc(name) +
+          '<button class="cmp-rm" data-rm="' + esc(name) + '" aria-label="移除">✕</button></span>';
+      }).join("");
+      bar.hidden = cmpList.length === 0;
+    }
+
+    function openCompare() {
+      var modal = document.getElementById("cmp-modal");
+      if (!modal) return;
+      if (cmpList.length < 2) { alert("請先選至少 2 家公司"); return; }
+      var cos = cmpList.map(function (name) {
+        return D.companies.filter(function (c) { return c.name === name; })[0];
+      });
+      var rows = [
+        ["評分", function (c) {
+          return c.score ? stars(c.score.stars) + " " + c.score.value.toFixed(1) + " / 5" : "—";
+        }],
+        ["結論", function (c) { return verdictBadge(c) || "—"; }],
+        ["代碼", function (c) { return esc(c.ticker || "—"); }],
+        ["股價", function (c) {
+          var q = c.ticker && D.market ? D.market[c.ticker] : null;
+          if (!q) return "—";
+          var up = q.change_pct >= 0;
+          return esc(q.price.toLocaleString()) + ' <span class="c ' + (up ? "up" : "down") + '">' +
+            (up ? "▲" : "▼") + Math.abs(q.change_pct).toFixed(2) + "%</span>";
+        }],
+        ["報告數", function (c) { return c.count + " 份"; }],
+        ["最近更新", function (c) { return c.latest; }],
+        ["摘要", function (c) { return c.summary ? esc(c.summary) : "—"; }],
+      ];
+      document.getElementById("cmp-table").innerHTML =
+        "<thead><tr><th>指標</th>" +
+        cos.map(function (c) { return "<th>" + esc(c.name) + "</th>"; }).join("") +
+        "</tr></thead><tbody>" +
+        rows.map(function (row) {
+          return "<tr><td class='cmp-metric'>" + row[0] + "</td>" +
+            cos.map(function (c) { return "<td>" + row[1](c) + "</td>"; }).join("") + "</tr>";
+        }).join("") + "</tbody>";
+      modal.hidden = false;
+    }
+
+    var barEl = document.getElementById("cmp-bar");
+    if (barEl) {
+      barEl.addEventListener("click", function (e) {
+        var rm = e.target.closest(".cmp-rm");
+        if (rm) {
+          cmpList.splice(cmpList.indexOf(rm.getAttribute("data-rm")), 1);
+          updateCmpBar(); apply();
+        }
+      });
+      document.getElementById("cmp-clear").addEventListener("click", function () {
+        cmpList = []; updateCmpBar(); apply();
+      });
+      document.getElementById("cmp-go").addEventListener("click", openCompare);
+      document.getElementById("cmp-close").addEventListener("click", function () {
+        document.getElementById("cmp-modal").hidden = true;
+      });
+      document.getElementById("cmp-modal").addEventListener("click", function (e) {
+        if (e.target === this) this.hidden = true;
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && document.getElementById("cmp-modal")) {
+          document.getElementById("cmp-modal").hidden = true;
+        }
       });
     }
 
@@ -149,6 +387,33 @@
         state.filter = chip.getAttribute("data-filter");
         apply();
       });
+    });
+    document.querySelectorAll("[data-exch]").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        document.querySelectorAll("[data-exch]").forEach(function (c) { c.classList.remove("on"); });
+        chip.classList.add("on");
+        state.exch = chip.getAttribute("data-exch");
+        apply();
+      });
+    });
+    document.querySelectorAll("[data-min]").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        document.querySelectorAll("[data-min]").forEach(function (c) { c.classList.remove("on"); });
+        chip.classList.add("on");
+        state.min = Number(chip.getAttribute("data-min"));
+        apply();
+      });
+    });
+    document.querySelectorAll("[data-watch]").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        state.watch = !state.watch;
+        chip.classList.toggle("on", state.watch);
+        apply();
+      });
+    });
+    if (sortSel) sortSel.addEventListener("change", function () {
+      state.sort = sortSel.value;
+      apply();
     });
     apply();
   }

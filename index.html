@@ -43,6 +43,36 @@
     </div>
   </section>
 
+  <!-- 快速入口 -->
+  <section class="quick-grid">
+    <a class="card quick-card" href="companies.html">
+      <span class="qc-icon">🔍</span>
+      <div><h3>公司篩選器</h3><p>110 家公司 · 按評分、交易所、關注篩選</p></div>
+    </a>
+    <a class="card quick-card" href="reports.html">
+      <span class="qc-icon">📄</span>
+      <div><h3>報告總覽</h3><p>2,354 份報告 · 全文搜尋與分頁</p></div>
+    </a>
+    <a class="card quick-card" href="trackrecord.html">
+      <span class="qc-icon">📈</span>
+      <div><h3>實盤業績</h3><p>持倉、交易記錄與收益對比</p></div>
+    </a>
+    <a class="card quick-card" href="companies.html">
+      <span class="qc-icon">⚖️</span>
+      <div><h3>公司比較</h3><p>最多 3 家並排對比評分與結論</p></div>
+    </a>
+  </section>
+
+  <!-- 市場總覽 -->
+  <section class="section">
+    <div class="section-head">
+      <h2>🌐 市場總覽</h2>
+      <span class="freshness" id="market-asof"></span>
+    </div>
+    <p class="section-desc">全球主要指數、利率與波動率——價值投資者也該知道市場站在哪裡。走勢線為近 5 個交易日。</p>
+    <div class="ticker-strip" id="market-strip"></div>
+  </section>
+
   <!-- 實盤業績 -->
   <section class="section">
     <div class="section-head">
@@ -79,6 +109,27 @@
         </tbody>
       </table>
       <p class="disclaimer" style="padding: 0 16px;">歷史收益不代表未來表現。截圖來自富途證券真實帳戶。</p>
+    </div>
+  </section>
+
+  <!-- 組合快照＋評分分佈 -->
+  <section class="section">
+    <div class="dash-grid">
+      <div class="card dash-card">
+        <div class="dash-head">
+          <h3>💼 實盤組合快照</h3>
+          <a class="more" href="trackrecord.html">完整記錄 →</a>
+        </div>
+        <div id="pf-snapshot"></div>
+        <p class="disclaimer">截至 2026-09-07 · 權重為持股組合口徑（不含現金）</p>
+      </div>
+      <div class="card dash-card">
+        <div class="dash-head">
+          <h3>🎯 覆蓋公司評分分佈</h3>
+          <a class="more" href="companies.html">查看全部 →</a>
+        </div>
+        <div id="score-dist"></div>
+      </div>
     </div>
   </section>
 

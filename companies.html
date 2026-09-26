@@ -34,11 +34,32 @@
       <span class="icon">🔍</span>
       <input id="co-search" type="search" placeholder="搜尋公司、代碼或摘要…" aria-label="搜尋公司">
     </div>
-    <button class="chip on" data-filter="all">全部</button>
-    <button class="chip" data-filter="scored">有評分</button>
-    <button class="chip" data-filter="positive">✅ 正面</button>
-    <button class="chip" data-filter="neutral">❓ 中性</button>
-    <button class="chip" data-filter="negative">❌ 負面</button>
+    <div class="toolbar-row">
+      <button class="chip on" data-filter="all">全部</button>
+      <button class="chip" data-filter="scored">有評分</button>
+      <button class="chip" data-filter="positive">✅ 正面</button>
+      <button class="chip" data-filter="neutral">❓ 中性</button>
+      <button class="chip" data-filter="negative">❌ 負面</button>
+      <button class="chip" data-watch="1">⭐ 我的關注</button>
+    </div>
+    <div class="toolbar-row">
+      <span class="tb-label">交易所</span>
+      <button class="chip on" data-exch="all">全部</button>
+      <button class="chip" data-exch="hk">港股</button>
+      <button class="chip" data-exch="us">美股</button>
+      <button class="chip" data-exch="cn">A股</button>
+      <button class="chip" data-exch="other">其他</button>
+      <span class="tb-label">最低評分</span>
+      <button class="chip on" data-min="0">不限</button>
+      <button class="chip" data-min="3">3★+</button>
+      <button class="chip" data-min="4">4★+</button>
+      <span class="tb-label">排序</span>
+      <select id="co-sort" class="tb-select" aria-label="排序方式">
+        <option value="score">評分高 → 低</option>
+        <option value="latest">最近更新</option>
+        <option value="count">報告數多 → 少</option>
+      </select>
+    </div>
   </div>
 
   <div class="co-grid" id="co-grid"></div>
@@ -53,6 +74,28 @@
 
 </main>
 
+<!-- 比較列（選好公司後出現） -->
+<div class="cmp-bar" id="cmp-bar" hidden>
+  <span class="cmp-hint">已選 <b id="cmp-n">0</b>/3 家公司</span>
+  <span class="cmp-chips" id="cmp-chips"></span>
+  <span class="cmp-spacer"></span>
+  <button class="btn primary" id="cmp-go">⚖️ 開始比較</button>
+  <button class="btn" id="cmp-clear">清空</button>
+</div>
+
+<!-- 比較彈窗 -->
+<div class="cmp-modal" id="cmp-modal" hidden>
+  <div class="cmp-panel">
+    <div class="cmp-head">
+      <h3>⚖️ 公司比較</h3>
+      <button class="cmp-close" id="cmp-close" aria-label="關閉比較">✕</button>
+    </div>
+    <div class="cmp-scroll">
+      <table class="data-table cmp-table" id="cmp-table"></table>
+    </div>
+  </div>
+</div>
+
 <footer class="site-foot">
   <div class="container">
     <div class="links">
@@ -64,12 +107,5 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  var n = window.SITE_DATA.companies.length;
-  var scored = window.SITE_DATA.companies.filter(function (c) { return c.score; }).length;
-  document.getElementById("co-count").textContent = n + " 家公司 · " + scored + " 家有評分";
-});
-</script>
 </body>
 </html>

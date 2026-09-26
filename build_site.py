@@ -182,6 +182,18 @@ def classify_verdict(v):
 # 3. 行情抓取（Yahoo Finance，失敗不影響建站）
 # ---------------------------------------------------------------------------
 
+# 首頁市場總覽用的主要指數（Yahoo Finance 代碼 → 中文名稱）
+MARKET_INDICES = {
+    "^HSI": "恒生指數",
+    "^GSPC": "標普500",
+    "^IXIC": "納斯達克",
+    "000300.SS": "滬深300",
+    "^VIX": "恐慌指數 VIX",
+    "^TNX": "美國10年期國債",
+    "DX-Y.NYB": "美元指數",
+}
+
+
 def fetch_quotes(symbols, verbose=True):
     quotes = {}
     for i, sym in enumerate(sorted(set(s for s in symbols if s))):
@@ -204,6 +216,7 @@ def fetch_quotes(symbols, verbose=True):
                     "change_pct": round(chg, 2) if chg is not None else None,
                     "asof": time.strftime("%Y-%m-%d"),
                     "name": meta.get("shortName") or meta.get("longName") or "",
+                    "closes": [round(c, 2) for c in valid[-5:]],
                 }
                 if verbose:
                     print(f"  ✓ {sym:14s} {price:>10.2f} {meta.get('currency','')}")
@@ -562,13 +575,19 @@ def main():
     quotes = {}
     cache_file = os.path.join(SITE_DIR, "js", "market_cache.json")
     if not args.no_market:
-        print(f"== 3/4 抓取行情（{len([t for t in tickers if t])} 個代碼，約 30 秒）==")
-        quotes = fetch_quotes(tickers)
+        print(f"== 3/4 抓取行情（{len([t for t in tickers if t])} 個代碼，約 40 秒）==")
+        quotes = fetch_quotes(tickers + list(MARKET_INDICES))
+        for sym, label in MARKET_INDICES.items():
+            if sym in quotes:
+                quotes[sym]["label"] = label
         with open(cache_file, "w", encoding="utf-8") as f:
             json.dump(quotes, f, ensure_ascii=False)
     elif os.path.exists(cache_file):
         quotes = json.load(open(cache_file, encoding="utf-8"))
         print(f"== 3/4 使用行情快取（{len(quotes)} 檔，{cache_file}）==")
+
+    # 首頁市場總覽用：主要指數行情（取得到幾個就顯示幾個）
+    indices = [{"sym": s, "label": l} for s, l in MARKET_INDICES.items() if s in quotes]
 
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
@@ -589,6 +608,8 @@ def main():
             for r in all_reports[:30]
         ],
         "market": quotes,
+        "indices": indices,
+        "market_asof": max((q.get("asof", "") for q in quotes.values()), default=""),
         "trackrecord": {
             "years": ["2024", "2025"],
             "returns": [
