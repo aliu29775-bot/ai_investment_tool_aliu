@@ -64,6 +64,13 @@
 
   /* ---------- 首頁 ---------- */
   function renderHome() {
+    var hs = document.getElementById("hero-stats");
+    if (hs && D.stats) {
+      var nums = hs.querySelectorAll(".num");
+      if (nums[0]) nums[0].textContent = D.stats.reports.toLocaleString();
+      if (nums[1]) nums[1].textContent = D.stats.companies.toLocaleString();
+      if (nums[2]) nums[2].textContent = D.stats.topics.toLocaleString();
+    }
     var feats = D.companies
       .filter(function (c) { return c.score; })
       .sort(function (a, b) { return b.score.value - a.score.value; })
@@ -180,6 +187,19 @@
     });
     box.innerHTML += '<div class="dist-verdict">結論分佈：✅ 通過 ' + v.positive +
       " 家 · ❓ 灰色地帶 " + v.neutral + " 家 · ❌ 不通過 " + v.negative + " 家</div>";
+    var sect = D.sectors || [];
+    if (sect.length) {
+      var maxS = Math.max.apply(null, sect.map(function (s) { return s.count; }));
+      box.innerHTML += '<div class="dist-sector-title">行業分佈（前 6）</div>' +
+        sect.slice(0, 6).map(function (s) {
+          var w2 = Math.round(s.count / maxS * 100);
+          return '<div class="dist-row dist-sector"><span class="dist-label">' + esc(s.name) +
+            "</span>" +
+            '<div class="track"><div class="fill" style="width:' + w2 +
+            "%;background:var(--sector-fill)\"></div></div>" +
+            '<span class="dist-num">' + s.count + "</span></div>";
+        }).join("");
+    }
   }
 
   /* ---------- 公司卡片 ---------- */
@@ -195,7 +215,8 @@
     var more = c.reports.length > 40 ? "<li>… 另有 " + (c.reports.length - 40) + " 份報告</li>" : "";
     var watched = getWatch().indexOf(c.name) >= 0;
     return '<div class="card co-card" data-name="' + esc(c.name) + '" tabindex="0">' +
-      '<div class="co-top"><h3 class="co-name">' + esc(c.name) + "</h3>" +
+      '<div class="co-top"><h3 class="co-name">' + esc(c.name) +
+      '<span class="co-sector">' + esc(c.sector || "") + "</span></h3>" +
       priceCell(c) + "</div>" +
       '<div class="co-mid">' + score + verdictBadge(c) + "</div>" +
       sum +
@@ -233,8 +254,16 @@
     var q = document.getElementById("co-search");
     var sortSel = document.getElementById("co-sort");
     var counter = document.getElementById("co-count");
-    var state = { filter: "all", q: "", min: 0, exch: "all", watch: false, sort: "score" };
+    var state = { filter: "all", q: "", min: 0, exch: "all", watch: false, sort: "score", sector: "all" };
     var cmpList = [];
+    var sectorSel = document.getElementById("co-sector");
+    if (sectorSel && D.sectors) {
+      var opts = ["<option value='all'>全部行業</option>"];
+      D.sectors.forEach(function (s) {
+        opts.push("<option value='" + esc(s.name) + "'>" + esc(s.name) + " (" + s.count + ")</option>");
+      });
+      sectorSel.innerHTML = opts.join("");
+    }
 
     function apply() {
       var list = D.companies.slice();
@@ -253,6 +282,7 @@
       if (state.filter === "negative") list = list.filter(function (c) { return c.verdict_class === "negative"; });
       if (state.min) list = list.filter(function (c) { return c.score && c.score.value >= state.min; });
       if (state.exch !== "all") list = list.filter(function (c) { return exchangeOf(c) === state.exch; });
+      if (state.sector !== "all") list = list.filter(function (c) { return c.sector === state.sector; });
       if (state.watch) list = list.filter(function (c) { return watch.indexOf(c.name) >= 0; });
       list.sort(function (a, b) {
         if (state.sort === "latest") return a.latest < b.latest ? 1 : -1;
@@ -413,6 +443,10 @@
     });
     if (sortSel) sortSel.addEventListener("change", function () {
       state.sort = sortSel.value;
+      apply();
+    });
+    if (sectorSel) sectorSel.addEventListener("change", function () {
+      state.sector = sectorSel.value;
       apply();
     });
     apply();
@@ -621,6 +655,159 @@
     }).join("");
   }
 
+  /* ---------- 資產配置頁 ---------- */
+  function fmtPct(v) {
+    return v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+  }
+
+  function macroColor(s, upGood) {
+    if (s == null) return "var(--text-muted)";
+    var v = upGood ? s : 100 - s;
+    if (v >= 65) return "var(--good)";
+    if (v >= 40) return "var(--warn)";
+    return "var(--crit)";
+  }
+
+  function renderAllocation() {
+    var A = D.allocation;
+    if (!A) {
+      var host = document.querySelector("main.container");
+      if (host) {
+        host.insertAdjacentHTML("afterbegin",
+          '<div class="card" style="padding:16px;margin-top:16px;">' +
+          "⚠️ 資產配置資料暫不可用（建站時宏觀數據抓取失敗）。</div>");
+      }
+      return;
+    }
+    var i;
+    var asofEls = document.querySelectorAll("#alloc-asof, #macro-asof");
+    for (i = 0; i < asofEls.length; i++) {
+      asofEls[i].textContent = "⏱ 更新於 " + A.asof;
+    }
+
+    /* 宏觀儀錶板 */
+    var mg = document.getElementById("alloc-macro");
+    if (mg) {
+      mg.innerHTML = A.macro.map(function (m) {
+        var chg = "";
+        if (m.change != null && m.change !== 0) {
+          var good = m.change > 0 ? m.up_good : !m.up_good;
+          chg = '<span class="m-change ' + (good ? "good" : "bad") + '">' +
+            (m.change > 0 ? "▲ +" : "▼ ") + Math.abs(m.change) + "</span>";
+        }
+        var w = Math.max(0, Math.min(100, m.score || 0));
+        return '<div class="card macro-card">' +
+          '<div class="macro-head"><span class="macro-label">' + esc(m.label) + "</span>" +
+          chg + "</div>" +
+          '<div class="macro-score">' + (m.score == null ? "—" : m.score) +
+          '<span class="macro-unit">/100</span></div>' +
+          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+          macroColor(m.score, m.up_good) + '"></div></div>' +
+          '<div class="macro-note">' + esc(m.note) + "</div></div>";
+      }).join("");
+    }
+
+    /* 建議配置 */
+    var allocColors = {
+      "股票": "#3b89e3", "國債": "#8a6fd1", "商品": "#e08c3a",
+      "黃金": "#d9a514", "現金": "#98a2b3",
+    };
+    var tg = document.getElementById("alloc-targets");
+    if (tg) {
+      var maxT = Math.max.apply(null, A.targets.map(function (t) { return t.pct; }));
+      tg.innerHTML = '<div class="dash-head"><h3>🎯 目標權重</h3></div>' +
+        A.targets.map(function (t) {
+          var w = Math.round(t.pct / maxT * 100);
+          var q = D.market && D.market[t.proxy];
+          var pr = q ? q.price.toLocaleString() : "";
+          return '<div class="al-block">' +
+            '<div class="al-line"><span class="al-name">' + esc(t.cls) + "</span>" +
+            '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+            (allocColors[t.cls] || "var(--sector-fill)") + '"></div></div>' +
+            '<span class="al-val">' + t.pct + "%</span></div>" +
+            '<div class="al-proxy">ETF 代理 ' + esc(t.proxy) + (pr ? " · " + pr : "") +
+            "</div></div>";
+        }).join("");
+    }
+
+    /* 當前判斷 */
+    var jl = document.getElementById("alloc-judgment");
+    if (jl) {
+      jl.innerHTML = A.judgment.map(function (line) {
+        return "<li>" + esc(line) + "</li>";
+      }).join("");
+    }
+
+    /* 資產類別表現 */
+    var ag = document.getElementById("alloc-assets");
+    if (ag) {
+      ag.innerHTML = A.assets.map(function (a) {
+        var up = a.y1 >= 0;
+        return '<div class="card asset-card">' +
+          '<div class="asset-top"><span class="asset-label">' + esc(a.label) + "</span>" +
+          '<span class="asset-sym">' + esc(a.sym) + "</span></div>" +
+          '<div class="asset-price">' + a.price.toLocaleString() + "</div>" +
+          '<div class="asset-ret">' +
+          '<span class="c ' + (a.ytd >= 0 ? "up" : "down") + '">YTD ' + fmtPct(a.ytd) + "</span>" +
+          '<span class="c ' + (a.y1 >= 0 ? "up" : "down") + '">1Y ' + fmtPct(a.y1) + "</span>" +
+          "</div>" + sparklineSVG(a.closes, up) +
+          '<div class="asset-range">52周 ' + (a.low == null ? "—" : a.low.toLocaleString()) +
+          " – " + (a.high == null ? "—" : a.high.toLocaleString()) + "</div></div>";
+      }).join("");
+    }
+
+    /* 債券市場 */
+    var bt = document.getElementById("bonds-table");
+    if (bt && A.bonds) {
+      var b = A.bonds;
+      bt.innerHTML = "<thead><tr><th>指標</th><th>數值</th><th>說明</th></tr></thead><tbody>" +
+        "<tr><td>2年期國債殖利率</td><td class='hl'>" + b.dgs2 + "%</td><td>短端定價「利率高位持續」</td></tr>" +
+        "<tr><td>10年期國債殖利率</td><td class='hl'>" + b.dgs10 + "%</td><td>全球資產定價之錨</td></tr>" +
+        "<tr><td>30年期國債殖利率</td><td class='hl'>" + b.dgs30 + "%</td><td>期限溢價顯著</td></tr>" +
+        "<tr><td>10Y-2Y 利差</td><td class='hl'>" + (b.spread >= 0 ? "+" : "") + b.spread +
+        "%</td><td>正斜率：曲線已正常化</td></tr>" +
+        "<tr><td>聯邦基金利率</td><td>" + b.ffr + "%</td><td>美聯儲政策利率</td></tr>" +
+        "<tr><td>10年期實際利率（TIPS）</td><td>" + b.real10 + "%</td><td>長債的真實回報</td></tr>" +
+        "<tr><td>高收益債利差（OAS）</td><td>" + b.hy_oas + "%</td><td>信用利差極窄＝市場無懼</td></tr>" +
+        "</tbody>";
+      var ba = document.getElementById("bonds-asof");
+      if (ba) ba.textContent = "⏱ FRED 數據截至 " + b.asof;
+    }
+
+    /* 大宗商品 */
+    var cg = document.getElementById("alloc-commodities");
+    if (cg) {
+      cg.innerHTML = A.commodities.map(function (c) {
+        var up = c.y1 >= 0;
+        var chgHtml = c.chg == null ? "" :
+          '<span class="c ' + (c.chg >= 0 ? "up" : "down") + '">' +
+          (c.chg >= 0 ? "▲" : "▼") + Math.abs(c.chg).toFixed(2) + "%</span>";
+        return '<div class="card asset-card">' +
+          '<div class="asset-top"><span class="asset-label">' + esc(c.name) + "</span>" +
+          '<span class="asset-sym">' + esc(c.unit) + "</span></div>" +
+          '<div class="asset-price">' + c.price.toLocaleString() + "</div>" +
+          '<div class="asset-ret">' + chgHtml +
+          '<span class="c ' + (c.ytd >= 0 ? "up" : "down") + '">YTD ' + fmtPct(c.ytd) + "</span>" +
+          '<span class="c ' + (c.y1 >= 0 ? "up" : "down") + '">1Y ' + fmtPct(c.y1) + "</span>" +
+          "</div>" + sparklineSVG(c.closes, up) + "</div>";
+      }).join("");
+    }
+
+    /* 方法論 */
+    var frm = document.getElementById("alloc-formulas");
+    if (frm) {
+      frm.innerHTML = A.macro.map(function (m) {
+        return "<li><strong>" + esc(m.label) + "</strong>：" + esc(m.formula) + "</li>";
+      }).join("");
+    }
+    var rl = document.getElementById("alloc-rules");
+    if (rl) {
+      rl.innerHTML = A.rules.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("");
+    }
+    var src = document.getElementById("alloc-sources");
+    if (src) src.textContent = "資料來源：" + A.sources.join(" · ");
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -629,6 +816,7 @@
     if (page === "companies") { initCompanies(); initTopics(); }
     if (page === "reports") initReports();
     if (page === "trackrecord") { renderReturnsChart(); renderPortfolio(); }
+    if (page === "allocation") renderAllocation();
   });
   window.renderReturnsChart = renderReturnsChart;  // 主題切換時重繪
 })();

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>公司總覽 — AI Berkshire 投研網站</title>
-<meta name="description" content="110 家公司的四維評分、投資結論與研究報告索引。">
+<meta name="description" content="133 家公司的四維評分、投資結論與研究報告索引。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="companies">
@@ -16,6 +16,7 @@
       <a href="companies.html">公司</a>
       <a href="reports.html">報告</a>
       <a href="trackrecord.html">實盤</a>
+      <a href="allocation.html">配置</a>
     </nav>
     <button class="theme-toggle" aria-label="切換亮暗主題"></button>
   </div>
@@ -53,6 +54,10 @@
       <button class="chip on" data-min="0">不限</button>
       <button class="chip" data-min="3">3★+</button>
       <button class="chip" data-min="4">4★+</button>
+      <span class="tb-label">行業</span>
+      <select id="co-sector" class="tb-select" aria-label="篩選行業">
+        <option value="all">全部行業</option>
+      </select>
       <span class="tb-label">排序</span>
       <select id="co-sort" class="tb-select" aria-label="排序方式">
         <option value="score">評分高 → 低</option>

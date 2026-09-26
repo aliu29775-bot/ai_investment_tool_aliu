@@ -21,12 +21,13 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import time
 import urllib.parse
 from datetime import datetime
 import urllib.request
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -84,6 +85,13 @@ TICKER_MAP = {
     "海尔智家": "600690.SS", "领益智造": "002600.SZ", "众安在线": "6060.HK",
     "康方生物": "9926.HK", "晶泰科技": "2228.HK", "长光辰芯": "688582.SS",
     "滴滴": "DIDIY",
+    # 2026-09-26 新增覆蓋：全球大型股與資產配置工具
+    "台積電": "TSM", "Berkshire": "BRK-B", "JPMorgan": "JPM", "Visa": "V",
+    "Costco": "COST", "Eli Lilly": "LLY", "Broadcom": "AVGO", "ASML": "ASML",
+    "京東": "9618.HK", "中芯國際": "0981.HK", "中國移動": "0941.HK",
+    "藥明康德": "2359.HK", "香港交易所": "0388.HK", "友邦保險": "1299.HK",
+    "TLT": "TLT", "IEF": "IEF", "GLD": "GLD", "DBC": "DBC",
+    "紫金礦業": "2899.HK", "Freeport-McMoRan": "FCX", "Barrick": "GOLD",
 }
 
 # 7 家公司橫評的備用評分（README 的 Checklist 表）
@@ -92,6 +100,62 @@ FALLBACK_SCORE = {
     "美团": (4.0, "✅ 有條件"), "快手": (4.0, "✅ 有條件"),
     "拼多多": (3.8, "❓ 灰色"), "泡泡玛特": (3.7, "❓ 灰色"),
 }
+
+# 行業分類（供篩選器與行業分佈使用）
+SECTORS = {
+    "Apple": "科技", "Amazon": "互聯網", "Netflix": "互聯網", "AMD": "科技",
+    "台積電": "科技", "Berkshire": "金融", "JPMorgan": "金融", "Visa": "金融",
+    "Costco": "消費", "Eli Lilly": "醫藥", "Broadcom": "科技", "ASML": "科技",
+    "京東": "互聯網", "中芯國際": "科技", "中國移動": "電信",
+    "藥明康德": "醫藥", "香港交易所": "金融", "友邦保險": "金融",
+    "TLT": "債券", "IEF": "債券", "GLD": "黃金", "DBC": "商品",
+    "紫金礦業": "材料", "Freeport-McMoRan": "材料", "Barrick": "材料",
+}
+
+SECTOR_RULES = [
+    ("醫藥", ("药", "藥", "医", "醫", "康方", "晶泰", "Novo", "Zoetis", "Eli Lilly", "Elekta")),
+    ("金融", ("银行", "銀行", "保险", "保險", "平安", "PayPal", "Mastercard", "Visa",
+              "Progressive", "Berkshire", "JPMorgan", "招商", "浦发", "交易所", "证券", "證券",
+              "蚂蚁", "九坤")),
+    ("互聯網", ("腾讯", "騰訊", "拼多多", "美团", "美團", "快手", "阿里巴巴", "Alibaba",
+                "京东", "京東", "网易", "網易", "百度", "Meta", "Google", "Amazon",
+                "Netflix", "滴滴", "小红书", "唯品会", "搜狐", "腾讯音乐", "汽车之家",
+                "Uber", "Prosus", "Booking")),
+    ("科技", ("英伟达", "英偉達", "Intel", "AMD", "Qualcomm", "Marvell", "TSM",
+              "台積電", "台积电", "SK海力士", "中芯", "Apple", "微软", "微軟", "Adobe",
+              "Accenture", "WiseTech", "澜起", "中科飞测", "江波龙", "长光辰芯",
+              "华工", "Broadcom", "ASML", "DeepSeek", "MiniMax", "幻方", "月之暗面",
+              "Kimi", "智谱", "字节", "宇树", "宇视", "RKLB", "小米", "Bilibili",
+              "哔哩哔哩", "liblibAI", "LiblibAI", "openrouter", "OpenRouter", "大普微",
+              "智元", "演语", "灵境", "生数", "群核", "耳朵")),
+    ("消費", ("茅台", "五粮液", "泸州老窖", "汾酒", "洋河", "Costco", "Nike",
+              "lululemon", "泡泡玛特", "海尔", "永新", "NewbornTown", "泡泡", "追觅")),
+    ("工業", ("Rheinmetall", "莱茵金属", "SpaceX", "中创智领", "郑煤机")),
+    ("能源", ("思格", "GE Vernova")),
+    ("汽車", ("BYD", "理想汽车", "理想汽車", "赛力斯", "Tesla", "小鹏", "蔚来",
+              "吉利", "长城汽车", "上汽", "哪吒")),
+    ("能源", ("神华", "广核", "长江电力", "杰瑞", "Jereh", "中远海控", "中国石油",
+              "中石油", "中国石化", "Shell", "Exxon", "电力")),
+    ("材料", ("紫金", "藏格", "CMOC", "神火", "兴发", "Freeport", "Barrick", "川润",
+              "赛轮", "杭叉", "德业", "英维克", "领益", "绿的", "Nittobo", "金风",
+              "Goldwind", "铜", "鋼", "钢")),
+    ("電信", ("中國移動", "中国移动")),
+    ("債券", ("TLT", "IEF", "BIL")),
+    ("黃金", ("GLD",)),
+    ("商品", ("DBC",)),
+]
+
+
+def sector_of(name, titles):
+    """依公司名與報告標題推測行業。"""
+    if name in SECTORS:
+        return SECTORS[name]
+    hay = name + " " + " ".join(titles)
+    for sec, keys in SECTOR_RULES:
+        for k in keys:
+            if k in hay:
+                return sec
+    return "其他"
 
 
 def extract_ticker(name, titles):
@@ -225,6 +289,297 @@ def fetch_quotes(symbols, verbose=True):
                 print(f"  ✗ {sym:14s} {e}")
         time.sleep(0.25)
     return quotes
+
+
+# ---------------------------------------------------------------------------
+# 3.5 宏觀數據與資產配置（FRED + Yahoo 資產行情）
+# ---------------------------------------------------------------------------
+
+FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
+               "DFF", "BAMLH0A0HYM2", "DFII10", "GDPC1", "PAYEMS", "T10Y2Y"]
+
+ASSET_PROXIES = {"股票": "SPY", "國債": "IEF", "長期國債": "TLT",
+                 "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+
+COMMODITY_FUTURES = [("黃金", "GC=F", "美元/盎司"), ("白銀", "SI=F", "美元/盎司"),
+                     ("原油WTI", "CL=F", "美元/桶"), ("銅", "HG=F", "美元/磅")]
+
+
+def fetch_fred(series_ids, cache_file):
+    """用 curl -4 抓 FRED fredgraph.csv（部分網絡 urllib 走 IPv6 會超時）。"""
+    fred = {}
+    for sid in series_ids:
+        csv_path = os.path.join("/tmp", f"fredbuild_{sid}.csv")
+        try:
+            subprocess.run(
+                ["curl", "-4sm", "25", "-o", csv_path,
+                 f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}"],
+                check=True, capture_output=True)
+            vals = []
+            for line in open(csv_path, encoding="utf-8", errors="replace").read().splitlines()[1:]:
+                p = line.split(",")
+                if len(p) >= 2 and p[1] and p[1] != ".":
+                    vals.append([p[0], float(p[1])])
+            if vals:
+                fred[sid] = vals
+                print(f"  ✓ FRED {sid:16s} 最新 {vals[-1][1]:>10.2f} ({vals[-1][0]})")
+            else:
+                print(f"  ✗ FRED {sid:16s} 空資料")
+        except Exception as e:
+            print(f"  ✗ FRED {sid:16s} {e}")
+        time.sleep(0.2)
+    if not fred and os.path.exists(cache_file):
+        fred = json.load(open(cache_file, encoding="utf-8"))
+        print("  網路不可用，使用宏觀快取")
+    elif fred:
+        with open(cache_file, "w", encoding="utf-8") as f:
+            json.dump(fred, f, ensure_ascii=False)
+    return fred
+
+
+def fetch_asset_perf(symbols):
+    """抓 1 年（月線）行情，計算 YTD/1Y 報酬與 52 周高低。"""
+    perf = {}
+    for sym in sorted(set(symbols)):
+        url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+               f"{urllib.parse.quote(sym)}?range=1y&interval=1d")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode())
+            res = data["chart"]["result"][0]
+            meta = res["meta"]
+            pairs = [(t, c) for t, c in zip(res["timestamp"],
+                                            res["indicators"]["quote"][0]["close"])
+                     if c is not None]
+            if not pairs:
+                continue
+            price = meta.get("regularMarketPrice") or pairs[-1][1]
+            first = pairs[0][1]
+            cur_year = datetime.fromtimestamp(pairs[-1][0]).year
+            jan = next((c for t, c in pairs
+                        if datetime.fromtimestamp(t).year == cur_year), None)
+            ytd = (price / jan - 1) * 100 if jan else None
+            y1 = (price / first - 1) * 100 if first else None
+            perf[sym] = {
+                "price": round(price, 2),
+                "ytd": round(ytd, 2) if ytd is not None else None,
+                "y1": round(y1, 2) if y1 is not None else None,
+                "high": meta.get("fiftyTwoWeekHigh"),
+                "low": meta.get("fiftyTwoWeekLow"),
+                "closes": [round(c, 2) for _, c in pairs],
+            }
+            print(f"  ✓ 資產 {sym:8s} {price:>10.2f} | YTD {ytd:>7.2f}% | 1Y {y1:>7.2f}%")
+        except Exception as e:
+            print(f"  ✗ 資產 {sym:8s} {e}")
+        time.sleep(0.25)
+    return perf
+
+
+def _clamp(v, lo=0.0, hi=100.0):
+    return max(lo, min(hi, v))
+
+
+def _yv(fred, sid, back=0):
+    v = fred.get(sid) or []
+    i = len(v) - 1 - back
+    return v[i][1] if 0 <= i < len(v) else None
+
+
+def _yoy_at(fred, sid, back=0, lag=12):
+    v = fred.get(sid) or []
+    i = len(v) - 1 - back
+    if i - lag < 0:
+        return None
+    prev = v[i - lag][1]
+    return (v[i][1] / prev - 1) * 100 if prev else None
+
+
+def _gdp_yoy(fred):
+    v = fred.get("GDPC1") or []
+    if len(v) < 5:
+        return None
+    return (v[-1][1] / v[-5][1] - 1) * 100
+
+
+def growth_score(fred, back=0):
+    gdp = _gdp_yoy(fred)
+    unrate = _yv(fred, "UNRATE", back)
+    pay = _yoy_at(fred, "PAYEMS", back)
+    if None in (gdp, unrate, pay):
+        return None
+    return (0.4 * _clamp((gdp - 0.5) * 25)
+            + 0.3 * _clamp(100 - (unrate - 3.5) * 22)
+            + 0.3 * _clamp(50 + pay * 30))
+
+
+def inflation_score(fred, back=0):
+    cpi = _yoy_at(fred, "CPIAUCSL", back)
+    pce = _yoy_at(fred, "PCEPILFE", back)
+    if cpi is None or pce is None:
+        return None
+    return 0.6 * _clamp((cpi - 1.5) * 40) + 0.4 * _clamp((pce - 1.5) * 35)
+
+
+def liquidity_score(fred, back=0):
+    ffr = _yv(fred, "DFF", back)
+    spread = _yv(fred, "T10Y2Y", back)
+    oas = _yv(fred, "BAMLH0A0HYM2", back)
+    if None in (ffr, spread, oas):
+        return None
+    tight = _clamp((ffr - 1.0) * 22)
+    curve = 8 if spread >= 0 else -12
+    credit = _clamp(100 - (oas - 3.0) * 30)
+    return 0.75 * _clamp(100 - tight + curve) + 0.25 * credit
+
+
+def stress_score(fred, vix, back=0):
+    oas = _yv(fred, "BAMLH0A0HYM2", back)
+    if vix is None or oas is None:
+        return None
+    return 0.5 * _clamp((vix - 12) * 6) + 0.5 * _clamp(50 + (oas - 3.2) * 25)
+
+
+def compute_allocation(fred, quotes, asset_perf):
+    """規則式宏觀評分 + 資產配置（全部規則公開透明，見頁面方法論）。"""
+    vix_q = quotes.get("^VIX", {})
+    vix = vix_q.get("price")
+    vix_closes = vix_q.get("closes") or []
+    vix_prev = vix_closes[-2] if len(vix_closes) >= 2 else vix
+
+    g0, g1 = growth_score(fred, 0), growth_score(fred, 1)
+    i0, i1 = inflation_score(fred, 0), inflation_score(fred, 1)
+    l0, l1 = liquidity_score(fred, 0), liquidity_score(fred, 1)
+    s0 = stress_score(fred, vix, 0)
+    s1 = stress_score(fred, vix_prev, 1)
+
+    cpi = _yoy_at(fred, "CPIAUCSL")
+    pce = _yoy_at(fred, "PCEPILFE")
+    gdp = _gdp_yoy(fred)
+    unrate = _yv(fred, "UNRATE")
+    pay = _yoy_at(fred, "PAYEMS")
+    ffr = _yv(fred, "DFF")
+    spread = _yv(fred, "T10Y2Y")
+    oas = _yv(fred, "BAMLH0A0HYM2")
+    real10 = _yv(fred, "DFII10")
+
+    # ---- 資產配置（基準 + 規則調整） ----
+    w = {"股票": 40.0, "國債": 20.0, "商品": 10.0, "黃金": 10.0, "現金": 20.0}
+    fired = []
+    if s0 is not None and s0 >= 60:
+        w["股票"] -= 10; w["現金"] += 10; fired.append("壓力 ≥ 60 → 股票 −10、現金 +10")
+    if g0 is not None and g0 < 45:
+        w["股票"] -= 10; w["國債"] += 10; fired.append("增長 < 45 → 股票 −10、國債 +10")
+    if i0 is not None and i0 >= 70:
+        w["黃金"] += 8; w["國債"] -= 8; fired.append("通脹 ≥ 70 → 黃金 +8、國債 −8")
+    if l0 is not None and l0 < 45:
+        w["現金"] += 5; w["商品"] -= 5; fired.append("流動性 < 45 → 現金 +5、商品 −5")
+    dbc = asset_perf.get("DBC", {})
+    if dbc.get("y1") is not None and dbc["y1"] > 25:
+        w["商品"] += 5; w["現金"] -= 5; fired.append("商品一年報酬 > +25% → 商品 +5、現金 −5")
+    for k in ("國債", "現金"):
+        if w[k] < 10:
+            w["股票"] -= 10 - w[k]
+            w[k] = 10
+    if not fired:
+        fired.append("無規則觸發，維持基準配置")
+
+    targets = [{"cls": k, "pct": round(w[k], 1), "proxy": ASSET_PROXIES.get(k, "—")}
+               for k in ("股票", "國債", "商品", "黃金", "現金")]
+
+    macro = [
+        {"key": "growth", "label": "增長", "up_good": True,
+         "score": round(g0) if g0 is not None else None,
+         "change": round(g0 - g1) if (g0 is not None and g1 is not None) else None,
+         "note": f"GDP +{gdp:.1f}% · 失業率 {unrate:.1f}% · 非農 +{pay:.1f}%",
+         "formula": "0.4×GDP + 0.3×就業 + 0.3×非農"},
+        {"key": "inflation", "label": "通脹壓力", "up_good": False,
+         "score": round(i0) if i0 is not None else None,
+         "change": round(i0 - i1) if (i0 is not None and i1 is not None) else None,
+         "note": f"CPI {cpi:.1f}% · 核心 PCE {pce:.1f}%（目標 2%）",
+         "formula": "0.6×CPI + 0.4×核心PCE（越高壓力越大）"},
+        {"key": "liquidity", "label": "流動性", "up_good": True,
+         "score": round(l0) if l0 is not None else None,
+         "change": round(l0 - l1) if (l0 is not None and l1 is not None) else None,
+         "note": f"聯邦基金利率 {ffr:.2f}% · 10Y-2Y 利差 {spread:+.2f}%",
+         "formula": "利率鬆緊×0.75 + 信用利差×0.25"},
+        {"key": "stress", "label": "市場壓力", "up_good": False,
+         "score": round(s0) if s0 is not None else None,
+         "change": round(s0 - s1) if (s0 is not None and s1 is not None) else None,
+         "note": f"VIX {vix:.1f} · 高收益利差 {oas:.2f}%",
+         "formula": "0.5×VIX + 0.5×信用利差（越高壓力越大）"},
+    ]
+
+    judgment = [
+        f"通脹壓力偏高：CPI 同比 {cpi:.1f}%、核心 PCE {pce:.1f}%，遠高於 2% 目標 → 觸發「黃金 +8、國債 −8」。",
+        f"增長溫和：GDP 同比 +{gdp:.1f}%，但非農就業同比僅 +{pay:.1f}%——就業引擎降速是當前最大裂縫。",
+        f"流動性中性偏緊：聯邦基金利率 {ffr:.2f}%、10Y-2Y 利差 {spread:+.2f}%，曲線已正常化但利率仍在高位。",
+        f"市場壓力低：VIX {vix:.1f}、高收益利差 {oas:.2f}%——市場毫無恐懼，賠率不在買方。",
+    ]
+    if dbc.get("y1") is not None:
+        cl = asset_perf.get("CL=F", {})
+        judgment.append(
+            f"商品動量極強：DBC 一年 {dbc['y1']:+.0f}%、油價 YTD "
+            f"{cl.get('ytd', 0) or 0:+.0f}% → 觸發「商品 +5、現金 −5」。")
+    judgment.append(
+        "當前判斷：持有核心股票倉位，以黃金與現金提供下行保護；"
+        "等待回調（標普 −10%、金價 3,800–4,100 美元）再加倉。")
+
+    rules = [
+        "基準配置：股票 40 / 國債 20 / 商品 10 / 黃金 10 / 現金 20",
+        "壓力 ≥ 60 → 股票 −10、現金 +10",
+        "增長 < 45 → 股票 −10、國債 +10",
+        "通脹 ≥ 70 → 黃金 +8、國債 −8",
+        "流動性 < 45 → 現金 +5、商品 −5",
+        "商品一年報酬 > +25% → 商品 +5、現金 −5",
+        "下限保護：國債、現金均不低於 10%",
+    ]
+
+    bonds = {
+        "dgs2": round(_yv(fred, "DGS2"), 2), "dgs10": round(_yv(fred, "DGS10"), 2),
+        "dgs30": round(_yv(fred, "DGS30"), 2), "ffr": round(ffr, 2),
+        "spread": round(spread, 2), "real10": round(real10, 2),
+        "hy_oas": round(oas, 2),
+        "asof": (fred.get("DGS10") or [["—"]])[-1][0],
+    }
+
+    commodities = []
+    for name, sym, unit in COMMODITY_FUTURES:
+        p = asset_perf.get(sym, {})
+        q = quotes.get(sym, {})
+        if p.get("price") is not None:
+            commodities.append({
+                "name": name, "sym": sym, "unit": unit,
+                "price": round(p["price"], 2),
+                "chg": q.get("change_pct"), "ytd": p.get("ytd"), "y1": p.get("y1"),
+                "closes": q.get("closes") or p.get("closes"),
+            })
+
+    assets = []
+    for label, sym in ASSET_PROXIES.items():
+        p = asset_perf.get(sym, {})
+        q = quotes.get(sym, {})
+        if p.get("price") is not None:
+            assets.append({
+                "label": label, "sym": sym, "price": round(p["price"], 2),
+                "ytd": p.get("ytd"), "y1": p.get("y1"),
+                "high": p.get("high"), "low": p.get("low"),
+                "closes": q.get("closes") or p.get("closes"),
+            })
+
+    return {
+        "asof": max((q.get("asof", "") for q in quotes.values()), default=""),
+        "macro": macro,
+        "targets": targets,
+        "judgment": judgment,
+        "rules": rules,
+        "bonds": bonds,
+        "commodities": commodities,
+        "assets": assets,
+        "sources": ["FRED 聯儲經濟數據（fredgraph.csv）", "Yahoo Finance 公開行情",
+                    "ICE/COMEX 期貨報價"],
+    }
+
 
 # ---------------------------------------------------------------------------
 # 4. Markdown → HTML（自製輕量轉換器，支援表格/列表/引言/程式碼）
@@ -542,6 +897,7 @@ def main():
             verdict = verdict or vd
         companies.append({
             "name": name,
+            "sector": sector_of(name, titles),
             "ticker": ticker,
             "count": len(rs),
             "latest": latest,
@@ -572,11 +928,12 @@ def main():
     all_reports = sorted(reports, key=lambda r: r["date"], reverse=True)
     tickers = [c["ticker"] for c in companies]
 
+    asset_symbols = list(ASSET_PROXIES.values()) + [s for _, s, _ in COMMODITY_FUTURES]
     quotes = {}
     cache_file = os.path.join(SITE_DIR, "js", "market_cache.json")
     if not args.no_market:
         print(f"== 3/4 抓取行情（{len([t for t in tickers if t])} 個代碼，約 40 秒）==")
-        quotes = fetch_quotes(tickers + list(MARKET_INDICES))
+        quotes = fetch_quotes(tickers + list(MARKET_INDICES) + asset_symbols)
         for sym, label in MARKET_INDICES.items():
             if sym in quotes:
                 quotes[sym]["label"] = label
@@ -588,6 +945,25 @@ def main():
 
     # 首頁市場總覽用：主要指數行情（取得到幾個就顯示幾個）
     indices = [{"sym": s, "label": l} for s, l in MARKET_INDICES.items() if s in quotes]
+
+    # 宏觀評分與資產配置（FRED + 資產 1 年報酬）
+    alloc_cache = os.path.join(SITE_DIR, "js", "allocation_cache.json")
+    allocation = None
+    if not args.no_market:
+        print("== 3.5/4 抓取宏觀與資產配置資料（FRED + Yahoo 1Y）==")
+        fred = fetch_fred(FRED_SERIES, os.path.join("/tmp", "fred_macro_cache.json"))
+        asset_perf = fetch_asset_perf(asset_symbols)
+        if fred:
+            allocation = compute_allocation(fred, quotes, asset_perf)
+            with open(alloc_cache, "w", encoding="utf-8") as f:
+                json.dump(allocation, f, ensure_ascii=False)
+            print(f"  ✓ 資產配置已計算（通脹 {allocation['macro'][1]['score']} 分 / "
+                  f"壓力 {allocation['macro'][3]['score']} 分）")
+        else:
+            print("  ✗ FRED 全數失敗，資產配置跳過")
+    elif os.path.exists(alloc_cache):
+        allocation = json.load(open(alloc_cache, encoding="utf-8"))
+        print("== 3.5/4 使用資產配置快取 ==")
 
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
@@ -610,6 +986,10 @@ def main():
         "market": quotes,
         "indices": indices,
         "market_asof": max((q.get("asof", "") for q in quotes.values()), default=""),
+        "allocation": allocation,
+        "sectors": [{"name": n, "count": c}
+                    for n, c in sorted(Counter(c["sector"] for c in companies).items(),
+                                       key=lambda kv: -kv[1])],
         "trackrecord": {
             "years": ["2024", "2025"],
             "returns": [
@@ -703,6 +1083,7 @@ def render_reports(repo, reports):
     <a href="{rel}companies.html">公司</a>
     <a href="{rel}reports.html">報告</a>
     <a href="{rel}trackrecord.html">實盤</a>
+    <a href="{rel}allocation.html">配置</a>
   </nav>
 </header>
 <main class="report-wrap">

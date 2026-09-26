@@ -695,3 +695,108 @@ body[data-page="home"] .co-actions { display: none; }
 .cmp-scroll { overflow: auto; padding: 6px 14px 18px; }
 .cmp-table th, .cmp-table td { min-width: 120px; }
 .cmp-table td.cmp-metric { font-weight: 600; color: var(--ink-2); background: var(--surface-2); }
+
+/* ============================================================
+   資產配置頁 + 行業篩選（2026-09-26 新增）
+   ============================================================ */
+
+:root {
+  --sector-fill: #6d8fc4;
+  --macro-fill: #5a7fc4;
+}
+[data-theme="dark"] {
+  --sector-fill: #4a6da6;
+}
+
+/* 宏觀儀錶板 */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.macro-card { padding: 16px 18px; }
+.macro-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.macro-label { font-weight: 700; font-size: 15px; color: var(--ink); }
+.m-change { font-size: 12.5px; font-weight: 600; }
+.m-change.good { color: var(--good); }
+.m-change.bad { color: var(--crit); }
+.macro-score {
+  font-size: 34px; font-weight: 800; color: var(--ink);
+  line-height: 1.15;
+}
+.macro-unit { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+.macro-card .track { margin: 8px 0 10px; }
+.macro-note { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+/* 建議配置 + 判斷 */
+.alloc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 760px) { .alloc-row { grid-template-columns: 1fr; } }
+.alloc-panel { padding: 16px 18px; }
+.al-block { margin-bottom: 12px; }
+.al-block:last-child { margin-bottom: 0; }
+.al-line { display: flex; align-items: center; gap: 10px; }
+.al-name { width: 52px; font-weight: 600; font-size: 14px; flex: none; }
+.al-val { width: 52px; text-align: right; font-weight: 700; flex: none; }
+.al-proxy { font-size: 12px; color: var(--muted); margin: 4px 0 0 62px; }
+
+/* 判斷清單 */
+.judgment-list { list-style: none; margin: 0; padding: 0; }
+.judgment-list li {
+  position: relative;
+  padding: 8px 0 8px 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px; line-height: 1.6; color: var(--ink-2);
+}
+.judgment-list li:last-child { border-bottom: none; }
+.judgment-list li::before {
+  content: "▸";
+  position: absolute; left: 2px; top: 8px;
+  color: var(--brand); font-weight: 700;
+}
+
+/* 資產類別卡片 */
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.asset-card { padding: 14px 16px; }
+.asset-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 4px;
+}
+.asset-label { font-weight: 700; font-size: 14.5px; }
+.asset-sym { font-size: 11.5px; color: var(--muted); }
+.asset-price { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.asset-ret { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12.5px; margin-bottom: 6px; }
+.asset-range { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+
+/* 公司卡片行業徽章 */
+.co-sector {
+  display: inline-block;
+  font-size: 10.5px; font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 6px;
+  vertical-align: 2px;
+}
+
+/* 評分分佈卡片的行業分佈 */
+.dist-sector-title {
+  font-size: 12.5px; font-weight: 700; color: var(--ink-2);
+  margin: 14px 0 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.dist-sector .dist-label { font-size: 13px; }
+.dist-sector { margin-bottom: 5px; }

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>資產配置 — AI Berkshire 投研網站</title>
+<meta name="description" content="宏觀儀錶板（增長/通脹/流動性/壓力 0-100 評分）、規則式資產配置（股票/國債/商品/黃金/現金）、債券殖利率與大宗商品行情。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="allocation">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AI Berkshire <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">實盤</a>
+      <a href="allocation.html" class="on">配置</a>
+    </nav>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">資產配置</h1>
+    <span class="freshness" id="alloc-asof"></span>
+  </div>
+  <p class="section-desc">宏觀 0–100 評分（增長 / 通脹壓力 / 流動性 / 市場壓力）→ 規則式資產配置（股票 / 國債 / 商品 / 黃金 / 現金）→ 當前判斷。所有規則公開透明，見頁尾方法論。資料自動更新，每次建站即刷新。</p>
+
+  <!-- 宏觀儀錶板 -->
+  <section class="section">
+    <div class="section-head"><h2>🧭 宏觀儀錶板</h2><span class="freshness" id="macro-asof"></span></div>
+    <p class="section-desc">四項宏觀指標各自換算為 0–100 分，並追蹤邊際變化（▲ 較上月上升 / ▼ 下降）。通脹壓力與市場壓力「越高越差」，增長與流動性「越高越好」。</p>
+    <div class="macro-grid" id="alloc-macro"></div>
+  </section>
+
+  <!-- 建議配置 -->
+  <section class="section">
+    <div class="section-head"><h2>⚖️ 建議配置</h2></div>
+    <p class="section-desc">由宏觀評分觸發規則調整後的目標權重，每類資產附 ETF 代理工具。僅為框架演示，非投資建議。</p>
+    <div class="alloc-row">
+      <div class="card alloc-panel" id="alloc-targets"></div>
+      <div class="card alloc-panel">
+        <div class="dash-head"><h3>📋 當前判斷</h3></div>
+        <ul class="judgment-list" id="alloc-judgment"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 資產類別表現 -->
+  <section class="section">
+    <div class="section-head"><h2>📊 資產類別表現</h2></div>
+    <p class="section-desc">各資產類別 ETF 代理的今年以來（YTD）與近一年（1Y）報酬，走勢線為近 5 個交易日。</p>
+    <div class="asset-grid" id="alloc-assets"></div>
+  </section>
+
+  <!-- 債券市場 -->
+  <section class="section">
+    <div class="section-head"><h2>🏦 債券市場</h2><span class="freshness" id="bonds-asof"></span></div>
+    <p class="section-desc">美國國債殖利率曲線、實際利率與信用利差（FRED 數據）。正斜率曲線 + 長債票息 5%+，是當前債券配置的核心背景。</p>
+    <div class="card">
+      <table class="data-table" id="bonds-table"></table>
+    </div>
+  </section>
+
+  <!-- 大宗商品 -->
+  <section class="section">
+    <div class="section-head"><h2>🛢 大宗商品</h2></div>
+    <p class="section-desc">黃金、白銀、原油與銅的即時行情、YTD 與一年報酬。走勢線為近 5 個交易日。</p>
+    <div class="asset-grid" id="alloc-commodities"></div>
+  </section>
+
+  <!-- 相關研究 -->
+  <section class="section">
+    <div class="section-head"><h2>📚 相關研究報告</h2><a class="more" href="reports.html">全部報告 →</a></div>
+    <div class="quick-grid">
+      <a class="card quick-card" href="reports/資產配置研究/股票市場研究報告-20260926.html">
+        <span class="qc-icon">📈</span>
+        <div><h3>股票市場研究</h3><p>指數定位、股權風險溢價與配置含義</p></div>
+      </a>
+      <a class="card quick-card" href="reports/資產配置研究/債券市場研究報告-20260926.html">
+        <span class="qc-icon">🏦</span>
+        <div><h3>債券市場研究</h3><p>殖利率曲線、實際利率與槓鈴策略</p></div>
+      </a>
+      <a class="card quick-card" href="reports/資產配置研究/大宗商品研究報告-20260926.html">
+        <span class="qc-icon">🛢</span>
+        <div><h3>大宗商品研究</h3><p>油銅銀全景、超級周期與風險</p></div>
+      </a>
+      <a class="card quick-card" href="reports/資產配置研究/黃金研究報告-20260926.html">
+        <span class="qc-icon">🥇</span>
+        <div><h3>黃金研究</h3><p>央行購金、實際利率失效與配置策略</p></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 方法論 -->
+  <section class="section">
+    <div class="section-head"><h2>🔬 方法論：全部規則公開</h2></div>
+    <div class="alloc-row">
+      <div class="card alloc-panel">
+        <div class="dash-head"><h3>評分公式</h3></div>
+        <ul class="judgment-list" id="alloc-formulas"></ul>
+      </div>
+      <div class="card alloc-panel">
+        <div class="dash-head"><h3>配置規則</h3></div>
+        <ul class="judgment-list" id="alloc-rules"></ul>
+      </div>
+    </div>
+    <p class="disclaimer" style="margin-top: 12px;">評分與配置為規則式自動計算（資料來源見下），用於展示「宏觀狀態 → 配置動作」的可複現流程。它取代不了獨立判斷：規則是人定的，數據會遲到，未來不可預測。</p>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">GitHub：xbtlin/ai-berkshire</a>
+      <span id="alloc-sources"></span>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括宏觀評分、配置建議與研究報告）<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
