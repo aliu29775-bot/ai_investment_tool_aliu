@@ -51,6 +51,25 @@ RE_ONE_LINE_H = re.compile(r"#{1,6}\s*[^#\n]*[结結]论[^#\n]*\s*\n+\s*>\s*([^\
 RE_BUY = re.compile(r"(买入区间[^\n。|]{0,40}|買入區間[^\n。|]{0,40})")
 RE_PASS = re.compile(r"(✅\s*[通过通過]{2}|❓\s*灰色[地带地帶]?|❌\s*[不]?[通过通過]{2})")
 
+# 新版報告（無「綜合评分/綜合评级」行）的抽取正則（注意 [ \t]* 而非 \s*，避免吞換行跨行誤匹配）：
+# 結論摘要：「結論摘要：**观望 / ...**」→ 取斜線前的結論詞
+RE_CONCL_SUMMARY = re.compile(r"[结結]论摘要[：:][ \t]*\**([^/\n*]{1,14})")
+# 「评级：观望，不买入。」（跳過「评级：A级（信息充裕）」類；加粗冒號兼容；負向斷言排除「信息丰富度评级」）
+RE_RATING_V = re.compile(r"(?<!丰富度)评级\**[：:][ \t]*\**(?!\s*[ABC]\s*[级級])([^。\n|]{1,30}?)(?=[。\n|])")
+# 字母評級：「**评级: B+ —— 一流产品人…**」
+RE_RATING_GRADE = re.compile(r"(?<!丰富度)评级\**[：:][ \t]*\**([A-D][+-]?)[ \t]*([—\-－][^\n。]{0,26})?")
+RE_SUGGEST_V = re.compile(r"[建]议\**[：:]?[ \t]*\**([^。\n|]{1,26}?)(?=[。\n|])")
+# 「結論**：…」/「核心結論：…」/「明確結論：…」
+RE_CONCL_V = re.compile(r"(?:核心|明确|明確)?[结結]论\**[：:][ \t]*\**([^。\n|]{1,80}?)(?=[。\n|])")
+# 行內「一句话結論：…」（新版報告不帶引用塊）
+RE_SUMM_INLINE = re.compile(r"一句话[结結]论\**[：:][ \t]*\**([^\n。]{1,60})")
+# 四維評分：「生意质量评分：★★★★」行
+RE_DIM_INLINE = re.compile(r"((?:生意质量|生意質量|护城河|護城河|管理层|管理層|估值|商业模式|商業模式|商业模式清晰度|商業模式清晰度))[^：:\n]{0,8}评分[：:]\s*(★+[★☆]*)")
+# 四維評分表：「| **生意质量** | … | ★★★★☆ |」行
+RE_DIM_ROW = re.compile(r"^\s*\|\s*\*{0,2}(生意质量|生意質量|护城河|護城河|管理层|管理層|估值|最大风险|最大風險)[^*|\n]{0,12}\*{0,2}\s*\|")
+# 商業模式評分表：「| 商业模式清晰度 | ★★★★★ |」行
+RE_BIZ_ROW = re.compile(r"^\s*\|\s*(商业模式清晰度|商業模式清晰度|商业模式|商業模式|生意模式)[^|]*\|\s*(★+[★☆]*)\s*\|")
+
 # 報告標題中的 ticker 模式
 RE_TICKER_HK = re.compile(r"[(（]?(\d{4,5})\.HK[)）]?", re.I)
 RE_TICKER_NASDAQ = re.compile(r"NASDAQ[:：]\s*([A-Z]{1,5})", re.I)
@@ -208,20 +227,23 @@ def extract_ticker(name, titles):
 
 
 def extract_score(repo, reports):
-    """從最新報告中萃取評分。回傳 (stars, value, verdict, summary)。"""
+    """從最新報告中萃取評分。回傳 (stars, value, verdict, summary)。
+    兩遍式：第一遍用標準標記 + 四維評分兜底；第二遍才用字母評級（信息量較低，避免遮蔽舊文件的四維表）。"""
     score = verdict = summary = None
     files = sorted(
         (r for r in reports if r.get("type") not in ("底稿",)),
         key=lambda r: r["date"], reverse=True,
     )
-    for r in files[:50]:
+
+    def _scan(r, allow_grade):
+        nonlocal score, verdict, summary
         p = os.path.join(repo, r["path"])
         if not os.path.exists(p):
-            continue
+            return
         try:
             txt = open(p, encoding="utf-8", errors="replace").read()
         except OSError:
-            continue
+            return
         if score is None:
             m = RE_STARS.search(txt)
             if m:
@@ -237,23 +259,43 @@ def extract_score(repo, reports):
                     score = {"stars": min(5, max(1, round(v))),
                              "value": round(v, 2),
                              "text": m.group(0).strip()[:60]}
+                else:
+                    score = fallback_score(txt, allow_grade)
         if verdict is None:
             m = RE_VERDICT.search(txt)
             if m:
                 v = m.group(1).strip().strip("*").strip()
                 # 截斷表格殘留的續文
                 v = re.split(r"\*\*[：:]|——|[（(]", v)[0].strip()
-                verdict = v[:60]
-            else:
+                # 過長且無圖標的「綜合评级」多為正文誤匹配（如範例句），捨棄改走兜底
+                if len(v) > 14 and not v.startswith(("✅", "❓", "❌")):
+                    v = None
+                if v:
+                    verdict = v[:60]
+            if verdict is None:
                 m = RE_BUY.search(txt) or RE_PASS.search(txt)
                 if m:
                     verdict = m.group(1).strip()[:60]
+                else:
+                    verdict = fallback_verdict(txt, allow_grade)
         if summary is None:
             m = RE_ONE_LINE.search(txt) or RE_ONE_LINE_H.search(txt)
             if m:
                 summary = m.group(1).replace("**", "").strip()[:180]
+            else:
+                m = RE_SUMM_INLINE.search(txt)
+                if m:
+                    summary = m.group(1).replace("**", "").strip()[:180]
+
+    for r in files[:50]:
+        _scan(r, allow_grade=False)
         if score and verdict and summary:
-            break
+            return score, verdict, summary
+    if score is None or verdict is None:  # 第二遍：字母評級兜底
+        for r in files[:50]:
+            _scan(r, allow_grade=True)
+            if score and verdict and summary:
+                break
     return score, verdict, summary
 
 
@@ -262,16 +304,107 @@ def site_path(p):
     return re.sub(r"^reports/", "", p).replace(".md", ".html")
 
 
+GRADE_SCORE = {"A+": 4.75, "A": 4.5, "A-": 4.25, "B+": 3.75, "B": 3.5, "B-": 3.25,
+               "C+": 2.75, "C": 2.5, "C-": 2.25, "D+": 1.75, "D": 1.5}
+
+
 def classify_verdict(v):
     """把結論文字歸類為正面/中性/負面（給網站顯示顏色用）。注意「不通過」含「通過」二字，負面須先匹配。"""
     if not v:
         return None
-    if re.search(r"不通过|不通過|卖出|賣出|回避|迴避|清仓|清倉|淘汰|❌", v):
+    gm = re.match(r"[A-D][+-]?(?=\s|$|—|－|（|\()", v)
+    if gm:  # 字母評級（如「B+ —— 一流产品人…」）
+        g = gm.group(0)
+        if g.startswith("A") or g == "B+":
+            return "positive"
+        if g.startswith("B"):
+            return "neutral"
         return "negative"
-    if re.search(r"买入|買入|建仓|建倉|通过|通過|增持|持有待|低估|✅", v):
+    if "模糊" in v:
+        return "neutral"  # 「模糊地带」類（如 PayPal 價值陷阱 vs 低估）
+    if re.search(r"不通过|不通過|不买入|不買入|卖出|賣出|减仓|減倉|回避|迴避|清仓|清倉|淘汰|价值陷阱|價值陷阱|生意差|坏行业|壞行業|平庸的生意|太贵|太貴|❌", v):
+        return "negative"
+    if re.search(r"买入|買入|建仓|建倉|通过|通過|增持|持有待|低估|极好的生意|極好的生意|好生意|好公司|复利机器|複利機器|印钞机|印鈔機|现金制造机|現金製造機|赚钱机器|賺錢機器|✅", v):
         return "positive"
-    if re.search(r"灰色|观望|觀望|觀察|待定|❓|不确定|不確定", v):
+    if re.search(r"灰色|观望|觀望|觀察|观察|持有|中性(?!场景|情景|情形|假设|約|约)|待定|重点关注|重點關注|重点跟踪|重點跟蹤|纳入观察|納入觀察|❓|不确定|不確定", v):
         return "neutral"
+    return None
+
+
+def _star_val(s):
+    return s.count("★") + 0.5 * s.count("☆")
+
+
+def _dims_score(vals, label):
+    v = round(sum(vals.values()) / len(vals), 2)
+    return {"stars": min(5, max(1, round(v))),
+            "value": v,
+            "text": ("%s抽取：%s" % (label, ",".join("%s%s" % (k, vals[k]) for k in vals)))[:60]}
+
+
+def fallback_score(txt, allow_grade=False):
+    """新版報告（無「綜合评分」行）的評分抽取：顯式「X评分：★」行 → 四維表星格 → 商業模式評分表 →（第二遍）字母評級。"""
+    vals = {}
+    for m in RE_DIM_INLINE.finditer(txt):
+        vals.setdefault(m.group(1), _star_val(m.group(2)))
+    if len(vals) >= 2:
+        return _dims_score(vals, "四维评分行")
+    for line in txt.splitlines():
+        m = RE_DIM_ROW.match(line)
+        if not m:
+            continue
+        dim = m.group(1)
+        stars = re.findall(r"(★+[★☆]*)", line)
+        if not stars:
+            continue
+        v = _star_val(stars[-1])
+        if dim in ("最大风险", "最大風險"):
+            v = max(0.0, 6 - v)  # 風險星級越高越差，反向計分
+        if ("确信" in line or "置信" in line) and re.search(r"差|坏|风险|風險", line):
+            continue  # 該行評的是「置信度」而非品質，語義相反，跳過
+        vals.setdefault(dim, v)
+    if len(vals) >= 2:
+        return _dims_score(vals, "四维评分表")
+    for m in RE_BIZ_ROW.finditer(txt):
+        vals.setdefault("商业模式", _star_val(m.group(2)))
+    if len(vals) >= 2:
+        return _dims_score(vals, "商业模式评分表")
+    if allow_grade:
+        for m in RE_RATING_GRADE.finditer(txt):
+            line = txt[txt.rfind("\n", 0, m.start()) + 1:txt.find("\n", m.start())]
+            if "丰富度" in line or re.search(r"管理层|管理層|董事长|董事長|治理|产品人|產品人|团队|團隊", line):
+                continue  # 信息丰富度评级或管理层评级，非公司评级
+            g = m.group(1)
+            if g in GRADE_SCORE:
+                return {"stars": min(5, max(1, round(GRADE_SCORE[g]))),
+                        "value": GRADE_SCORE[g],
+                        "text": "评级抽取：" + g}
+    return None
+
+
+def fallback_verdict(txt, allow_grade=False):
+    """新版報告的結論抽取：結論摘要 → 评级：X → 结论：X → 建议：X（需能被 classify 才採納；第二遍才用字母評級）。"""
+    m = RE_CONCL_SUMMARY.search(txt)
+    if m:
+        return m.group(1).strip().strip("*").strip()[:60]
+    for pat in (RE_RATING_V, RE_CONCL_V, RE_SUGGEST_V):
+        for m in pat.finditer(txt):
+            v = m.group(1).strip().strip("*").strip()
+            if v.endswith("？"):
+                continue  # 章節標題式提問（如「這是一台什麼樣的賺錢機器？」）
+            v1 = re.split(r"[，,]", v)[0].strip()
+            if classify_verdict(v1):
+                return v1[:60]
+            if classify_verdict(v):
+                return v[:60]
+    if allow_grade:
+        for m in RE_RATING_GRADE.finditer(txt):
+            line = txt[txt.rfind("\n", 0, m.start()) + 1:txt.find("\n", m.start())]
+            if "丰富度" in line or re.search(r"管理层|管理層|董事长|董事長|治理|产品人|產品人|团队|團隊", line):
+                continue  # 信息丰富度评级或管理层评级，非公司评级
+            g = m.group(1)
+            ctx = (m.group(2) or "").strip().strip("*").strip()
+            return ("%s%s" % (g, ctx))[:60]
     return None
 
 # ---------------------------------------------------------------------------
@@ -984,6 +1117,11 @@ def main():
     if extra:
         print(f"   另渲染 {len(extra)} 份 index 未收錄的附屬文件（供互鏈）")
 
+    # 上游 index 偶爾把專題系列誤標為公司（group 以 -YYYYMMDD 結尾且無 ticker），
+    # 歸入專題桶，避免出現在公司清單。
+    for r in reports:
+        if r["bucket"] == "公司" and not r.get("ticker") and re.search(r"-\d{8}$", r["group"]):
+            r["bucket"] = "专题"
     by_company = defaultdict(list)
     by_topic = defaultdict(list)
     for r in reports:
