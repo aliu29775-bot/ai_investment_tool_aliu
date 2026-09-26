@@ -18,6 +18,8 @@
       <a href="trackrecord.html">實盤</a>
       <a href="allocation.html">配置</a>
     </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
     <button class="theme-toggle" aria-label="切換亮暗主題"></button>
   </div>
 </header>
@@ -111,6 +113,7 @@
 </footer>
 
 <script src="js/data.js"></script>
+<script src="js/gh-trigger.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

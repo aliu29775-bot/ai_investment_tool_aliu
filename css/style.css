@@ -142,6 +142,31 @@ body[data-page="trackrecord"] .site-nav a[href$="trackrecord.html"] {
 }
 .theme-toggle:hover { color: var(--ink); }
 
+/* ---------- 更新數據按鈕 ---------- */
+
+.btn-update {
+  margin-left: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--brand-ink);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-update:hover { border-color: var(--brand-ink); }
+.btn-update:disabled { opacity: .55; cursor: wait; }
+
+.update-status {
+  margin-left: 8px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.update-status.ok { color: var(--ok, #1a7f37); }
+.update-status.err { color: var(--warn, #c0392b); }
+.update-status.warn { color: var(--warn, #b7791f); }
+
 /* ---------- 首頁 Hero ---------- */
 
 .hero { padding: 72px 0 48px; text-align: center; }

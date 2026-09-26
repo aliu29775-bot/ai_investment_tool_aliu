@@ -888,9 +888,87 @@
       "</div>";
   }
 
+  /* ---------- 更新數據按鈕（GitHub Actions 觸發 + 狀態輪詢） ---------- */
+  function initUpdateButton() {
+    var btn = document.getElementById("btn-update-data");
+    if (!btn) return;
+    var status = document.getElementById("update-status");
+    var TOKEN = (typeof window.GH_TRIGGER_TOKEN === "string" && window.GH_TRIGGER_TOKEN) || "";
+    var REPO = "aliu29775-bot/ai_investment_tool_aliu";
+    var WF = "update-data.yml";
+    var COOLDOWN_MS = 10 * 60 * 1000; // 單一瀏覽器 10 分鐘冷卻
+    var POLL_MS = 15000;
+    var MAX_POLL = 24; // 最多輪詢約 6 分鐘
+
+    function setMsg(text, cls) {
+      if (!status) return;
+      status.hidden = false;
+      status.textContent = text;
+      status.className = "update-status" + (cls ? " " + cls : "");
+    }
+
+    function pollRun(attempt) {
+      if (attempt > MAX_POLL) { setMsg("⏳ 仍在進行中，稍後刷新頁面即可看到更新", "warn"); return; }
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://api.github.com/repos/" + REPO + "/actions/runs?event=workflow_dispatch&per_page=1", true);
+      xhr.onload = function () {
+        if (xhr.status !== 200) { setTimeout(function () { pollRun(attempt + 1); }, POLL_MS); return; }
+        var runs = [];
+        try { runs = (JSON.parse(xhr.responseText).workflow_runs) || []; } catch (e) {}
+        if (!runs.length) { setTimeout(function () { pollRun(attempt + 1); }, POLL_MS); return; }
+        var run = runs[0];
+        if (run.status === "completed") {
+          if (run.conclusion === "success") setMsg("✅ 更新完成！頁面正在重新發佈，約 1 分鐘後刷新即可看到新數據", "ok");
+          else setMsg("❌ 更新失敗（" + run.conclusion + "），可稍後重試", "err");
+        } else if (run.status === "in_progress" || run.status === "queued") {
+          setMsg("⏳ 更新進行中…（" + (run.status === "queued" ? "排隊中" : "抓取行情 + 重建報告") + "）", "warn");
+          setTimeout(function () { pollRun(attempt + 1); }, POLL_MS);
+        } else {
+          setTimeout(function () { pollRun(attempt + 1); }, POLL_MS);
+        }
+      };
+      xhr.onerror = function () { setTimeout(function () { pollRun(attempt + 1); }, POLL_MS); };
+      xhr.send();
+    }
+
+    btn.addEventListener("click", function () {
+      if (!TOKEN) { setMsg("⚠ 未配置觸發憑證，請站長在 js/gh-trigger.js 填入 PAT", "err"); return; }
+      var last = 0;
+      try { last = parseInt(localStorage.getItem("lastUpdateTrigger"), 10) || 0; } catch (e) {}
+      var now = Date.now();
+      if (now - last < COOLDOWN_MS) {
+        setMsg("⏱ 冷卻中，約 " + Math.ceil((COOLDOWN_MS - (now - last)) / 60000) + " 分鐘後可再次更新", "warn");
+        return;
+      }
+      btn.disabled = true;
+      setMsg("⏳ 正在觸發更新…", "warn");
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "https://api.github.com/repos/" + REPO + "/actions/workflows/" + WF + "/dispatches", true);
+      xhr.setRequestHeader("Accept", "application/vnd.github+json");
+      xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
+      xhr.onload = function () {
+        btn.disabled = false;
+        if (xhr.status === 204) {
+          try { localStorage.setItem("lastUpdateTrigger", String(Date.now())); } catch (e) {}
+          setMsg("✅ 已觸發！工作流開始運行…", "warn");
+          setTimeout(function () { pollRun(0); }, 8000);
+        } else if (xhr.status === 401 || xhr.status === 403) {
+          setMsg("⚠ 觸發憑證無效或過期，請站長更新 PAT", "err");
+        } else if (xhr.status === 404) {
+          setMsg("⚠ 未找到工作流 update-data.yml", "err");
+        } else {
+          setMsg("⚠ 觸發失敗（HTTP " + xhr.status + "），請稍後重試", "err");
+        }
+      };
+      xhr.onerror = function () { btn.disabled = false; setMsg("⚠ 網絡錯誤，請稍後重試", "err"); };
+      xhr.send();
+    });
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
+    initUpdateButton();
     var page = document.body.getAttribute("data-page");
     if (page === "home") renderHome();
     if (page === "companies") { initCompanies(); initTopics(); }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>核查说明：茅台需求与2036利润 — AI Berkshire 投研網站</title>
+<link rel="stylesheet" href="../../../css/style.css">
+<link rel="stylesheet" href="../../../css/report.css">
+</head>
+<body data-page="report">
+<header class="site-nav">
+  <a class="brand" href="../../../index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <nav>
+    <a href="../../../index.html">首頁</a>
+    <a href="../../../companies.html">公司</a>
+    <a href="../../../reports.html">報告</a>
+    <a href="../../../trackrecord.html">實盤</a>
+    <a href="../../../allocation.html">配置</a>
+  </nav>
+</header>
+<main class="report-wrap">
+  <nav class="crumbs">
+    <a href="../../../reports.html">報告總覽</a>
+    <span>›</span>
+    <a href="../../../companies.html">茅台</a>
+  </nav>
+  <div class="report-head">
+    <h1>核查说明：茅台需求与2036利润</h1>
+    <div class="report-meta">
+      <span class="badge">公司</span>
+      <span class="badge badge-type">研究</span>
+      <span class="meta-item">📅 2026-09-25</span>
+      <span class="meta-item">📁 茅台</span>
+    </div>
+  </div>
+  <article class="report-body">
+<h1>核查说明：茅台需求与2036利润</h1>
+<p>报告日期：2026-09-25（北京时间），公开资料截止2026-09-24 UTC。</p>
+<h2>取数与计算</h2>
+<p>使用项目 <code>financial_rigor.py</code> 核验2023、2024、2025、2026H1的营业收入、归母净利润及经营现金流，共十二组公司报告／第三方取数。误差均为展示四舍五入，另以Decimal强制检查小于1%，不依赖工具默认更宽阈值。</p>
+<p>第三方取数源对应报告 S3—S7；2024 CFO还可见新华社 https://www.xinhuanet.com/enterprise/20250403/f52f9e215e9d4c2aa72e501c65d8d82f/c.html ；2025 CFO见 https://fund.eastmoney.com/a/202604173708397158.html ；2026H1 CFO见经济参考网原文 https://www.jjckb.cn/20260815/4c018409fe144215b25ae7492d37ab58/c.html 。</p>
+<p>预测公式使用项目工具调用，并用 <code>model.py</code> 的Decimal独立复算。工具 <code>calc</code> 会出现极小二进制尾差；报告展示值依据Decimal四舍五入。条件股价1000元只用于市值、PE算术检验，不是当前市场报价。</p>
+<p>模型未对未来股本作回购假设；EPS与估值条件表使用2026H1已披露股本。基准利润按2026E—2036十年计算复合增速；旧报告比较按2025—2036十一年计算。</p>
+<h2>随机抽检</h2>
+<p><code>report_audit.py extract --seed 42</code>识别91个数据点，按15%抽取14项。原始样本保存于 <code>audit-sample.json</code>，没有为了让结果通过重抽样。</p>
+<ul>
+<li>六项已披露事实：中报收入、2023归母、中报CFO、系列酒销量、茅台酒销量同比、系列酒收入；均与原报告及第三方取数对照。</li>
+<li>四项预测输出：2027利润、2036悲观收入及利润、45%利润率敏感性；仅核验公式计算，不声称未来已被外部来源验证。</li>
+<li>三项假设：乐观行业需求指数、2028茅台酒销量、2028吨价；在正文明确标为研究假设，未伪造外部数据。</li>
+<li>一项解析误报：正文的2025年份；不是财务数值，说明后排除。</li>
+</ul>
+<p><code>audit-results.json</code>只含六项事实与四项算术结果；<code>audit-dispositions.json</code>逐项保留其他四项处理理由。工具判决十项通过，无警告或不通过。此准出结论仅涉及取数和算术，不代表预测置信区间、投资回报保证或同业价值排名验证。</p>
+<h2>已处理的证据局限</h2>
+<ol>
+<li>部分媒体动态页面打开时不完整，补用原发布媒体和搜索索引交叉检索；主要财务事实均有公司原PDF锚定。</li>
+<li>全国CDC调查由行业角色取得论文全文，主分析师复核PubMed摘要；原站PDF间歇拒绝访问。年龄调查是全部酒种，不是白酒、茅台或复购率。</li>
+<li>公司平台年龄画像不等于开瓶；行业商家问卷不等于居民样本；规上折65度产量不等于实际终端消费。</li>
+<li>查询到股价快照，但未获得可稳定打开且时点完整的两路页面，主文仅给条件估值。未把检索片段包装为精确的当前行情。</li>
+<li>2026半年度财务信息已经完整纳入；未来全年、2036预测仍为假设。旧9月7日模型的变化已解释，未覆盖旧报告。</li>
+</ol>
+<p>未进行交易，未修改任何技能或金融工具。研究范围仅为本次新增报告及其复算审计附件。</p>
+  </article>
+  <footer class="report-foot">
+    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
+  </footer>
+</main>
+</body>
+</html>
