@@ -3,6 +3,10 @@
    亮色為預設，[data-theme="dark"] 為暗色（圖表色經 CVD 驗證）
    ============================================================ */
 
+/* 任何帶 hidden 屬性的元素一律隱藏（防止 .cmp-modal/.cmp-bar 等
+   display 規則覆蓋 hidden 導致遮罩常駐、頁面無法點擊） */
+[hidden] { display: none !important; }
+
 :root {
   color-scheme: light;
   /* 平面與表面 */
