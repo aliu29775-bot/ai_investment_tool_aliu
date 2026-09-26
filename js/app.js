@@ -769,6 +769,12 @@
         "<tr><td>聯邦基金利率</td><td>" + b.ffr + "%</td><td>美聯儲政策利率</td></tr>" +
         "<tr><td>10年期實際利率（TIPS）</td><td>" + b.real10 + "%</td><td>長債的真實回報</td></tr>" +
         "<tr><td>高收益債利差（OAS）</td><td>" + b.hy_oas + "%</td><td>信用利差極窄＝市場無懼</td></tr>" +
+        "<tr><td>投資級債利差（IG OAS）</td><td>" +
+        (b.ig_oas == null ? "—" : b.ig_oas + "%") + "</td><td>歷史低位，信用溢價極薄</td></tr>" +
+        "<tr><td>投資級債有效收益率</td><td class='hl'>" +
+        (b.ig_yield == null ? "—" : b.ig_yield + "%") + "</td><td>IG 到期收益（LQD 之錨）</td></tr>" +
+        "<tr><td>高收益債有效收益率</td><td class='hl'>" +
+        (b.hy_yield == null ? "—" : b.hy_yield + "%") + "</td><td>HY 到期收益（HYG 之錨）</td></tr>" +
         "</tbody>";
       var ba = document.getElementById("bonds-asof");
       if (ba) ba.textContent = "⏱ FRED 數據截至 " + b.asof;
@@ -793,6 +799,9 @@
       }).join("");
     }
 
+    /* 建議組合實時收益 */
+    renderPortfolioPerf();
+
     /* 方法論 */
     var frm = document.getElementById("alloc-formulas");
     if (frm) {
@@ -806,6 +815,77 @@
     }
     var src = document.getElementById("alloc-sources");
     if (src) src.textContent = "資料來源：" + A.sources.join(" · ");
+  }
+
+  function renderPortfolioPerf() {
+    var A = D.allocation;
+    var pf = A && A.portfolio;
+    var card = document.getElementById("pf-card");
+    if (!card) return;
+    if (!pf || !pf.portfolio || pf.portfolio.length < 2) {
+      card.innerHTML = '<div class="dash-head"><h3>📈 組合淨值走勢</h3></div>' +
+        '<p class="disclaimer" style="padding:0 16px 12px;">組合收益資料暫不可用（建站時資產序列抓取失敗）。</p>';
+      return;
+    }
+    var asofEl = document.getElementById("pf-asof");
+    if (asofEl) asofEl.textContent = "⏱ 回測截至 " + pf.asof;
+
+    var rets = [
+      ["YTD", pf.ytd, pf.bench_ytd],
+      ["近1月", pf.m1, pf.bench_m1],
+      ["近3月", pf.m3, pf.bench_m3],
+      ["近1年", pf.y1, pf.bench_y1],
+    ];
+    var statHtml = "";
+    for (var i = 0; i < rets.length; i++) {
+      var r = rets[i][1], b = rets[i][2];
+      var ex = (r == null || b == null) ? null : r - b;
+      statHtml += '<div class="pf-stat">' +
+        '<div class="pf-stat-label">' + rets[i][0] + "</div>" +
+        '<div class="pf-stat-val ' + (r == null ? "" : (r >= 0 ? "up" : "down")) + '">' +
+        fmtPct(r) + "</div>" +
+        '<div class="pf-stat-ex">vs SPY ' +
+        (ex == null ? "—" : (ex >= 0 ? "跑贏 <b>+" + ex.toFixed(1) : "跑輸 <b>" + Math.abs(ex).toFixed(1)) + "%</b>") +
+        "</div></div>";
+    }
+
+    /* SVG 折線圖（組合 vs SPY，共用同一坐標系） */
+    var W = 720, H = 240, PL = 8, PR = 8, PT = 14, PB = 24;
+    var n = pf.portfolio.length;
+    var mn = Math.min.apply(null, pf.portfolio.concat(pf.benchmark));
+    var mx = Math.max.apply(null, pf.portfolio.concat(pf.benchmark));
+    if (mx - mn < 0.5) { mx += 0.5; mn -= 0.5; }
+    function pts(series) {
+      var s = "";
+      for (var i = 0; i < n; i++) {
+        var x = PL + (W - PL - PR) * i / (n - 1);
+        var y = PT + (H - PT - PB) * (1 - (series[i] - mn) / (mx - mn));
+        s += (i ? " " : "") + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      return s;
+    }
+    var wKey = Object.keys(pf.weights || {});
+    var wLabel = wKey.length ? wKey.map(function (s) {
+      return esc(s) + " " + pf.weights[s] + "%";
+    }).join(" · ") : "";
+
+    card.innerHTML =
+      '<div class="dash-head"><h3>📈 組合淨值走勢（起始 = 100，自 ' + esc(pf.start) + "）</h3>" +
+      '<span class="pf-legend"><span class="pf-dot pf-dot-a"></span>建議組合' +
+      '<span class="pf-dot pf-dot-b"></span>SPY 基準</span></div>' +
+      '<div class="pf-stats">' + statHtml + "</div>" +
+      '<div class="pf-chart">' +
+      '<svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" role="img" aria-label="建議組合與SPY淨值走勢對比">' +
+      '<line class="pf-axis" x1="' + PL + '" y1="' + (H - PB) + '" x2="' + (W - PR) +
+      '" y2="' + (H - PB) + '"></line>' +
+      '<polyline class="pf-line-b" points="' + pts(pf.benchmark) + '"></polyline>' +
+      '<polyline class="pf-line-a" points="' + pts(pf.portfolio) + '"></polyline>' +
+      "</svg>" +
+      '<div class="pf-axis-labels"><span>' + esc(pf.dates[0]) + "</span><span>" +
+      esc(pf.dates[n - 1]) + "</span></div>" +
+      '<div class="pf-weights">配置權重：' + wLabel +
+      "（每日以目標權重再平衡，未計費用與稅，僅為框架演示）</div>" +
+      "</div>";
   }
 
   /* ---------- 啟動 ---------- */

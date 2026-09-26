@@ -92,6 +92,26 @@ TICKER_MAP = {
     "藥明康德": "2359.HK", "香港交易所": "0388.HK", "友邦保險": "1299.HK",
     "TLT": "TLT", "IEF": "IEF", "GLD": "GLD", "DBC": "DBC",
     "紫金礦業": "2899.HK", "Freeport-McMoRan": "FCX", "Barrick": "GOLD",
+    # 2026-09-26 第二批新增：美股 S&P500 大型股、生技、量子、電力、歐韓、中資大型股、債券工具
+    "UnitedHealth": "UNH", "强生": "JNJ", "強生": "JNJ", "宝洁": "PG", "寶潔": "PG",
+    "沃尔玛": "WMT", "沃爾瑪": "WMT", "可口可乐": "KO", "可口可樂": "KO",
+    "麦当劳": "MCD", "麥當勞": "MCD", "Salesforce": "CRM", "Oracle": "ORCL",
+    "Moderna": "MRNA", "Regeneron": "REGN", "Vertex": "VRTX", "Amgen": "AMGN",
+    "IonQ": "IONQ", "Rigetti": "RGTI", "Vistra": "VST",
+    "Constellation Energy": "CEG", "NextEra": "NEE",
+    "三星電子": "005930.KS", "三星电子": "005930.KS", "LVMH": "MC.PA",
+    "愛馬仕": "HESAY", "爱马仕": "HESAY", "Hermès": "HESAY",
+    "雀巢": "NSRGY", "Nestlé": "NSRGY", "SAP": "SAP",
+    "阿斯利康": "AZN", "AstraZeneca": "AZN",
+    "工商銀行": "1398.HK", "工商银行": "1398.HK",
+    "建設銀行": "0939.HK", "建设银行": "0939.HK",
+    "寧德時代": "300750.SZ", "宁德时代": "300750.SZ",
+    "中國海洋石油": "0883.HK", "中国海洋石油": "0883.HK", "中海油": "0883.HK",
+    "中國石油": "0857.HK",
+    "中信證券": "6030.HK", "中信证券": "6030.HK",
+    "工業富聯": "601138.SS", "工业富联": "601138.SS",
+    "海光信息": "688041.SS",
+    "LQD": "LQD", "HYG": "HYG", "SHY": "SHY", "TIP": "TIP",
 }
 
 # 7 家公司橫評的備用評分（README 的 Checklist 表）
@@ -110,6 +130,17 @@ SECTORS = {
     "藥明康德": "醫藥", "香港交易所": "金融", "友邦保險": "金融",
     "TLT": "債券", "IEF": "債券", "GLD": "黃金", "DBC": "商品",
     "紫金礦業": "材料", "Freeport-McMoRan": "材料", "Barrick": "材料",
+    "UnitedHealth": "醫藥", "强生": "醫藥", "宝洁": "消費", "沃尔玛": "消費",
+    "可口可乐": "消費", "麦当劳": "消費", "Salesforce": "科技", "Oracle": "科技",
+    "Moderna": "醫藥", "Regeneron": "醫藥", "Vertex": "醫藥", "Amgen": "醫藥",
+    "IonQ": "科技", "Rigetti": "科技", "Vistra": "公用事業",
+    "Constellation Energy": "公用事業", "NextEra": "公用事業",
+    "三星電子": "科技", "LVMH": "消費", "愛馬仕": "消費", "雀巢": "消費",
+    "SAP": "科技", "阿斯利康": "醫藥",
+    "工商銀行": "金融", "建設銀行": "金融", "中信證券": "金融",
+    "寧德時代": "工業", "中國海洋石油": "能源", "中國石油": "能源",
+    "工業富聯": "科技", "海光信息": "科技",
+    "LQD": "債券", "HYG": "債券", "SHY": "債券", "TIP": "債券",
 }
 
 SECTOR_RULES = [
@@ -140,7 +171,8 @@ SECTOR_RULES = [
               "赛轮", "杭叉", "德业", "英维克", "领益", "绿的", "Nittobo", "金风",
               "Goldwind", "铜", "鋼", "钢")),
     ("電信", ("中國移動", "中国移动")),
-    ("債券", ("TLT", "IEF", "BIL")),
+    ("公用事業", ("Vistra", "Constellation", "NextEra", "核电", "核電", "電力基建")),
+    ("債券", ("TLT", "IEF", "BIL", "LQD", "HYG", "SHY", "TIP", "投資級", "高收益")),
     ("黃金", ("GLD",)),
     ("商品", ("DBC",)),
 ]
@@ -231,15 +263,15 @@ def site_path(p):
 
 
 def classify_verdict(v):
-    """把結論文字歸類為正面/中性/負面（給網站顯示顏色用）。"""
+    """把結論文字歸類為正面/中性/負面（給網站顯示顏色用）。注意「不通過」含「通過」二字，負面須先匹配。"""
     if not v:
         return None
+    if re.search(r"不通过|不通過|卖出|賣出|回避|迴避|清仓|清倉|淘汰|❌", v):
+        return "negative"
     if re.search(r"买入|買入|建仓|建倉|通过|通過|增持|持有待|低估|✅", v):
         return "positive"
     if re.search(r"灰色|观望|觀望|觀察|待定|❓|不确定|不確定", v):
         return "neutral"
-    if re.search(r"不通过|不通過|卖出|賣出|回避|迴避|清仓|清倉|淘汰|❌", v):
-        return "negative"
     return None
 
 # ---------------------------------------------------------------------------
@@ -296,7 +328,8 @@ def fetch_quotes(symbols, verbose=True):
 # ---------------------------------------------------------------------------
 
 FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
-               "DFF", "BAMLH0A0HYM2", "DFII10", "GDPC1", "PAYEMS", "T10Y2Y"]
+               "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
+               "DFII10", "GDPC1", "PAYEMS", "T10Y2Y"]
 
 ASSET_PROXIES = {"股票": "SPY", "國債": "IEF", "長期國債": "TLT",
                  "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
@@ -338,7 +371,7 @@ def fetch_fred(series_ids, cache_file):
 
 
 def fetch_asset_perf(symbols):
-    """抓 1 年（月線）行情，計算 YTD/1Y 報酬與 52 周高低。"""
+    """抓 1 年（日線）行情，計算 YTD/1Y 報酬、52 周高低，並保留日期序列供組合實時收益計算。"""
     perf = {}
     for sym in sorted(set(symbols)):
         url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
@@ -368,6 +401,9 @@ def fetch_asset_perf(symbols):
                 "high": meta.get("fiftyTwoWeekHigh"),
                 "low": meta.get("fiftyTwoWeekLow"),
                 "closes": [round(c, 2) for _, c in pairs],
+                # 組合實時收益用：全精度收盤 + 日期（YYYY-MM-DD）
+                "series": [round(c, 4) for _, c in pairs],
+                "dates": [datetime.fromtimestamp(t).strftime("%Y-%m-%d") for t, _ in pairs],
             }
             print(f"  ✓ 資產 {sym:8s} {price:>10.2f} | YTD {ytd:>7.2f}% | 1Y {y1:>7.2f}%")
         except Exception as e:
@@ -540,6 +576,10 @@ def compute_allocation(fred, quotes, asset_perf):
         "dgs30": round(_yv(fred, "DGS30"), 2), "ffr": round(ffr, 2),
         "spread": round(spread, 2), "real10": round(real10, 2),
         "hy_oas": round(oas, 2),
+        # 投資級 / 高收益信用市場（FRED BofA ICE 指數）
+        "ig_oas": round(_yv(fred, "BAMLC0A0CM"), 2),
+        "ig_yield": round(_yv(fred, "BAMLC0A0CMEY"), 2),
+        "hy_yield": round(_yv(fred, "BAMLH0A0HYM2EY"), 2),
         "asof": (fred.get("DGS10") or [["—"]])[-1][0],
     }
 
@@ -576,8 +616,77 @@ def compute_allocation(fred, quotes, asset_perf):
         "bonds": bonds,
         "commodities": commodities,
         "assets": assets,
+        "portfolio": compute_portfolio(asset_perf, targets),
         "sources": ["FRED 聯儲經濟數據（fredgraph.csv）", "Yahoo Finance 公開行情",
                     "ICE/COMEX 期貨報價"],
+    }
+
+
+def compute_portfolio(asset_perf, targets):
+    """依建議配置權重，用日線序列計算組合的實時收益（買入持有、每日以目標權重再平衡），對比 SPY 基準。"""
+    sym_map = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+    weights = {}
+    for t in targets:
+        sym = sym_map.get(t["cls"])
+        if sym and (asset_perf.get(sym, {}) or {}).get("series"):
+            weights[sym] = t["pct"] / 100.0
+    bench = asset_perf.get("SPY", {})
+    if not weights or not bench.get("series"):
+        return None
+
+    # 以 SPY 交易日為主軸，其餘資產用「最近一次收盤」前向填充
+    maps = {}
+    for sym in list(weights) + ["SPY"]:
+        d = asset_perf.get(sym, {})
+        maps[sym] = dict(zip(d.get("dates") or [], d.get("series") or []))
+    dates = bench.get("dates") or []
+    pf, bm, lasts = [], [], {s: None for s in maps}
+    base = None
+    for dt in dates:
+        for s, m in maps.items():
+            if dt in m:
+                lasts[s] = m[dt]
+        b = lasts["SPY"]
+        if any(lasts[s] is None for s in weights) or b is None:
+            if base is not None:
+                pf.append(pf[-1]); bm.append(bm[-1])
+            continue
+        if base is None:
+            base = {s: lasts[s] for s in weights}
+            base_b = b
+        pf.append(sum(weights[s] * lasts[s] / base[s] for s in weights) * 100)
+        bm.append(b / base_b * 100)
+    if len(pf) < 30:
+        return None
+
+    def ret(series, n):
+        if n <= 0 or n >= len(series):
+            return None
+        return round((series[-1] / series[-1 - n] - 1) * 100, 2)
+
+    cur_year = str(datetime.now().year) + "-01-01"
+    ytd = bytd = None
+    for i, d in enumerate(dates):
+        if d >= cur_year and ytd is None and pf[i]:
+            ytd = round((pf[-1] / pf[i] - 1) * 100, 2)
+            break
+    for i, d in enumerate(dates):
+        if d >= cur_year and bytd is None and bm[i]:
+            bytd = round((bm[-1] / bm[i] - 1) * 100, 2)
+            break
+
+    tail = 250
+    return {
+        "weights": {s: round(w * 100, 1) for s, w in weights.items()},
+        "dates": dates[-tail:],
+        "portfolio": [round(v, 2) for v in pf[-tail:]],
+        "benchmark": [round(v, 2) for v in bm[-tail:]],
+        "start": dates[0],
+        "ytd": ytd, "m1": ret(pf, 21), "m3": ret(pf, 63),
+        "y1": round((pf[-1] / 100 - 1) * 100, 2) if pf[0] == 100 else ret(pf, len(pf) - 1),
+        "bench_ytd": bytd, "bench_m1": ret(bm, 21), "bench_m3": ret(bm, 63),
+        "bench_y1": round((bm[-1] / 100 - 1) * 100, 2) if bm[0] == 100 else ret(bm, len(bm) - 1),
+        "asof": dates[-1],
     }
 
 
