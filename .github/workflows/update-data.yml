@@ -1,0 +1,42 @@
+name: 更新数据与报告
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout 部署仓库
+        uses: actions/checkout@v4
+
+      - name: Clone 源报告仓库（fork）
+        run: git clone --depth 1 https://github.com/aliu29775-bot/ai-berkshire.git /tmp/ai-berkshire
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 重建站点（抓取最新行情 + FRED + 渲染全部报告）
+        run: python3 build_site.py --repo /tmp/ai-berkshire
+
+      - name: 提交并推送（无变更则跳过）
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "無變更，跳過提交"
+            exit 0
+          fi
+          git config user.name "aliu29775-bot"
+          git config user.email "aliu29775-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "auto: 數據與報告更新 $(date +%F)"
+          git push
