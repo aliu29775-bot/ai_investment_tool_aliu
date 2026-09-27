@@ -58,11 +58,23 @@
     </div>
   </section>
 
+  <!-- 研報最推薦公司組合 -->
+  <section class="section">
+    <div class="section-head"><h2 style="font-size:20px;">⭐ 研報最推薦公司組合</h2></div>
+    <p class="section-desc">從全部公司中選取研報結論為正面且評分最高的 8 家，權重按評分歸一化——這是網站當前最推薦的股票組合，也是下方檢視實盤持倉的基準。棒形圖按行業著色，與持倉圖同色板。</p>
+    <div class="card" style="padding: 18px 22px;">
+      <div class="mini-stats" id="rec-combo-stats"></div>
+      <div class="legend" id="rec-combo-legend"></div>
+      <div id="rec-combo"></div>
+    </div>
+  </section>
+
   <!-- 當前持倉 -->
   <section class="section">
     <div class="section-head"><h2 style="font-size:20px;">💼 當前持倉（截至 2026-09-07）</h2></div>
-    <p class="section-desc">權重為持股組合口徑（不含現金），隨市價波動，非固定目標配置。長條為權重、百分比為相對成本浮動盈虧。</p>
+    <p class="section-desc">權重為持股組合口徑（不含現金），隨市價波動，非固定目標配置。長條為權重、百分比為相對成本浮動盈虧，顏色按行業（與上圖同色板）。</p>
     <div class="card" style="padding: 18px 22px;">
+      <div class="legend" id="holdings-legend"></div>
       <div id="holdings-bars"></div>
       <div style="overflow-x:auto; margin-top: 12px;">
         <table class="data-table">
@@ -74,6 +86,16 @@
         組合相對成本浮動盈虧約 <strong>-3.6%</strong>：MiniMax +75.4%、快手 -1.5%、騰訊 -3.4%、PDD -10.1%、美團 -17.3%，按成本權重加權。清倉泡泡瑪特回籠的現金約佔組合 8%，尚未再配置。
       </div>
       <p class="disclaimer">口徑說明：這是相對成本的浮動盈虧，非年內時間加權收益；賣出 PUT 的權利金、分紅與騰訊減倉的已實現損益均未計入。</p>
+      <div class="note-box">
+        <strong>🆚 依最推薦組合檢視持倉</strong>
+        <div style="overflow-x:auto; margin-top: 8px;">
+          <table class="data-table">
+            <thead><tr><th>持倉標的</th><th>權重</th><th>研報評分</th><th>最新結論</th><th>vs 組合平均</th></tr></thead>
+            <tbody id="holdings-analysis"></tbody>
+          </table>
+        </div>
+        <p class="disclaimer" id="holdings-analysis-note"></p>
+      </div>
     </div>
   </section>
 
