@@ -35,14 +35,14 @@
     <div class="cta">
       <a class="btn primary" href="companies.html">瀏覽 168 家公司</a>
       <a class="btn" href="reports.html">查閱 2,425 份報告</a>
-      <a class="btn" href="trackrecord.html">看實盤業績</a>
+      <a class="btn" href="allocation.html">看推薦配置</a>
     </div>
     <div class="stats" id="hero-stats">
       <div class="stat"><div class="num">2,425</div><div class="label">研究報告</div></div>
       <div class="stat"><div class="num">168</div><div class="label">覆蓋公司</div></div>
       <div class="stat"><div class="num">38</div><div class="label">專題研究</div></div>
-      <div class="stat"><div class="num">+69%</div><div class="label">2024 實盤收益</div></div>
-      <div class="stat"><div class="num">+66%</div><div class="label">2025 實盤收益</div></div>
+      <div class="stat"><div class="num" id="hero-alloc-equity">—</div><div class="label">推薦配置 · 股票</div></div>
+      <div class="stat"><div class="num" id="hero-alloc-gold">—</div><div class="label">推薦配置 · 黃金</div></div>
     </div>
   </section>
 
@@ -55,10 +55,6 @@
     <a class="card quick-card" href="reports.html">
       <span class="qc-icon">📄</span>
       <div><h3>報告總覽</h3><p>2,425 份報告 · 全文搜尋與分頁</p></div>
-    </a>
-    <a class="card quick-card" href="trackrecord.html">
-      <span class="qc-icon">📈</span>
-      <div><h3>實盤業績</h3><p>持倉、交易記錄與收益對比</p></div>
     </a>
     <a class="card quick-card" href="companies.html">
       <span class="qc-icon">⚖️</span>
@@ -80,55 +76,38 @@
     <div class="ticker-strip" id="market-strip"></div>
   </section>
 
-  <!-- 實盤業績 -->
+  <!-- 推薦配置組合 · 實時業績 -->
   <section class="section">
     <div class="section-head">
-      <h2>📈 真實盤業績</h2>
-      <a class="more" href="trackrecord.html">查看完整記錄 →</a>
+      <h2>🧭 推薦配置組合 · 實時業績</h2>
+      <a class="more" href="allocation.html">配置邏輯與宏觀儀錶 →</a>
+      <span class="freshness" id="home-alloc-asof"></span>
     </div>
-    <p class="section-desc">不是紙上談兵——這套框架背後是真金白銀驗證的投資體系，連續兩年大幅跑贏全球主要指數。</p>
-    <div class="perf-grid">
-      <div class="card perf-card">
-        <div class="year">2024 全年收益</div>
-        <div class="ret">+69.29%</div>
-        <div class="note">跑贏標普 500 46 個百分點</div>
+    <p class="section-desc">網站基於宏觀環境評分動態給出的最推薦資產配置組合——權重、代理 ETF 與當日表現均為實時數據。</p>
+    <div class="dash-grid">
+      <div class="card home-combo-card">
+        <div class="dash-head"><h3>🎯 組合今日實時表現</h3></div>
+        <div class="home-combo" id="home-alloc-combo">—</div>
+        <p class="disclaimer" id="home-alloc-combo-note">按各類代理 ETF 當日漲跌 × 目標權重加權計算</p>
       </div>
-      <div class="card perf-card">
-        <div class="year">2025 全年收益</div>
-        <div class="ret">+66.38%</div>
-        <div class="note">跑贏標普 500 50 個百分點</div>
+      <div class="card">
+        <div class="dash-head"><h3>⚖️ 目標權重與實時行情</h3></div>
+        <div id="home-alloc"></div>
+        <p class="disclaimer">ETF 代理僅用於業績計算，不代表實際持倉</p>
       </div>
-      <div class="card perf-card">
-        <div class="year">兩年累計實盤收益</div>
-        <div class="ret">146萬+</div>
-        <div class="note">截圖來自富途證券真實帳戶</div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:16px; padding: 8px 4px; overflow-x:auto;">
-      <table class="data-table">
-        <thead><tr><th>指標</th><th>2024 全年</th><th>2025 全年</th></tr></thead>
-        <tbody>
-          <tr><td class="hl">本框架實盤</td><td class="hl">+69.29%</td><td class="hl">+66.38%</td></tr>
-          <tr><td>納斯達克</td><td>+28.64%</td><td>+20.36%</td></tr>
-          <tr><td>標普500</td><td>+23.31%</td><td>+16.39%</td></tr>
-          <tr><td>恒生指數</td><td>+17.67%</td><td>+27.77%</td></tr>
-          <tr><td>滬深300</td><td>+14.68%</td><td>+17.66%</td></tr>
-        </tbody>
-      </table>
-      <p class="disclaimer" style="padding: 0 16px;">歷史收益不代表未來表現。截圖來自富途證券真實帳戶。</p>
     </div>
   </section>
 
-  <!-- 組合快照＋評分分佈 -->
+  <!-- 宏觀儀錶＋評分分佈 -->
   <section class="section">
     <div class="dash-grid">
       <div class="card dash-card">
         <div class="dash-head">
-          <h3>💼 實盤組合快照</h3>
-          <a class="more" href="trackrecord.html">完整記錄 →</a>
+          <h3>🌡 宏觀環境儀錶</h3>
+          <a class="more" href="allocation.html">完整配置邏輯 →</a>
         </div>
-        <div id="pf-snapshot"></div>
-        <p class="disclaimer">截至 2026-09-07 · 權重為持股組合口徑（不含現金）</p>
+        <div id="home-macro"></div>
+        <p class="disclaimer" id="home-macro-note"></p>
       </div>
       <div class="card dash-card">
         <div class="dash-head">

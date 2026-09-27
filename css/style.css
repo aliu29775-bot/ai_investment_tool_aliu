@@ -577,6 +577,19 @@ table.data-table {
   margin-bottom: 10px;
 }
 .dash-head h3 { margin: 0; font-size: 16.5px; }
+
+/* 首頁推薦配置組合 */
+.home-combo-card { padding: 18px 22px; }
+.home-combo {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  margin: 16px 0 8px;
+}
+.home-combo.up { color: var(--good); }
+.home-combo.down { color: var(--crit); }
 .pf-foot {
   margin-top: 12px;
   padding-top: 10px;

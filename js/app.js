@@ -35,6 +35,18 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* 簡→繁 兼容：頁面 chip 用繁體，數據用簡體，比較前統一轉簡體 */
+  var SIMP_MAP = {
+    "專": "专", "題": "题", "師": "师", "篩": "筛", "選": "选", "財": "财",
+    "報": "报", "倉": "仓", "橫": "横", "對": "对", "組": "组", "織": "织",
+    "眾": "众", "號": "号", "層": "层", "觀": "观", "價": "价", "團": "团"
+  };
+  function simp(s) {
+    return String(s == null ? "" : s).replace(/[專題師篩選財報倉橫對組織眾號層觀價團]/g, function (ch) {
+      return SIMP_MAP[ch] || ch;
+    });
+  }
+
   function stars(n) {
     var full = "★".repeat(Math.max(1, Math.min(5, n)));
     return '<span class="stars" aria-label="' + n + ' 分（滿分 5）">' + full + "</span>";
@@ -91,7 +103,7 @@
     }
 
     renderMarket();
-    renderPfSnapshot();
+    renderHomeAlloc();
     renderScoreDist();
   }
 
@@ -131,28 +143,88 @@
     if (f && D.market_asof) f.textContent = "⏱ 行情更新於 " + D.market_asof;
   }
 
-  /* ---------- 首頁：實盤組合快照 ---------- */
-  function renderPfSnapshot() {
-    var box = document.getElementById("pf-snapshot");
-    if (!box || !D.portfolio) return;
-    var p = D.portfolio;
-    var maxW = Math.max.apply(null, p.holdings.map(function (h) { return h.weight; }));
-    var seq = ["#9ec5f4", "#86b6ef", "#6da7ec", "#5498e8", "#3b89e3"];
-    var sorted = p.holdings.slice().sort(function (a, b) { return b.weight - a.weight; });
-    var rows = sorted.map(function (h, i) {
-      var w = Math.round(h.weight / maxW * 100);
-      return '<div class="hbar-row">' +
-        '<span class="hname">' + esc(h.name) + "</span>" +
-        '<div class="track"><div class="fill" style="width:' + w + "%;background:" + seq[i] +
-        '"></div></div>' +
-        '<span class="hval">' + h.weight + "%</span></div>";
-    }).join("");
-    rows += '<div class="hbar-row"><span class="hname">現金（待配置）</span>' +
-      '<div class="track"><div class="fill" style="width:26%;background:var(--cash)"></div></div>' +
-      '<span class="hval">約 8%</span></div>';
-    box.innerHTML = rows +
-      '<div class="pf-foot">組合浮動盈虧約 <strong class="pnl-down">-3.6%</strong>（相對成本）·' +
-      "清倉泡泡瑪特回籠現金尚未再配置</div>";
+  /* ---------- 首頁：推薦配置組合 · 實時業績 ---------- */
+  function renderHomeAlloc() {
+    var A = D.allocation;
+    var allocColors = {
+      "股票": "#3b89e3", "國債": "#8a6fd1", "商品": "#e08c3a",
+      "黃金": "#d9a514", "現金": "#98a2b3",
+    };
+    if (!A) {
+      var fa = document.getElementById("home-alloc");
+      if (fa) fa.innerHTML = '<div class="empty">資產配置資料暫不可用（建站時宏觀數據抓取失敗）</div>';
+      return;
+    }
+    /* Hero 兩項：推薦配置中的股票與黃金權重 */
+    var byCls = {};
+    A.targets.forEach(function (t) { byCls[t.cls] = t; });
+    var eq = document.getElementById("hero-alloc-equity");
+    if (eq && byCls["股票"]) eq.textContent = byCls["股票"].pct + "%";
+    var gd = document.getElementById("hero-alloc-gold");
+    if (gd && byCls["黃金"]) gd.textContent = byCls["黃金"].pct + "%";
+
+    /* 目標權重＋實時行情 */
+    var box = document.getElementById("home-alloc");
+    if (box) {
+      var maxT = Math.max.apply(null, A.targets.map(function (t) { return t.pct; }));
+      box.innerHTML = A.targets.map(function (t) {
+        var w = Math.round(t.pct / maxT * 100);
+        var q = D.market && D.market[t.proxy];
+        var pr = q ? q.price.toLocaleString() : "—";
+        var chg = q && q.change_pct != null ?
+          '<span class="c ' + (q.change_pct >= 0 ? "up" : "down") + '">' +
+          (q.change_pct >= 0 ? "▲ +" : "▼ ") + Math.abs(q.change_pct).toFixed(2) + "%</span>" : "";
+        return '<div class="al-block">' +
+          '<div class="al-line"><span class="al-name">' + esc(t.cls) + "</span>" +
+          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+          (allocColors[t.cls] || "var(--sector-fill)") + '"></div></div>' +
+          '<span class="al-val">' + t.pct + "%</span></div>" +
+          '<div class="al-proxy">' + esc(t.proxy) + " · " + pr + " " + chg + "</div></div>";
+      }).join("");
+    }
+
+    /* 組合加權當日表現 */
+    var combo = document.getElementById("home-alloc-combo");
+    if (combo) {
+      var total = 0, weightSum = 0;
+      A.targets.forEach(function (t) {
+        var q = D.market && D.market[t.proxy];
+        if (q && q.change_pct != null) { total += t.pct * q.change_pct; weightSum += t.pct; }
+      });
+      if (weightSum) {
+        var v = total / weightSum;
+        combo.textContent = (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+        combo.className = "home-combo " + (v >= 0 ? "up" : "down");
+      } else {
+        combo.textContent = "—";
+      }
+    }
+    var asof = document.getElementById("home-alloc-asof");
+    if (asof) {
+      var d0 = D.market_asof || (D.market && D.market.SPY && D.market.SPY.asof) || A.asof;
+      if (d0) asof.textContent = "⏱ 行情更新於 " + d0;
+    }
+
+    /* 宏觀儀錶（精簡版） */
+    var mg = document.getElementById("home-macro");
+    if (mg) {
+      mg.innerHTML = A.macro.map(function (m) {
+        var w = Math.max(0, Math.min(100, m.score || 0));
+        var chg = "";
+        if (m.change != null && m.change !== 0) {
+          var good = m.change > 0 ? m.up_good : !m.up_good;
+          chg = ' <span class="m-change ' + (good ? "good" : "bad") + '">' +
+            (m.change > 0 ? "▲+" : "▼") + Math.abs(m.change) + "</span>";
+        }
+        return '<div class="dist-row">' +
+          '<span class="dist-label">' + esc(m.label) + chg + "</span>" +
+          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+          macroColor(m.score, m.up_good) + '"></div></div>' +
+          '<span class="dist-num">' + (m.score == null ? "—" : m.score) + "</span></div>";
+      }).join("");
+      var mn = document.getElementById("home-macro-note");
+      if (mn) mn.textContent = "⏱ 更新於 " + A.asof + " · 完整邏輯見配置頁";
+    }
   }
 
   /* ---------- 首頁：覆蓋公司評分分佈 ---------- */
@@ -474,13 +546,32 @@
 
     var all = rows();
 
+    /* 每個類型／分類 chip 標註報告數 */
+    var typeCnt = {}, bucketCnt = {};
+    all.forEach(function (x) {
+      typeCnt[x.r.type] = (typeCnt[x.r.type] || 0) + 1;
+      bucketCnt[x.b] = (bucketCnt[x.b] || 0) + 1;
+    });
+    document.querySelectorAll("[data-type]").forEach(function (chip) {
+      var v = chip.getAttribute("data-type");
+      var n = v === "all" ? all.length : typeCnt[v] || typeCnt[simp(v)] || 0;
+      chip.textContent += " · " + n;
+    });
+    document.querySelectorAll("[data-bucket]").forEach(function (chip) {
+      var v = chip.getAttribute("data-bucket");
+      var n = v === "all" ? all.length : bucketCnt[v] || bucketCnt[simp(v)] || 0;
+      chip.textContent += " · " + n;
+    });
+
     function apply() {
       var s = state.q.toLowerCase();
       var items = all.filter(function (x) {
-        if (state.type !== "all" && x.r.type !== state.type) return false;
-        if (state.bucket !== "all" && x.b !== state.bucket) return false;
+        if (state.type !== "all" && simp(x.r.type) !== simp(state.type)) return false;
+        if (state.bucket !== "all" && simp(x.b) !== simp(state.bucket)) return false;
         if (s && (x.r.title.toLowerCase().indexOf(s) < 0 &&
-            x.g.toLowerCase().indexOf(s) < 0)) return false;
+            x.g.toLowerCase().indexOf(s) < 0 &&
+            simp(x.r.title).toLowerCase().indexOf(s) < 0 &&
+            simp(x.g).toLowerCase().indexOf(s) < 0)) return false;
         return true;
       });
       state.shown = 0;
