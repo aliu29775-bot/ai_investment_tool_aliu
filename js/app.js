@@ -888,7 +888,9 @@
       "</div>";
   }
 
-  /* ---------- 更新數據按鈕（GitHub Actions 觸發 + 狀態輪詢） ---------- */
+  /* ---------- 更新數據按鈕 ----------
+   * 有觸發憑證（gh-trigger.js）：直接 API 觸發工作流 + 狀態輪詢；
+   * 無憑證（默認）：打開 GitHub Actions 頁面，手動點 Run workflow。 */
   function initUpdateButton() {
     var btn = document.getElementById("btn-update-data");
     if (!btn) return;
@@ -932,7 +934,11 @@
     }
 
     btn.addEventListener("click", function () {
-      if (!TOKEN) { setMsg("⚠ 未配置觸發憑證，請站長在 js/gh-trigger.js 填入 PAT", "err"); return; }
+      if (!TOKEN) {
+        window.open("https://github.com/" + REPO + "/actions/workflows/" + WF, "_blank", "noopener");
+        setMsg("已打開 GitHub Actions 頁面，點擊 Run workflow 觸發更新；完成後約 1 分鐘刷新本頁即可看到新數據", "ok");
+        return;
+      }
       var last = 0;
       try { last = parseInt(localStorage.getItem("lastUpdateTrigger"), 10) || 0; } catch (e) {}
       var now = Date.now();
