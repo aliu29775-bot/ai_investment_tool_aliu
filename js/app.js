@@ -24,7 +24,7 @@
       document.documentElement.setAttribute("data-theme", next);
       btn.textContent = next === "dark" ? "☀ 亮色" : "🌙 暗色";
       try { localStorage.setItem("aiberkshire-theme", next); } catch (e) {}
-      if (window.renderReturnsChart) window.renderReturnsChart();
+      if (window.renderTrackRecord) window.renderTrackRecord();
     });
   }
 
@@ -662,141 +662,21 @@
     });
   }
 
-  /* ---------- 實盤：年度收益分組長條圖（SVG，經 CVD 驗證色板） ---------- */
-  function renderReturnsChart() {
-    var wrap = document.getElementById("returns-chart");
-    if (!wrap) return;
-    var td = D.trackrecord;
-    var W = Math.min(wrap.clientWidth || 660, 660);
-    var H = 300;
-    var padL = 46, padR = 16, padT = 18, padB = 34;
-    var maxV = Math.max.apply(null, td.returns.map(function (s) {
-      return Math.max.apply(null, s.values);
-    })) * 1.12;
-
-    var g = Math.max(0, W - padL - padR);
-    var ph = H - padT - padB;
-    var groupW = g / td.years.length;
-    var n = td.returns.length;
-    var gap = 2;                          // 相鄰長條 2px 表面間隙
-    var bw = Math.min(46, (groupW - 40) / n);
-    var step = bw + gap;
-    var x0 = (groupW - (step * n - gap)) / 2;
-
-    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" ' +
-      'aria-label="2024 與 2025 年度收益對比長條圖（數據見下方表格）">';
-    // 網格與 y 軸（退居次要）
-    for (var v = 0; v <= 70; v += 10) {
-      var y = padT + ph - (v / maxV) * ph;
-      svg += '<line x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y +
-        '" stroke="var(--gridline)" stroke-width="1"/>';
-      svg += '<text x="' + (padL - 8) + '" y="' + (y + 4) + '" text-anchor="end" ' +
-        'fill="var(--text-muted)" font-size="11">' + v + "%</text>";
-    }
-    // 基線
-    svg += '<line x1="' + padL + '" y1="' + (padT + ph) + '" x2="' + (W - padR) +
-      '" y2="' + (padT + ph) + '" stroke="var(--baseline)" stroke-width="1"/>';
-
-    var seriesOrder = td.returns.map(function (_, i) { return i; });
-    td.years.forEach(function (yr, yi) {
-      var cx = padL + yi * groupW;
-      td.returns.forEach(function (s, si) {
-        var val = s.values[yi];
-        var h = (val / maxV) * ph;
-        var x = cx + x0 + si * step;
-        var y = padT + ph - h;
-        var color = "var(--series-" + (si + 1) + ")";
-        var label = si === 0  // 只對本框架實盤直接標值
-          ? '<text x="' + (x + bw / 2) + '" y="' + (y - 6) + '" text-anchor="middle" ' +
-            'fill="var(--text-primary)" font-size="11.5" font-weight="600">' +
-            val.toFixed(1) + "%</text>"
-          : "";
-        svg += label +
-          '<rect class="bar" x="' + x + '" y="' + y + '" width="' + bw +
-          '" height="' + Math.max(h, 0) + '" rx="4" ry="4" fill="' + color + '"' +
-          (h < 8 ? ' clip-path="inset(0 0 ' + (8 - h) + 'px 0)"' : "") +
-          ' data-tip="' + s.name + " " + yr + "：" + val.toFixed(2) + '%"/>' +
-          '<rect class="bar-hit" x="' + x + '" y="' + (y - 8) + '" width="' + bw +
-          '" height="' + (h + 8) + '" data-tip="' + s.name + " " + yr + "：" + val.toFixed(2) + '%"/>';
-      });
-      svg += '<text x="' + (cx + groupW / 2) + '" y="' + (H - 10) + '" text-anchor="middle" ' +
-        'fill="var(--text-secondary)" font-size="12.5">' + yr + "</text>";
-    });
-    svg += "</svg>";
-
-    var tip = document.createElement("div");
-    tip.className = "tooltip";
-    document.body.appendChild(tip);
-    wrap.innerHTML = svg;
-    wrap.querySelectorAll(".bar-hit").forEach(function (el) {
-      el.addEventListener("mousemove", function (e) {
-        tip.textContent = el.getAttribute("data-tip");
-        tip.style.opacity = "1";
-        tip.style.left = (e.pageX + 12) + "px";
-        tip.style.top = (e.pageY - 30) + "px";
-      });
-      el.addEventListener("mouseleave", function () { tip.style.opacity = "0"; });
-    });
-  }
-
-  /* ---------- 實盤：持倉 ---------- */
-  /* 持倉標的名 → 公司數據名 對照（用於按行業取色與研報對照） */
-  var HOLDING_MATCH = [
-    ["PDD", "拼多多"], ["騰訊", "腾讯"], ["快手", "快手"], ["美團", "美团"],
-    ["MiniMax", "MiniMax"], ["泡泡", "泡泡玛特"],
-  ];
-  function companyOfHolding(name) {
-    var i, j;
-    for (i = 0; i < HOLDING_MATCH.length; i++) {
-      if (name.indexOf(HOLDING_MATCH[i][0]) !== -1) {
-        for (j = 0; j < D.companies.length; j++) {
-          if (D.companies[j].name === HOLDING_MATCH[i][1]) return D.companies[j];
-        }
-      }
-    }
-    return null;
-  }
-
-  function renderPortfolio() {
-    var box = document.getElementById("holdings-bars");
-    if (!box) return;
-    var p = D.portfolio;
-    var maxW = Math.max.apply(null, p.holdings.map(function (h) { return h.weight; }));
-    var sorted = p.holdings.slice().sort(function (a, b) { return b.weight - a.weight; });
-    /* 棒形圖按行業取色（與最推薦組合同色板），圖例見下方 */
-    box.innerHTML = sorted.map(function (h) {
-      var c = companyOfHolding(h.name);
-      var w = Math.round(h.weight / maxW * 100);
-      return '<div class="hbar-row">' +
-        '<span class="hname">' + esc(h.name) + "</span>" +
-        '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
-        (c ? sectorColor(c.sector) : "#98a2b3") + '" aria-hidden="true"></div></div>' +
-        '<span class="hval">' + h.weight + "% · " +
-        (h.pnl >= 0 ? '<span class="pnl-up">+' : '<span class="pnl-down">') +
-        h.pnl.toFixed(1) + "%</span></span>" +
-        "</div>";
-    }).join("");
-    var lg = document.getElementById("holdings-legend");
-    if (lg) {
-      var seen = {};
-      var items = [];
-      sorted.forEach(function (h) {
-        var c = companyOfHolding(h.name);
-        if (c && !seen[c.sector]) { seen[c.sector] = 1; items.push(c.sector); }
-      });
-      lg.innerHTML = items.map(function (s) {
-        return '<span class="item"><span class="sw" style="background:' + sectorColor(s) +
-          '"></span>' + esc(s) + "</span>";
-      }).join("");
-    }
-  }
-
-  /* ---------- 實盤頁：研報最推薦公司組合 + 持倉對照分析 ---------- */
-  function renderRecommendedCombo() {
+  /* ---------- 組合頁：選定公司組合（當前持倉） ---------- */
+  function selectedCombo() {
     var pos = D.companies.filter(function (c) {
       return c.verdict_class === "positive" && c.score && c.score.value != null;
     }).sort(function (a, b) { return b.score.value - a.score.value; });
     var combo = pos.slice(0, 8);
+    var tot = 0;
+    combo.forEach(function (c) { tot += c.score.value; });
+    combo.forEach(function (c) { c._w = c.score.value / tot; });
+    return combo;
+  }
+
+  function renderSelectedCombo() {
+    var combo = selectedCombo();
+    if (!combo.length) return;
     var tot = 0;
     combo.forEach(function (c) { tot += c.score.value; });
     var avg = tot / combo.length;
@@ -825,7 +705,7 @@
     var box = document.getElementById("rec-combo");
     if (box) {
       box.innerHTML = combo.map(function (c) {
-        var w = Math.round(c.score.value / tot * 100);
+        var w = Math.round(c._w * 100);
         var r0 = c.reports && c.reports[0];
         var nm = r0 ? '<a class="cb-link" href="' + reportLink(r0) + '" target="_blank" rel="noopener">' +
           esc(c.name) + "</a>" : esc(c.name);
@@ -833,51 +713,125 @@
           '<span class="cb-name">' + nm + "</span>" +
           '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
           sectorColor(c.sector) + '" aria-hidden="true"></div></div>' +
-          '<span class="cb-val">' + c.score.value + " 分 · " + (c.score.value / tot * 100).toFixed(1) + "%</span>" +
+          '<span class="cb-val">' + c.score.value + " 分 · " + (c._w * 100).toFixed(1) + "%</span>" +
           '<span class="cb-sector" style="color:' + sectorColor(c.sector) + '">' + esc(c.sector) + "</span></div>";
       }).join("") +
-      '<p class="disclaimer">權重按評分歸一化（評分 ÷ 總分），僅作示意；實盤決策請回看各公司研報結論。</p>';
+      '<p class="disclaimer">權重按評分歸一化（評分 ÷ 總分），僅作示意；投資決策請回看各公司研報結論。</p>';
     }
+  }
 
-    /* 依最推薦組合檢視實盤持倉 */
-    var ha = document.getElementById("holdings-analysis");
-    if (ha) {
-      var matched = [];
-      var wSum = 0, sSum = 0, unmatched = 0;
-      D.portfolio.holdings.forEach(function (h) {
-        var c = companyOfHolding(h.name);
-        if (!c || !c.score || c.score.value == null) { unmatched += 1; return; }
-        matched.push({ h: h, c: c, diff: c.score.value - avg });
-        wSum += h.weight;
-        sSum += h.weight * c.score.value;
-      });
-      ha.innerHTML = matched.map(function (m) {
-        var vs = m.diff > 0.15 ? '<span class="vs-chip up">高於平均</span>' :
-          (m.diff < -0.6 ? '<span class="vs-chip down">明顯低於平均</span>' :
-            '<span class="vs-chip mid">接近平均</span>');
-        return "<tr><td>" + esc(m.h.name) + "</td><td>" + m.h.weight + "%</td>" +
-          "<td>" + m.c.score.value + "</td>" +
-          '<td class="td-verdict">' + esc(m.c.verdict || "") + "</td><td>" + vs + "</td></tr>";
-      }).join("");
-      var note = document.getElementById("holdings-analysis-note");
-      if (note) {
-        var wAvg = wSum ? sSum / wSum : null;
-        var below = matched.filter(function (m) { return m.diff < -0.6; })
-          .map(function (m) { return m.h.name + "（" + m.c.score.value + "）"; });
-        var above = matched.filter(function (m) { return m.diff > 0.15; })
-          .map(function (m) { return m.h.name + "（" + m.c.score.value + "）"; });
-        var near = matched.filter(function (m) { return m.diff >= -0.6 && m.diff <= 0.15; })
-          .map(function (m) { return m.h.name + "（" + m.c.score.value + "）"; });
-        var txt = "實盤持倉按權重加權的研報平均評分為 " +
-          (wAvg == null ? "—" : wAvg.toFixed(2)) + "（最推薦組合平均 " + avg.toFixed(2) + "）。";
-        if (above.length) txt += "高於組合平均：" + above.join("、") + "；";
-        if (near.length) txt += "接近組合平均：" + near.join("、") + "；";
-        if (below.length) txt += "明顯低於組合平均：" + below.join("、") + "。";
-        if (unmatched) txt += "另有 " + unmatched + " 項持倉無對應公司研報。";
-        txt += "僅為數據對照，不構成調倉建議。";
-        note.textContent = txt;
+  /* ---------- 組合頁：選定組合 vs 大盤指數 ---------- */
+  function comboPerf() {
+    var combo = selectedCombo();
+    var wDay = 0, w5 = 0, sDay = 0, s5 = 0;
+    combo.forEach(function (c) {
+      var q = D.market[c.ticker];
+      if (q && q.change_pct != null) { wDay += c._w * q.change_pct; sDay += c._w; }
+      if (q && q.closes && q.closes.length >= 2) {
+        var cs = q.closes;
+        w5 += c._w * ((cs[cs.length - 1] / cs[0]) - 1) * 100;
+        s5 += c._w;
       }
+    });
+    return { day: sDay ? wDay / sDay : null, five: s5 ? w5 / s5 : null };
+  }
+
+  function renderComboVsIndex() {
+    var pf = comboPerf();
+    var rows = [{ label: "選定組合", day: pf.day, five: pf.five }];
+    ["^GSPC", "^IXIC", "^HSI", "000300.SS"].forEach(function (sym) {
+      var q = D.market[sym];
+      if (!q) return;
+      var five = null;
+      if (q.closes && q.closes.length >= 2) {
+        var cs = q.closes;
+        five = ((cs[cs.length - 1] / cs[0]) - 1) * 100;
+      }
+      var label = { "^GSPC": "標普500", "^IXIC": "納斯達克", "^HSI": "恒生指數", "000300.SS": "滬深300" }[sym];
+      rows.push({ label: label, day: q.change_pct, five: five });
+    });
+
+    function bars(rows, key) {
+      var vals = rows.map(function (r) { return r[key]; });
+      var maxAbs = Math.max.apply(null, vals.map(function (v) { return Math.abs(v); }));
+      return rows.map(function (r) {
+        var v = r[key];
+        if (v == null) return "";
+        var w = Math.round(Math.abs(v) / maxAbs * 100);
+        var up = v >= 0;
+        return '<div class="vs-row">' +
+          '<span class="vs-name">' + esc(r.label) + "</span>" +
+          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+          (up ? "var(--good)" : "var(--crit)") + '" aria-hidden="true"></div></div>' +
+          '<span class="vs-val ' + (up ? "up" : "down") + '">' + (up ? "+" : "") + v.toFixed(2) + "%</span></div>";
+      }).join("");
     }
+    var bd = document.getElementById("vs-day");
+    if (bd) bd.innerHTML = bars(rows, "day");
+    var b5 = document.getElementById("vs-5d");
+    if (b5) b5.innerHTML = bars(rows, "five");
+    var tb = document.getElementById("vs-table");
+    if (tb) {
+      tb.innerHTML = "<thead><tr><th>標的</th><th>今日漲跌</th><th>近 5 個交易日</th></tr></thead><tbody>" +
+        rows.map(function (r) {
+          return "<tr><td>" + esc(r.label) + "</td><td>" + fmtPct(r.day) + "</td><td>" +
+            fmtPct(r.five) + "</td></tr>";
+        }).join("") + "</tbody>";
+    }
+    var asof = document.getElementById("vs-asof");
+    if (asof && D.market_asof) asof.textContent = "⏱ 行情更新於 " + D.market_asof;
+  }
+
+  /* ---------- 組合頁：前五大對沖基金配置動態 ---------- */
+  var HF_COLORS = {
+    "科技": "#3b89e3", "金融": "#8a6fd1", "醫療": "#2e9e6b", "工業": "#6c7a89",
+    "消費": "#e08c3a", "材料": "#c2543a", "通訊": "#17b2a0", "能源": "#5a6b8c",
+    "指數ETF": "#98a2b3", "其他": "#b0b8c4",
+  };
+  function renderHedgeFunds() {
+    var host = document.getElementById("hedge-list");
+    if (!host || !D.hedgefunds || !D.hedgefunds.length) return;
+    var lg = document.getElementById("hedge-legend");
+    if (lg) {
+      lg.innerHTML = Object.keys(HF_COLORS).map(function (k) {
+        return '<span class="item"><span class="sw" style="background:' + HF_COLORS[k] +
+          '"></span>' + k + "</span>";
+      }).join("");
+    }
+    host.innerHTML = D.hedgefunds.map(function (f) {
+      var maxP = 1;
+      f.alloc.forEach(function (a) { if (a.pct > maxP) maxP = a.pct; });
+      var rows = f.alloc.length ? f.alloc.map(function (a) {
+        var w = Math.round(a.pct / maxP * 100);
+        var dlt = a.delta != null ?
+          '<span class="f-delta' + (a.delta.indexOf("↓") !== -1 || a.delta.indexOf("減") !== -1 ? " down" : "") + '">' +
+          esc(a.delta) + "</span>" : "";
+        return '<div class="f-row">' +
+          '<span class="f-cls">' + esc(a.cls) + "</span>" +
+          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+          (HF_COLORS[a.cls] || "#98a2b3") + '" aria-hidden="true"></div></div>' +
+          '<span class="f-val">' + a.pct + "%</span>" + dlt + "</div>" +
+          (a.sub ? '<div class="f-sub">' + esc(a.sub) + "</div>" : "");
+      }).join("") :
+        '<div class="empty" style="padding:14px 0;">13F 美股多頭規模過小，行業配置不具代表性（見備註）</div>';
+      var tops = f.tops && f.tops.length ?
+        '<div class="fund-note">重倉：' + esc(f.tops.join(" · ")) + "</div>" : "";
+      return '<div class="card fund-card">' +
+        '<div class="fund-head"><span class="fund-rank">' + f.rank + "</span>" +
+        '<div class="fund-title"><h3>' + esc(f.name) + "</h3>" +
+        '<div class="fund-meta">' + esc(f.mgr) + " · " + esc(f.country) + " · " +
+        esc(f.aum) + " · 截至 " + esc(f.asof) + "</div></div></div>" +
+        rows + tops +
+        '<div class="fund-note">' + esc(f.note) + ' · 來源：' + esc(f.source) + "</div></div>";
+    }).join("");
+  }
+
+  /* ---------- 組合頁：總渲染 ---------- */
+  function renderTrackRecord() {
+    if (document.body.getAttribute("data-page") !== "trackrecord") return;
+    renderSelectedCombo();
+    renderComboVsIndex();
+    renderHedgeFunds();
   }
 
   /* ---------- 資產配置頁 ---------- */
@@ -1250,8 +1204,8 @@
     if (page === "home") renderHome();
     if (page === "companies") { initCompanies(); initTopics(); }
     if (page === "reports") initReports();
-    if (page === "trackrecord") { renderReturnsChart(); renderPortfolio(); renderRecommendedCombo(); }
+    if (page === "trackrecord") renderTrackRecord();
     if (page === "allocation") { renderAllocation(); renderFunds(); }
   });
-  window.renderReturnsChart = renderReturnsChart;  // 主題切換時重繪
+  window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

@@ -1295,7 +1295,92 @@ def main():
         },
     ]
 
-    # 實盤資料（取自 README 與 实盘记录/）
+    # 前五大對沖基金配置動態（SEC 13F 美股多頭口徑，只含美股多頭、不含空頭/衍生品/非美資產）
+    # 規模為淨 AUM（2026 年公開估算）；delta 為較上期變化的文字說明，含「減」或「↓」時按下調著色
+    HEDGE_FUNDS = [
+        {
+            "rank": 1,
+            "name": "橋水 Bridgewater Associates",
+            "mgr": "全球最大對沖基金 · 宏觀／全天候策略",
+            "country": "美國",
+            "aum": "淨 AUM ≈780 億美元",
+            "asof": "2026-03-31（13F Q1）",
+            "source": "13F 披露（13radar／Growin 等）",
+            "note": "全天候策略公開目標權重：股票 30／長期國債 40／中期國債 15／黃金 7.5／大宗商品 7.5；13F 僅反映美股多頭。Q1 大幅減持 IVV，清倉或減持 Salesforce、Workday、ServiceNow 等軟件股。",
+            "alloc": [
+                {"cls": "科技", "pct": 38.7, "delta": "加倉 AI 芯片", "sub": "新建倉台積電 ~2.2%，加倉 AMZN／NVDA／AVGO／MU"},
+                {"cls": "工業", "pct": 11.6},
+                {"cls": "消費", "pct": 10.1},
+                {"cls": "金融", "pct": 8.9},
+                {"cls": "醫療", "pct": 8.1},
+                {"cls": "材料", "pct": 6.6},
+                {"cls": "通訊", "pct": 6.5},
+                {"cls": "能源", "pct": 3.3},
+            ],
+            "tops": ["SPY＋IVV ≈21%", "AMZN 5.4%", "NVDA 4.8%", "GOOGL 4.1%", "AVGO 3.4%"],
+        },
+        {
+            "rank": 2,
+            "name": "千禧年 Millennium Management",
+            "mgr": "多策略·多經理平台（約 330 個投資團隊）",
+            "country": "美國",
+            "aum": "淨 AUM ≈835 億美元",
+            "asof": "2026-06-30（13F Q2）",
+            "source": "13F 披露（StockDrifts 等）",
+            "note": "科技風險由個股直投轉為指數化；2025 年旗艦基金回報約 +10.5%。",
+            "alloc": [
+                {"cls": "指數ETF", "pct": 36.5, "delta": "指數化核心", "sub": "標普／納指 ETF"},
+                {"cls": "科技", "pct": 20.6, "delta": "較上期 30.3% 減 ~9.7pp", "sub": "傾斜 AI 基建：NVDA／MSFT／CRDO／STX／SNOW／ORCL"},
+                {"cls": "其他", "pct": 42.9, "sub": "分散於醫療、工業等多行業（Q3 2025 曾超配工業與醫療）"},
+            ],
+            "tops": ["NVDA", "MSFT", "CRDO", "STX", "SNOW", "ORCL"],
+        },
+        {
+            "rank": 3,
+            "name": "城堡 Citadel Advisors",
+            "mgr": "多策略 · 史上累計盈利最高的對沖基金",
+            "country": "美國",
+            "aum": "淨 AUM ≈660–680 億美元",
+            "asof": "2026-06-30（13F Q2）",
+            "source": "13F 披露（SmartMoneyDB／StockDrifts 等）",
+            "note": "由集中押注 AI 芯片龍頭轉向「三引擎」組合；另持 NVDA 期權名義值：約 122 億美元看漲 + 92 億美元看跌。Wellington 基金 2025 年回報約 +10.2%。",
+            "alloc": [
+                {"cls": "科技", "pct": 24.6, "delta": "集中度減：前 50 大科技權重 54.1%→32.3%", "sub": "含期權口徑；純多頭口徑 16.6–33.1% 依分類方法而異"},
+                {"cls": "指數ETF", "pct": 7.6, "sub": "IVV（iShares 標普500 ETF）"},
+                {"cls": "其他", "pct": 67.8, "sub": "分散於 6,354 個持倉"},
+            ],
+            "tops": ["IVV 7.6%", "AMZN 1.49%", "NVDA 1.36%", "AAPL 1.21%", "MSFT 0.81%"],
+        },
+        {
+            "rank": 4,
+            "name": "Man Group",
+            "mgr": "全球最大上市對沖基金集團（AHL／GLG／Numeric，量化為主）",
+            "country": "英國",
+            "aum": "集團 AUM 1,933 億美元（對沖 sleeve ≈665 億）",
+            "asof": "2026（13F）",
+            "source": "13F 披露（MarketBeat／HedgeTrack）",
+            "note": "13F 美股多頭僅約 2.1 億美元（佔集團 AUM 約 0.1%），行業配置不具代表性；代表性持倉為分散的半導體個股（LRCX 0.62%／KEYS 0.59%／QCOM 0.56%／MU 0.55%）。",
+            "alloc": [],
+            "tops": [],
+        },
+        {
+            "rank": 5,
+            "name": "D.E. Shaw & Co.",
+            "mgr": "量化＋多策略",
+            "country": "美國",
+            "aum": "淨 AUM ≈600–660 億美元",
+            "asof": "2026-06-30（13F Q2）",
+            "source": "13F 披露（QWResearch 等）",
+            "note": "2025 年 Composite 回報約 +18.5%、Oculus 約 +28.2%。",
+            "alloc": [
+                {"cls": "科技", "pct": 28.0, "sub": "GICS 行業口徑"},
+                {"cls": "其他", "pct": 72.0, "sub": "高度分散的量化組合"},
+            ],
+            "tops": ["NVDA 1.54%", "MSFT 1.37%", "AVGO 1.21%", "AAPL 1.07%"],
+        },
+    ]
+
+    # 網站資料（報告、公司、行情、配置、基金與對沖基金公開披露）
     data = {
         "stats": {
             "reports": idx["count"], "companies": len(companies),
@@ -1303,6 +1388,8 @@ def main():
         },
         # 全球前五大基金資產配置（公開披露數據，按最新年報／政策區間，站長手動維護）
         "funds": FUNDS,
+        # 前五大對沖基金配置動態（SEC 13F 美股多頭口徑，站長手動維護）
+        "hedgefunds": HEDGE_FUNDS,
         "companies": companies,
         "topics": topics,
         "latest_reports": [
@@ -1318,40 +1405,6 @@ def main():
         "sectors": [{"name": n, "count": c}
                     for n, c in sorted(Counter(c["sector"] for c in companies).items(),
                                        key=lambda kv: -kv[1])],
-        "trackrecord": {
-            "years": ["2024", "2025"],
-            "returns": [
-                {"name": "本框架實盤", "values": [69.29, 66.38]},
-                {"name": "恒生指數", "values": [17.67, 27.77]},
-                {"name": "標普500", "values": [23.31, 16.39]},
-                {"name": "滬深300", "values": [14.68, 17.66]},
-                {"name": "納斯達克", "values": [28.64, 20.36]},
-            ],
-            "note": "兩年累計實盤收益超 146 萬元，連續兩年大幅跑贏全球主要指數。截圖來自富途證券真實帳戶。",
-            "disclaimer": "歷史收益不代表未來表現。",
-        },
-        "portfolio": {
-            "asof": "2026-09-07",
-            "holdings": [
-                {"name": "PDD（拼多多）", "weight": 32, "cost": "$91.484", "pnl": -10.1},
-                {"name": "騰訊控股（0700.HK）", "weight": 28, "cost": "HK$453.75", "pnl": -3.4},
-                {"name": "快手-W（1024.HK）", "weight": 24, "cost": "HK$34.5", "pnl": -1.5},
-                {"name": "美團-W（3690.HK）", "weight": 10, "cost": "HK$96.75", "pnl": -17.3},
-                {"name": "MiniMax（0100.HK）", "weight": 7, "cost": "HK$200", "pnl": 75.4},
-            ],
-            "trades": [
-                ["2026-09-07", "泡泡玛特（9992.HK）", "賣出（清倉）", "HK$156.20", "8% → 0%，退出組合", "建倉僅兩個交易日即清倉，已實現盈虧約 +0.8%。清倉理由待補寫"],
-                ["2026-09-07", "快手-W（1024.HK）", "減倉（零頭）", "HK$33.98", "權重不變（仍約 24%）", "不同帳號之間換倉，不構成減倉信號"],
-                ["2026-09-05", "騰訊控股（0700.HK）", "減倉", "待補", "45% → 26%", "減持約兩成三，剩餘倉位成本價不變"],
-                ["2026-09-05", "MiniMax（0100.HK）", "買入（加倉）", "約 HK$204", "2% → 7%", "破例操作，留痕待覆盤"],
-                ["2026-09-05", "泡泡玛特（9992.HK）", "買入", "HK$155", "首次建倉（約 8%）", "研究見泡泡玛特-thesis"],
-                ["2026-09-05", "快手-W（1024.HK）", "買入", "HK$34.5", "首次建倉（約 22%）", "超出建議倉位上限（8%–12%），破例，留痕待覆盤"],
-                ["2026-07-27", "MiniMax（0100.HK）", "買入", "HK$189.5", "首次建倉（約 2%）", "詳見鏡子測試記錄"],
-                ["2026-04-21", "PDD（拼多多）", "買入", "$103.66", "首次建倉（試探倉）", "詳見鏡子測試記錄"],
-                ["2026-04-21", "美團（3690.HK）", "賣出 PUT（行權價 85）", "權利金待補", "若行權，美團權重將升至約三成", "實際成本約 83~84"],
-            ],
-            "note": "組合浮動盈虧約 -3.6%（相對成本）。公開每筆操作的方向、價格與權重變化，不公開股數與金額——參考段永平：公開決策，不公開規模。",
-        },
     }
 
     # 寫 js/data.js
@@ -1410,7 +1463,7 @@ def render_reports(repo, reports):
     <a href="{rel}index.html">首頁</a>
     <a href="{rel}companies.html">公司</a>
     <a href="{rel}reports.html">報告</a>
-    <a href="{rel}trackrecord.html">實盤</a>
+    <a href="{rel}trackrecord.html">組合</a>
     <a href="{rel}allocation.html">配置</a>
   </nav>
 </header>
