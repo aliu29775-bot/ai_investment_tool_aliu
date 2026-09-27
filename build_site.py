@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-AI Berkshire 投研網站 — 一鍵建站腳本
+AI investment+ 投研網站 — 一鍵建站腳本
 
 用法:
     python3 build_site.py                 # 完整建站（含行情抓取）
@@ -1452,13 +1452,13 @@ def render_reports(repo, reports):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{_esc(title)} — AI Berkshire 投研網站</title>
+<title>{_esc(title)} — AI investment+ 投研網站</title>
 <link rel="stylesheet" href="{rel}css/style.css">
 <link rel="stylesheet" href="{rel}css/report.css">
 </head>
 <body data-page="report">
 <header class="site-nav">
-  <a class="brand" href="{rel}index.html">◆ AI Berkshire <span>投研網站</span></a>
+  <a class="brand" href="{rel}index.html">◆ AI investment+ <span>投研網站</span></a>
   <nav>
     <a href="{rel}index.html">首頁</a>
     <a href="{rel}companies.html">公司</a>

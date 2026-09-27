@@ -1,4 +1,4 @@
-/* AI Berkshire 投研網站 — 共用邏輯 */
+/* AI investment+ 投研網站 — 共用邏輯 */
 (function () {
   "use strict";
 
