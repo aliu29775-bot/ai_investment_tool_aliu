@@ -12,7 +12,7 @@
   <rect x="0.5" y="0.5" width="799" height="933" rx="14" fill="#fcfcfb" stroke="#e5e4e0"/>
 
   <!-- 标题 -->
-  <text x="28" y="40" font-size="20" font-weight="700" fill="#0b0b0b">AI Berkshire · Three-Layer Architecture</text>
+  <text x="28" y="40" font-size="20" font-weight="700" fill="#0b0b0b">AI investment+ · Three-Layer Architecture</text>
   <text x="774" y="40" font-size="12" fill="#8a897f" text-anchor="end">The full path of one research run</text>
 
   <!-- 入口 -->

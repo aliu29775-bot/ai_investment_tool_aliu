@@ -835,7 +835,7 @@ _HTML_TAG = re.compile(
     re.I,
 )
 
-_GITHUB_BASE = "https://github.com/xbtlin/ai-berkshire/blob/main/"
+_GITHUB_BASE = "https://github.com/aliu29775-bot/ai-berkshire/blob/main/"
 
 
 class Markdown:
@@ -913,7 +913,7 @@ class Markdown:
             if t is None or os.path.isfile(t):
                 if t is not None and os.path.isfile(t) and _outside(t):
                     relp = os.path.relpath(t, self.repo)
-                    return f'<img src="https://raw.githubusercontent.com/xbtlin/ai-berkshire/main/{relp}" alt="{m.group(1)}">'
+                    return f'<img src="https://raw.githubusercontent.com/aliu29775-bot/ai-berkshire/main/{relp}" alt="{m.group(1)}">'
                 return f'<img src="{self._rewrite_url(url)}" alt="{m.group(1)}">'
             return '<span class="img-missing">🖼 ' + _esc(m.group(1)) + \
                 "（源資料庫未收錄此圖）</span>"
@@ -945,6 +945,9 @@ class Markdown:
             end = text.find("\n---", 4)
             if end != -1:
                 text = text[end + 4:].lstrip("\n")
+        # 網站更名：報告正文中的舊站名/舊倉庫名統一改寫
+        text = text.replace("AI Berkshire", "AI investment+")
+        text = text.replace("xbtlin/ai-berkshire", "aliu29775-bot/ai-berkshire")
         lines = text.split("\n")
         out, i, n = [], 0, len(lines)
         while i < n:
@@ -1424,6 +1427,20 @@ def render_reports(repo, reports):
     if os.path.isdir(repo_assets):
         shutil.copytree(repo_assets, os.path.join(out_root, "assets"),
                         dirs_exist_ok=True)
+        # 網站更名：資源檔（SVG 內嵌文字）中的舊站名/舊倉庫名一併改寫
+        for root, __dirs, files in os.walk(os.path.join(out_root, "assets")):
+            for f in files:
+                if not f.lower().endswith(".svg"):
+                    continue
+                p = os.path.join(root, f)
+                try:
+                    s = open(p, encoding="utf-8").read()
+                except (OSError, UnicodeDecodeError):
+                    continue
+                s2 = s.replace("AI Berkshire", "AI investment+").replace(
+                    "xbtlin/ai-berkshire", "aliu29775-bot/ai-berkshire")
+                if s2 != s:
+                    open(p, "w", encoding="utf-8").write(s2)
     # 複製 reports/ 下的資料檔（csv/txt/py/json 等，報告互鏈會用到）
     for root, __dirs, files in os.walk(os.path.join(repo, "reports")):
         for f in files:
@@ -1486,7 +1503,7 @@ def render_reports(repo, reports):
 {body}
   </article>
   <footer class="report-foot">
-    <p>資料來源：<a href="https://github.com/xbtlin/ai-berkshire" target="_blank" rel="noopener">github.com/xbtlin/ai-berkshire</a>
+    <p>資料來源：<a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AI investment+</a>
     · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
   </footer>
 </main>
