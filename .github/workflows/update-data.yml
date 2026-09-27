@@ -18,8 +18,27 @@ jobs:
       - name: Checkout 部署仓库
         uses: actions/checkout@v4
 
-      - name: Clone 源报告仓库（fork）
-        run: git clone --depth 1 https://github.com/aliu29775-bot/ai-berkshire.git /tmp/ai-berkshire
+      - name: Clone 源报告仓库（上游 + fork 叠加合并）
+        run: |
+          git clone --depth 1 https://github.com/xbtlin/ai-berkshire.git /tmp/ai-berkshire
+          git clone --depth 1 https://github.com/aliu29775-bot/ai-berkshire.git /tmp/ai-berkshire-fork
+          # fork 独有的报告文件叠加到上游（不覆盖上游同路径文件）
+          rsync -a --ignore-existing /tmp/ai-berkshire-fork/reports/ /tmp/ai-berkshire/reports/
+          # index.json 按 path 并集（fork 独有条目保留）
+          python3 - <<'EOF'
+          import json
+          up = json.load(open('/tmp/ai-berkshire/reports/index.json', encoding='utf-8'))
+          fk = json.load(open('/tmp/ai-berkshire-fork/reports/index.json', encoding='utf-8'))
+          seen = {r['path'] for r in up['reports']}
+          for r in fk['reports']:
+              if r['path'] not in seen:
+                  seen.add(r['path'])
+                  up['reports'].append(r)
+          up['count'] = len(up['reports'])
+          json.dump(up, open('/tmp/ai-berkshire/reports/index.json', 'w', encoding='utf-8'),
+                    ensure_ascii=False, indent=1)
+          print('index 并集条目数:', up['count'])
+          EOF
 
       - name: 设置 Python
         uses: actions/setup-python@v5
