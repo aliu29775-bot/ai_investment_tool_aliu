@@ -494,6 +494,31 @@ def compute_stock(company, quotes, fund, sector_peers, spy_closes=None):
         "website": prof.get("website") or "",
         "country": prof.get("country") or "",
     }
+    # ---- 深研加厚（熱門公司；數據均來自已抓取的 quoteSummary 模組） ----
+    offs = prof.get("companyOfficers") or []
+    s["officers"] = [{"name": (o.get("name") or "")[:30], "age": o.get("age"),
+                      "title": (o.get("title") or "")[:40]}
+                     for o in (offs if isinstance(offs, list) else [])[:5]]
+    s["income_hist"] = []
+    ihl = (qs.get("incomeStatementHistory") or {}).get("incomeStatementHistory") or []
+    for st_ in (ihl if isinstance(ihl, list) else [])[:4]:
+        yr = ((st_.get("endDate") or {}).get("fmt") or "")[:4]
+        if yr:
+            s["income_hist"].append({
+                "year": yr,
+                "revenue": _g({"v": st_.get("totalRevenue")}, "v"),
+                "gross": _g({"v": st_.get("grossProfit")}, "v"),
+                "net_income": _g({"v": st_.get("netIncome")}, "v")})
+    # Yahoo 免費接口已停供現金流明細/評級分布/管理層，改用 TTM 摘要
+    s["shr"] = {
+        "dps": _g(det, "dividendRate"), "dy": dy,
+        "payout": _g(det, "payoutRatio"),
+        "ocf": _g(fd, "operatingCashflow"), "fcf": _g(fd, "freeCashflow")}
+    pmap = {"0q": "本期", "+1q": "下季", "0y": "今年", "+1y": "下一年", "+5y": "5年複合"}
+    trl = (qs.get("earningsTrend") or {}).get("trend") or []
+    s["earn_trend"] = [{"period": pmap.get(t.get("period"), t.get("period")),
+                        "growth": _g({"v": t.get("growth")}, "v")}
+                       for t in (trl if isinstance(trl, list) else [])[:4]]
     return s
 
 
@@ -523,7 +548,7 @@ def render_stock_pages(companies, quotes, fund_data, in_combo_names):
         page = slugify(st["name"]) + ".html"
         html = STOCK_TEMPLATE.format(
             name=st["name"], title=st["name"], json=json.dumps(st, ensure_ascii=False),
-            rel="")
+            rel="../")  # 個股頁在 stocks/ 子目錄，靜態資源需回到根目錄
         with open(os.path.join(STOCKS_DIR, page), "w", encoding="utf-8") as f:
             f.write(html)
         done += 1

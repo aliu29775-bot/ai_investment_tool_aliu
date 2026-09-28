@@ -45,7 +45,7 @@
 
   /* ---------- 頁首 ---------- */
   var badges = "";
-  if (S.hot) badges += '<span class="s-badge hot">⭐ 熱門深研（深度版即將上線）</span>';
+  if (S.hot) badges += '<span class="s-badge hot">⭐ 熱門深研</span>';
   if (S.in_combo) badges += '<span class="s-badge combo">✓ 在選定組合中</span>';
   if (S.region) badges += '<span class="s-badge">' + esc(S.region) + "</span>";
   if (S.sector) badges += '<span class="s-badge" style="background:' +
@@ -93,6 +93,65 @@
         (prof.website ? kv("官網", esc(prof.website)) : "") + "</div>";
   } else {
     profileBody = "<p>公司概況簡介暫缺（Yahoo 未提供）；最新研報見頁末列表。</p>";
+  }
+
+  /* ---------- 熱門深研加厚 ---------- */
+  var relPe = S.relative && S.relative.pe;
+  var deepBody = "";
+  if (S.hot) {
+    if ((S.officers || []).length) {
+      deepBody += '<h3 class="s-h3">👔 管理層</h3><table class="s-table">' +
+        "<thead><tr><th>姓名</th><th>年齡</th><th>職位</th></tr></thead><tbody>" +
+        S.officers.map(function (o) {
+          return "<tr><td>" + esc(o.name) + "</td><td>" + (o.age != null ? o.age : "—") +
+            "</td><td>" + esc(o.title) + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    if ((S.income_hist || []).length) {
+      deepBody += '<h3 class="s-h3">💵 近 4 年營收與利潤</h3><table class="s-table">' +
+        "<thead><tr><th>年度</th><th>營收</th><th>毛利</th><th>毛利率</th><th>淨利</th><th>淨利率</th></tr></thead><tbody>" +
+        S.income_hist.map(function (r) {
+          var gm = r.revenue != null && r.gross != null && r.revenue ? r.gross / r.revenue : null;
+          var nm = r.revenue != null && r.net_income != null && r.revenue
+            ? r.net_income / r.revenue : null;
+          return "<tr><td>" + esc(r.year) + "</td><td>" + fmtNum(r.revenue) + "</td><td>" +
+            fmtNum(r.gross) + "</td><td>" + (gm != null ? fmtPct(gm) : "—") + "</td><td>" +
+            (r.net_income != null
+              ? (r.net_income < 0 ? "−" : "") + fmtNum(Math.abs(r.net_income)) : "—") +
+            "</td><td>" + (nm != null ? fmtPct(nm) : "—") + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    var shr = S.shr || {};
+    if (shr.dps != null || shr.ocf != null) {
+      deepBody += '<h3 class="s-h3">💸 股東回報（TTM）</h3><div class="s-grid2">' +
+        (shr.dps != null ? kv("每股股息", shr.dps.toFixed(2) + (q.currency ? " " + esc(q.currency) : "")) : "") +
+        (shr.dy != null ? kv("股息率", fmtPct(shr.dy)) : "") +
+        (shr.payout != null ? kv("派息率", fmtPct(shr.payout)) : "") +
+        (shr.ocf != null ? kv("經營現金流", fmtNum(shr.ocf) + (q.currency ? " " + esc(q.currency) : "")) : "") +
+        (shr.fcf != null ? kv("自由現金流", fmtNum(shr.fcf) + (q.currency ? " " + esc(q.currency) : "")) : "") +
+        "</div>";
+    }
+    if ((S.earn_trend || []).length) {
+      deepBody += '<h3 class="s-h3">📐 盈利預測趨勢（分析師）</h3><div class="s-grid2">' +
+        S.earn_trend.map(function (t) {
+          return kv(esc(t.period), t.growth != null ? fmtPct(t.growth) : "—");
+        }).join("") + "</div>";
+    }
+    var moat = [], comp = [];
+    if (f.roe != null && f.roe > 0.25) moat.push("ROE " + fmtPct(f.roe) + "，資本回報遠高於市場平均");
+    else if (f.roe != null && f.roe > 0.15) moat.push("ROE " + fmtPct(f.roe) + "，資本回報穩健");
+    if (f.margins != null && f.margins > 0.2) moat.push("淨利率 " + fmtPct(f.margins) + "，具備定價能力");
+    if (f.margins != null && f.margins < 0.05) comp.push("淨利率僅 " + fmtPct(f.margins) + "，行業競爭激烈");
+    if (m.beta != null && m.beta < 0.8) moat.push("Beta " + m.beta.toFixed(2) + "，業務具防禦性");
+    if (relPe && relPe.premium > 0.5) comp.push("PE 較同業溢價 " + fmtPct(relPe.premium) + "，市場定價已反映樂觀預期");
+    if (f.debt_equity != null && f.debt_equity > 150) comp.push("負債/權益 " + f.debt_equity.toFixed(0) + "%，槓桿偏高");
+    if (!moat.length) moat.push("暫無突出護城河數據，需結合研報定性判斷");
+    if (!comp.length) comp.push("暫無明顯競爭劣勢數據");
+    deepBody += '<div class="s-bullbear"><div class="s-bull"><h3>🏰 護城河觀察</h3><ul>' +
+      moat.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="s-bear"><h3>⚔️ 競爭壓力</h3><ul>' +
+      comp.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div></div>" +
+      "<p class='s-note'>深研加厚基於公開財務與分析師數據自動生成；管理層變動、監管與行業事件見研報原文。</p>";
   }
 
   /* ---------- 財務分析 ---------- */
@@ -245,7 +304,6 @@
   }
   if (dcf.premium != null && dcf.premium > 0.1) bull.push("DCF 中性情景較現價折價 " + fmtPct(dcf.premium) + "，安全邊際較大");
   if (dcf.premium != null && dcf.premium < -0.1) bear.push("DCF 中性情景較現價溢價 " + fmtPct(-dcf.premium) + "，估值偏貴");
-  var relPe = S.relative && S.relative.pe;
   if (relPe && relPe.premium < -0.3) bear.push("PE 較同業溢價 " + fmtPct(-relPe.premium));
   if (relPe && relPe.premium > 0.3) bull.push("PE 較同業折價 " + fmtPct(relPe.premium));
   if (ta.ma200 != null && q.price != null) {
@@ -284,6 +342,7 @@
   root.innerHTML = head +
     card("📌 一句話總結", "<p class='s-summary'>" + sum + "</p>") +
     card("🏢 公司概況", profileBody) +
+    (S.hot ? card("🔍 熱門深研加厚", deepBody) : "") +
     card("📊 財務分析", finBody) +
     card("💰 估值建模", valBody) +
     card("📈 技術面與動量", taBody) +
