@@ -1018,6 +1018,7 @@ body[data-page="fed"] .fed-big span { font-size: 16px; }
 .s-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 24px; }
 .s-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 24px; }
 .s-kv { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; flex-wrap: wrap; }
+.s-kv .s-note { margin-top: 0; }
 .s-k { font-size: 13px; color: var(--muted); min-width: 92px; }
 .s-v { font-size: 14px; font-weight: 600; }
 .s-n { font-size: 12px; color: var(--muted); }
@@ -1040,6 +1041,18 @@ body[data-page="fed"] .fed-big span { font-size: 16px; }
 .s-bull h3, .s-bear h3 { font-size: 14px; margin: 0 0 8px; }
 .s-bull ul, .s-bear ul { margin: 0; padding-left: 18px; }
 .s-bull li, .s-bear li { margin: 5px 0; line-height: 1.6; }
+
+/* ---------- 國債交易台（fed-treasury）：字號統一 ---------- */
+#fed-treasury .s-v { font-size: 15px; }
+#fed-treasury .s-note { font-size: 13px; }
+#fed-treasury h3 { font-size: 17px; }
+#fed-treasury h4 { font-size: 15px; }
+#fed-treasury .s-chip { font-size: 13px; }
+#fed-treasury .s-table { font-size: 13px; }
+/* 徽章折行時不拆開（▲ +70bp 保持一個整體） */
+#fed-treasury .s-note .up, #fed-treasury .s-note .down { white-space: nowrap; }
+/* 寬圖在窄屏橫向滾動，字不縮到看不清 */
+.chart-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ---------- 模組 32：行動端優化 ---------- */
 @media (max-width: 760px) {

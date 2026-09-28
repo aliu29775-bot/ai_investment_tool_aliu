@@ -28,6 +28,7 @@ import subprocess
 import sys
 import time
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 import urllib.request
 from collections import Counter, defaultdict
@@ -429,11 +430,11 @@ MARKET_INDICES = {
 }
 
 
-def fetch_quotes(symbols, verbose=True):
-    quotes = {}
-    for i, sym in enumerate(sorted(set(s for s in symbols if s))):
-        url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
-               f"{urllib.parse.quote(sym)}?range=5d&interval=1d")
+def _fetch_one_quote(sym):
+    """抓單一標的 5 日行情（供 fetch_quotes 並行使用）。"""
+    url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+           f"{urllib.parse.quote(sym)}?range=5d&interval=1d")
+    for attempt in (0, 1):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=8) as resp:
@@ -443,22 +444,37 @@ def fetch_quotes(symbols, verbose=True):
             valid = [c for c in closes if c is not None]
             price = meta.get("regularMarketPrice") or (valid[-1] if valid else None)
             prev = valid[-2] if len(valid) >= 2 else meta.get("chartPreviousClose")
-            if price is not None:
-                chg = (price - prev) / prev * 100 if prev else None
-                quotes[sym] = {
-                    "price": round(price, 2),
-                    "currency": meta.get("currency", ""),
-                    "change_pct": round(chg, 2) if chg is not None else None,
-                    "asof": time.strftime("%Y-%m-%d"),
-                    "name": meta.get("shortName") or meta.get("longName") or "",
-                    "closes": [round(c, 2) for c in valid[-5:]],
-                }
-                if verbose:
-                    print(f"  ✓ {sym:14s} {price:>10.2f} {meta.get('currency','')}")
+            if price is None:
+                return sym, None, "無報價"
+            chg = (price - prev) / prev * 100 if prev else None
+            return sym, {
+                "price": round(price, 2),
+                "currency": meta.get("currency", ""),
+                "change_pct": round(chg, 2) if chg is not None else None,
+                "asof": time.strftime("%Y-%m-%d"),
+                "name": meta.get("shortName") or meta.get("longName") or "",
+                "closes": [round(c, 2) for c in valid[-5:]],
+            }, None
         except Exception as e:
-            if verbose:
-                print(f"  ✗ {sym:14s} {e}")
-        time.sleep(0.25)
+            if attempt == 1:
+                return sym, None, str(e)
+            time.sleep(0.4)
+    return sym, None, "重試失敗"
+
+
+def fetch_quotes(symbols, verbose=True, workers=16):
+    quotes = {}
+    syms = sorted(set(s for s in symbols if s))
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(_fetch_one_quote, sym) for sym in syms]
+        for fut in as_completed(futs):
+            sym, q, err = fut.result()
+            if q is not None:
+                quotes[sym] = q
+                if verbose:
+                    print(f"  ✓ {sym:14s} {q['price']:>10.2f} {q.get('currency','')}")
+            elif verbose:
+                print(f"  ✗ {sym:14s} {err}")
     return quotes
 
 
@@ -488,29 +504,38 @@ COMMODITY_FUTURES = [("黃金", "GC=F", "美元/盎司"), ("白銀", "SI=F", "�
                      ("原油WTI", "CL=F", "美元/桶"), ("銅", "HG=F", "美元/磅")]
 
 
-def fetch_fred(series_ids, cache_file):
-    """用 curl -4 抓 FRED fredgraph.csv（部分網絡 urllib 走 IPv6 會超時）。"""
+def _fetch_one_fred(sid):
+    """抓單一 FRED 序列（供 fetch_fred 並行使用）。"""
+    csv_path = os.path.join("/tmp", f"fredbuild_{sid}.csv")
+    try:
+        subprocess.run(
+            ["curl", "-4sm", "25", "-o", csv_path,
+             f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}"],
+            check=True, capture_output=True)
+        vals = []
+        for line in open(csv_path, encoding="utf-8", errors="replace").read().splitlines()[1:]:
+            p = line.split(",")
+            if len(p) >= 2 and p[1] and p[1] != ".":
+                vals.append([p[0], float(p[1])])
+        if vals:
+            return sid, vals, None
+        return sid, None, "空資料"
+    except Exception as e:
+        return sid, None, str(e)
+
+
+def fetch_fred(series_ids, cache_file, workers=12):
+    """用 curl -4 並行抓 FRED fredgraph.csv（部分網絡 urllib 走 IPv6 會超時）。"""
     fred = {}
-    for sid in series_ids:
-        csv_path = os.path.join("/tmp", f"fredbuild_{sid}.csv")
-        try:
-            subprocess.run(
-                ["curl", "-4sm", "25", "-o", csv_path,
-                 f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={sid}"],
-                check=True, capture_output=True)
-            vals = []
-            for line in open(csv_path, encoding="utf-8", errors="replace").read().splitlines()[1:]:
-                p = line.split(",")
-                if len(p) >= 2 and p[1] and p[1] != ".":
-                    vals.append([p[0], float(p[1])])
-            if vals:
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(_fetch_one_fred, sid) for sid in series_ids]
+        for fut in as_completed(futs):
+            sid, vals, err = fut.result()
+            if vals is not None:
                 fred[sid] = vals
                 print(f"  ✓ FRED {sid:16s} 最新 {vals[-1][1]:>10.2f} ({vals[-1][0]})")
             else:
-                print(f"  ✗ FRED {sid:16s} 空資料")
-        except Exception as e:
-            print(f"  ✗ FRED {sid:16s} {e}")
-        time.sleep(0.2)
+                print(f"  ✗ FRED {sid:16s} {err}")
     if not fred and os.path.exists(cache_file):
         fred = json.load(open(cache_file, encoding="utf-8"))
         print("  網路不可用，使用宏觀快取")
@@ -520,12 +545,11 @@ def fetch_fred(series_ids, cache_file):
     return fred
 
 
-def fetch_asset_perf(symbols):
-    """抓 1 年（日線）行情，計算 YTD/1Y 報酬、52 周高低，並保留日期序列供組合實時收益計算。"""
-    perf = {}
-    for sym in sorted(set(symbols)):
-        url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
-               f"{urllib.parse.quote(sym)}?range=1y&interval=1d")
+def _fetch_one_asset(sym):
+    """抓單一資產 1 年日線（供 fetch_asset_perf 並行使用）。"""
+    url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+           f"{urllib.parse.quote(sym)}?range=1y&interval=1d")
+    for attempt in (0, 1):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=10) as resp:
@@ -536,7 +560,7 @@ def fetch_asset_perf(symbols):
                                             res["indicators"]["quote"][0]["close"])
                      if c is not None]
             if not pairs:
-                continue
+                return sym, None, "無資料"
             price = meta.get("regularMarketPrice") or pairs[-1][1]
             first = pairs[0][1]
             cur_year = datetime.fromtimestamp(pairs[-1][0]).year
@@ -544,7 +568,7 @@ def fetch_asset_perf(symbols):
                         if datetime.fromtimestamp(t).year == cur_year), None)
             ytd = (price / jan - 1) * 100 if jan else None
             y1 = (price / first - 1) * 100 if first else None
-            perf[sym] = {
+            return sym, {
                 "price": round(price, 2),
                 "ytd": round(ytd, 2) if ytd is not None else None,
                 "y1": round(y1, 2) if y1 is not None else None,
@@ -554,11 +578,27 @@ def fetch_asset_perf(symbols):
                 # 組合實時收益用：全精度收盤 + 日期（YYYY-MM-DD）
                 "series": [round(c, 4) for _, c in pairs],
                 "dates": [datetime.fromtimestamp(t).strftime("%Y-%m-%d") for t, _ in pairs],
-            }
-            print(f"  ✓ 資產 {sym:8s} {price:>10.2f} | YTD {ytd:>7.2f}% | 1Y {y1:>7.2f}%")
+            }, None
         except Exception as e:
-            print(f"  ✗ 資產 {sym:8s} {e}")
-        time.sleep(0.25)
+            if attempt == 1:
+                return sym, None, str(e)
+            time.sleep(0.4)
+    return sym, None, "重試失敗"
+
+
+def fetch_asset_perf(symbols, workers=10):
+    """並行抓 1 年（日線）行情，計算 YTD/1Y 報酬、52 周高低，並保留日期序列供組合實時收益計算。"""
+    perf = {}
+    syms = sorted(set(symbols))
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(_fetch_one_asset, sym) for sym in syms]
+        for fut in as_completed(futs):
+            sym, p, err = fut.result()
+            if p is not None:
+                perf[sym] = p
+                print(f"  ✓ 資產 {sym:8s} {p['price']:>10.2f} | YTD {p['ytd']:>7.2f}% | 1Y {p['y1']:>7.2f}%")
+            else:
+                print(f"  ✗ 資產 {sym:8s} {err}")
     return perf
 
 
@@ -2825,123 +2865,142 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=os.path.join(os.path.dirname(SITE_DIR), "ai-berkshire"))
     ap.add_argument("--no-market", action="store_true")
+    ap.add_argument("--quick", action="store_true",
+                    help="快速更新（小更新）：只重抓行情/FRED/資產 1Y 並重建 data.js；不重渲染報告與個股頁")
     args = ap.parse_args()
 
+    quick = args.quick
+    REPORTS_CACHE = os.path.join(SITE_DIR, "js", "reports_cache.json")
+    t_start = time.time()
+
     repo = os.path.abspath(args.repo)
-    if not os.path.exists(os.path.join(repo, "reports", "index.json")):
+    if quick:
+        # 快速模式：公司/專題/報告索引取自大更新寫入的快取（無需源 repo）
+        if not os.path.exists(REPORTS_CACHE):
+            sys.exit("快速模式需要 js/reports_cache.json（由完整建站寫入），請先跑一次大更新")
+        rc = json.load(open(REPORTS_CACHE, encoding="utf-8"))
+        idx = rc["idx"]
+        companies = rc["companies"]
+        topics = rc["topics"]
+        extra = rc.get("extra", [])
+        reports = [r for r in idx["reports"] if r.get("path")]
+        in_combo_names = set()
+        print(f"== 快速更新（小更新）：報告快取 {len(companies)} 家 / {len(topics)} 專題 / {len(reports)} 份 ==")
+    elif not os.path.exists(os.path.join(repo, "reports", "index.json")):
         sys.exit(f"找不到 repo: {repo}")
 
-    print("== 1/4 讀取報告索引 ==")
-    idx = load_index(repo)
-    reports = [r for r in idx["reports"] if os.path.exists(os.path.join(repo, r["path"]))]
-    if len(reports) < len(idx["reports"]):
-        print(f"⚠️ 跳過 {len(idx['reports']) - len(reports)} 條失效路徑（源 repo 內檔案不存在）")
+    if not quick:
+        print("== 1/4 讀取報告索引 ==")
+        idx = load_index(repo)
+        reports = [r for r in idx["reports"] if os.path.exists(os.path.join(repo, r["path"]))]
+        if len(reports) < len(idx["reports"]):
+            print(f"⚠️ 跳過 {len(idx['reports']) - len(reports)} 條失效路徑（源 repo 內檔案不存在）")
 
-    # index 未收錄、但會被報告互鏈引用的 md（如各資料夾 README）也一併渲染，
-    # 否則互鏈會 404。這些頁面不進 data.js 列表，僅供報告內互鏈到達。
-    indexed = {r["path"] for r in reports}
-    extra = []
-    for root, _dirs, files in os.walk(os.path.join(repo, "reports")):
-        for f in files:
-            if not f.endswith(".md"):
-                continue
-            p = os.path.relpath(os.path.join(root, f), repo)
-            if p in indexed:
-                continue
-            title = f[:-3]
-            try:
-                for line in open(os.path.join(repo, p), encoding="utf-8", errors="replace"):
-                    m = re.match(r"^#\s+(.+)$", line.strip())
-                    if m:
-                        title = m.group(1).strip()
-                        break
-            except OSError:
-                pass
-            mtime = datetime.fromtimestamp(os.path.getmtime(os.path.join(repo, p)))
-            extra.append({
-                "title": title, "path": p, "group": "附屬文件", "bucket": "專題",
-                "type": "附屬", "date": mtime.strftime("%Y-%m-%d"),
+        # index 未收錄、但會被報告互鏈引用的 md（如各資料夾 README）也一併渲染，
+        # 否則互鏈會 404。這些頁面不進 data.js 列表，僅供報告內互鏈到達。
+        indexed = {r["path"] for r in reports}
+        extra = []
+        for root, _dirs, files in os.walk(os.path.join(repo, "reports")):
+            for f in files:
+                if not f.endswith(".md"):
+                    continue
+                p = os.path.relpath(os.path.join(root, f), repo)
+                if p in indexed:
+                    continue
+                title = f[:-3]
+                try:
+                    for line in open(os.path.join(repo, p), encoding="utf-8", errors="replace"):
+                        m = re.match(r"^#\s+(.+)$", line.strip())
+                        if m:
+                            title = m.group(1).strip()
+                            break
+                except OSError:
+                    pass
+                mtime = datetime.fromtimestamp(os.path.getmtime(os.path.join(repo, p)))
+                extra.append({
+                    "title": title, "path": p, "group": "附屬文件", "bucket": "專題",
+                    "type": "附屬", "date": mtime.strftime("%Y-%m-%d"),
+                })
+        if extra:
+            print(f"   另渲染 {len(extra)} 份 index 未收錄的附屬文件（供互鏈）")
+
+        # 上游 index 偶爾把專題系列誤標為公司（group 以 -YYYYMMDD 結尾且無 ticker），
+        # 歸入專題桶，避免出現在公司清單。
+        for r in reports:
+            if r["bucket"] == "公司" and not r.get("ticker") and re.search(r"-\d{8}$", r["group"]):
+                r["bucket"] = "专题"
+        by_company = defaultdict(list)
+        by_topic = defaultdict(list)
+        for r in reports:
+            if r["bucket"] == "公司":
+                by_company[r["group"]].append(r)
+            else:
+                by_topic[r["group"]].append(r)
+
+        print(f"== 2/4 萃取公司資料（{len(by_company)} 家）==")
+        companies = []
+        for name, rs in sorted(by_company.items()):
+            rs = sorted(rs, key=lambda r: r["date"])
+            latest = rs[-1]["date"]
+            titles = [r["title"] for r in rs]
+            ticker = extract_ticker(name, titles)
+            score, verdict, summary = extract_score(repo, rs)
+            if score is None and name in FALLBACK_SCORE:
+                v, vd = FALLBACK_SCORE[name]
+                score = {"stars": round(v), "value": v, "text": f"橫評備用分 {v}/5"}
+                verdict = verdict or vd
+            companies.append({
+                "name": name,
+                "sector": sector_of(name, titles),
+                "ticker": ticker,
+                "count": len(rs),
+                "latest": latest,
+                "score": score,
+                "verdict": verdict,
+                "verdict_class": classify_verdict(verdict),
+                "summary": summary,
+                "page": "stocks/" + slugify(name) + ".html",
+                "reports": [
+                    {"title": r["title"], "date": r["date"], "type": r["type"],
+                     "path": site_path(r["path"])}
+                    for r in reversed(rs)
+                ],
             })
-    if extra:
-        print(f"   另渲染 {len(extra)} 份 index 未收錄的附屬文件（供互鏈）")
 
-    # 上游 index 偶爾把專題系列誤標為公司（group 以 -YYYYMMDD 結尾且無 ticker），
-    # 歸入專題桶，避免出現在公司清單。
-    for r in reports:
-        if r["bucket"] == "公司" and not r.get("ticker") and re.search(r"-\d{8}$", r["group"]):
-            r["bucket"] = "专题"
-    by_company = defaultdict(list)
-    by_topic = defaultdict(list)
-    for r in reports:
-        if r["bucket"] == "公司":
-            by_company[r["group"]].append(r)
-        else:
-            by_topic[r["group"]].append(r)
+        # 個股分析系統：補充監測公司（無研報，僅行情＋基本面監測），覆蓋擴至 300 家
+        have_tickers = {c["ticker"] for c in companies}
+        have_names = {c["name"] for c in companies}
+        for x in EXTRA_COMPANIES:
+            if not x["ticker"] or x["ticker"] in have_tickers or x["name"] in have_names:
+                continue
+            companies.append({
+                "name": x["name"], "sector": x["sector"], "ticker": x["ticker"],
+                "region": x["region"], "count": 0, "latest": "",
+                "score": None, "verdict": None, "verdict_class": None,
+                "summary": None, "page": "stocks/" + slugify(x["name"]) + ".html",
+                "reports": [],
+            })
+            have_tickers.add(x["ticker"])
 
-    print(f"== 2/4 萃取公司資料（{len(by_company)} 家）==")
-    companies = []
-    for name, rs in sorted(by_company.items()):
-        rs = sorted(rs, key=lambda r: r["date"])
-        latest = rs[-1]["date"]
-        titles = [r["title"] for r in rs]
-        ticker = extract_ticker(name, titles)
-        score, verdict, summary = extract_score(repo, rs)
-        if score is None and name in FALLBACK_SCORE:
-            v, vd = FALLBACK_SCORE[name]
-            score = {"stars": round(v), "value": v, "text": f"橫評備用分 {v}/5"}
-            verdict = verdict or vd
-        companies.append({
-            "name": name,
-            "sector": sector_of(name, titles),
-            "ticker": ticker,
-            "count": len(rs),
-            "latest": latest,
-            "score": score,
-            "verdict": verdict,
-            "verdict_class": classify_verdict(verdict),
-            "summary": summary,
-            "page": "stocks/" + slugify(name) + ".html",
-            "reports": [
-                {"title": r["title"], "date": r["date"], "type": r["type"],
-                 "path": site_path(r["path"])}
-                for r in reversed(rs)
-            ],
-        })
+        # 選定公司組合（與 app.js selectedCombo 同規則：結論正面且評分最高的 8 家）
+        pos = [c for c in companies
+               if c.get("score") and c["score"].get("value") is not None
+               and c.get("verdict_class") == "positive"]
+        pos.sort(key=lambda c: -c["score"]["value"])
+        in_combo_names = {c["name"] for c in pos[:8]}
 
-    # 個股分析系統：補充監測公司（無研報，僅行情＋基本面監測），覆蓋擴至 300 家
-    have_tickers = {c["ticker"] for c in companies}
-    have_names = {c["name"] for c in companies}
-    for x in EXTRA_COMPANIES:
-        if not x["ticker"] or x["ticker"] in have_tickers or x["name"] in have_names:
-            continue
-        companies.append({
-            "name": x["name"], "sector": x["sector"], "ticker": x["ticker"],
-            "region": x["region"], "count": 0, "latest": "",
-            "score": None, "verdict": None, "verdict_class": None,
-            "summary": None, "page": "stocks/" + slugify(x["name"]) + ".html",
-            "reports": [],
-        })
-        have_tickers.add(x["ticker"])
-
-    # 選定公司組合（與 app.js selectedCombo 同規則：結論正面且評分最高的 8 家）
-    pos = [c for c in companies
-           if c.get("score") and c["score"].get("value") is not None
-           and c.get("verdict_class") == "positive"]
-    pos.sort(key=lambda c: -c["score"]["value"])
-    in_combo_names = {c["name"] for c in pos[:8]}
-
-    topics = []
-    for name, rs in sorted(by_topic.items(), key=lambda kv: -len(kv[1])):
-        rs = sorted(rs, key=lambda r: r["date"])
-        topics.append({
-            "name": name, "bucket": rs[0]["bucket"], "count": len(rs),
-            "latest": rs[-1]["date"],
-            "reports": [
-                {"title": r["title"], "date": r["date"], "type": r["type"],
-                 "path": site_path(r["path"])}
-                for r in reversed(rs)
-            ],
-        })
+        topics = []
+        for name, rs in sorted(by_topic.items(), key=lambda kv: -len(kv[1])):
+            rs = sorted(rs, key=lambda r: r["date"])
+            topics.append({
+                "name": name, "bucket": rs[0]["bucket"], "count": len(rs),
+                "latest": rs[-1]["date"],
+                "reports": [
+                    {"title": r["title"], "date": r["date"], "type": r["type"],
+                     "path": site_path(r["path"])}
+                    for r in reversed(rs)
+                ],
+            })
 
     all_reports = sorted(reports, key=lambda r: r["date"], reverse=True)
     tickers = [c["ticker"] for c in companies]
@@ -2950,7 +3009,7 @@ def main():
     quotes = {}
     cache_file = os.path.join(SITE_DIR, "js", "market_cache.json")
     if not args.no_market:
-        print(f"== 3/4 抓取行情（{len([t for t in tickers if t])} 個代碼，約 40 秒）==")
+        print(f"== 3/4 並行抓取行情（{len([t for t in tickers if t])} 個代碼）==")
         quotes = fetch_quotes(tickers + list(MARKET_INDICES) + list(GLOBAL_INDICES)
                               + list(EXTENDED_ASSETS) + asset_symbols)
         for sym, label in MARKET_INDICES.items():
@@ -2962,8 +3021,8 @@ def main():
         quotes = json.load(open(cache_file, encoding="utf-8"))
         print(f"== 3/4 使用行情快取（{len(quotes)} 檔，{cache_file}）==")
 
-    # 個股基本面（Yahoo quoteSummary + 1y 日線，供個股分析頁）
-    fund_data = load_or_fetch_fundamentals(tickers, args.no_market)
+    # 個股基本面（Yahoo quoteSummary + 1y 日線，供個股分析頁；快速模式用快取）
+    fund_data = load_or_fetch_fundamentals(tickers, args.no_market or quick)
 
     # 首頁市場總覽用：主要指數行情（取得到幾個就顯示幾個）
     indices = [{"sym": s, "label": l} for s, l in MARKET_INDICES.items() if s in quotes]
@@ -2971,10 +3030,12 @@ def main():
     # 宏觀評分與資產配置（FRED + 資產 1 年報酬）
     alloc_cache = os.path.join(SITE_DIR, "js", "allocation_cache.json")
     allocation = None
+    # 資產 1Y 行情一次抓齊（資產配置 + 市場全景共用，避免重複抓取）
+    union_perf_symbols = list(GLOBAL_INDICES) + list(EXTENDED_ASSETS) + asset_symbols
     if not args.no_market:
-        print("== 3.5/4 抓取宏觀與資產配置資料（FRED + Yahoo 1Y）==")
+        print("== 3.5/4 抓取宏觀與資產配置資料（FRED + Yahoo 1Y，並行）==")
         fred = fetch_fred(FRED_SERIES, FRED_CACHE)
-        asset_perf = fetch_asset_perf(asset_symbols)
+        asset_perf = fetch_asset_perf(union_perf_symbols)
         if fred:
             allocation = compute_allocation(fred, quotes, asset_perf)
             print(f"  ✓ 資產配置已計算（通脹 {allocation['macro'][1]['score']} 分 / "
@@ -3002,7 +3063,7 @@ def main():
     # 歷史情景回測（20 年月頻行情：網路建站抓取，快取建站讀取 js/hist_cache.json）
     hist_cache = os.path.join(SITE_DIR, "js", "hist_cache.json")
     hist = {}
-    if not args.no_market:
+    if not args.no_market and not quick:
         print("== 3.6/4 抓取 20 年歷史行情（情景回測）==")
         hist = fetch_asset_history(HIST_SYMBOLS)
         if hist:
@@ -3034,10 +3095,9 @@ def main():
     review = None
     if quotes:
         index_perf, earnings, etf_holds = {}, [], {}
-        if not args.no_market:
-            print("== 3.7/4 抓取市場全景資料（全球指數 1Y + 標普盈利 + ETF 持倉）==")
-            index_perf = fetch_asset_perf(list(GLOBAL_INDICES) + list(EXTENDED_ASSETS)
-                                          + asset_symbols)
+        if not args.no_market and not quick:
+            print("== 3.7/4 抓取市場全景資料（標普盈利 + ETF 持倉）==")
+            index_perf = asset_perf  # 全球指數 1Y 已在 3.5 併入 union 抓取
             with open(INDEX_PERF_CACHE, "w", encoding="utf-8") as f:
                 json.dump(index_perf, f, ensure_ascii=False)
             earnings = fetch_earnings()
@@ -3046,6 +3106,15 @@ def main():
             etf_holds = fetch_etf_holdings(ETF_HOLDING_SYMBOLS)
             with open(ETF_CACHE, "w", encoding="utf-8") as f:
                 json.dump(etf_holds, f, ensure_ascii=False)
+        elif not args.no_market:
+            # 快速模式：標普盈利與 ETF 持倉用快取（全球指數 1Y 已在 3.5 抓齊）
+            index_perf = asset_perf
+            with open(INDEX_PERF_CACHE, "w", encoding="utf-8") as f:
+                json.dump(index_perf, f, ensure_ascii=False)
+            if os.path.exists(EARNINGS_CACHE):
+                earnings = json.load(open(EARNINGS_CACHE, encoding="utf-8"))
+            if os.path.exists(ETF_CACHE):
+                etf_holds = json.load(open(ETF_CACHE, encoding="utf-8"))
         else:
             if os.path.exists(INDEX_PERF_CACHE):
                 index_perf = json.load(open(INDEX_PERF_CACHE, encoding="utf-8"))
@@ -3073,9 +3142,12 @@ def main():
         print(f"  ✓ 市場回顧（一週變動 {len(review['rows'])} 標的 · "
               f"下月關注 {len(review['upcoming'])} 項）")
 
-    print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
-    render_reports(repo, reports + extra)
-    print(f"   完成，輸出至 {os.path.relpath(os.path.join(SITE_DIR, 'reports'))}")
+    if not quick:
+        print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
+        render_reports(repo, reports + extra)
+        print(f"   完成，輸出至 {os.path.relpath(os.path.join(SITE_DIR, 'reports'))}")
+    else:
+        print("== 4/4 快速模式：報告頁與個股頁不重渲染 ==")
 
     # 全球前五大基金資產配置動態（公開披露數據，按各基金最新年報／政策區間，站長手動維護）
     # delta 為較上一披露期的百分點變化（數字）或文字說明；min/max 為政策區間（ADIA）
@@ -3384,11 +3456,15 @@ def main():
     china = compute_china(companies, quotes, fund_data)
 
     # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型；帶反向持倉引用）
-    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names,
-                                  fund_holdings, polit_holdings)
-    print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁，"
-          f"頂級基金持倉引用 {sum(len(v) for v in fund_holdings.values())} 條，"
-          f"政要交易引用 {sum(len(v) for v in polit_holdings.values())} 條）")
+    if quick:
+        st_stats = {"pages": rc.get("stocks_pages", 0), "with_data": 0}
+        print(f"   ✓ 快速模式：個股分析頁沿用既有 {st_stats['pages']} 頁（不重渲染）")
+    else:
+        st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names,
+                                      fund_holdings, polit_holdings)
+        print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁，"
+              f"頂級基金持倉引用 {sum(len(v) for v in fund_holdings.values())} 條，"
+              f"政要交易引用 {sum(len(v) for v in polit_holdings.values())} 條）")
 
     # 網站資料（報告、公司、行情、配置、基金與對沖基金公開披露）
     data = {
@@ -3451,6 +3527,15 @@ def main():
         json.dump(data, f, ensure_ascii=False)
         f.write(";\n")
     print(f"✓ js/data.js 已生成（{os.path.getsize(os.path.join(SITE_DIR, 'js', 'data.js'))/1024:.0f} KB）")
+
+    if not quick:
+        # 寫報告快取：快速更新（小更新）從這裡取公司/專題/索引，免重讀 repo、免重渲染
+        with open(REPORTS_CACHE, "w", encoding="utf-8") as f:
+            json.dump({"idx": idx, "companies": companies, "topics": topics,
+                       "extra": extra, "stocks_pages": st_stats["pages"]},
+                      f, ensure_ascii=False)
+        print("✓ js/reports_cache.json 已寫入（供小更新使用）")
+    print(f"✓ 完成，耗時 {time.time() - t_start:.0f} 秒")
 
 
 def render_reports(repo, reports):

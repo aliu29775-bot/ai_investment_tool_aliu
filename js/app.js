@@ -221,7 +221,7 @@
     var asof = document.getElementById("home-alloc-asof");
     if (asof) {
       var d0 = D.market_asof || (D.market && D.market.SPY && D.market.SPY.asof) || A.asof;
-      if (d0) asof.textContent = "⏱ 行情更新於 " + d0;
+      if (d0) asof.textContent = "⏱ 數據日期 " + d0;
     }
 
     /* 宏觀儀錶（精簡版） */
@@ -1547,8 +1547,13 @@
         setMsg("⏱ 冷卻中，約 " + Math.ceil((COOLDOWN_MS - (now - last)) / 60000) + " 分鐘後可再次更新", "warn");
         return;
       }
+      // 預設小更新（關鍵數據，約 30 秒）；取消則改為大更新（全部數據 + 重渲染全部報告）
+      var mode = "small";
+      if (!window.confirm("進行「小更新」？\n\n小更新：只重抓行情與宏觀等關鍵數據（約 30 秒）\n\n點「取消」改為「大更新」：重抓全部數據並重渲染全部報告（約 5 分鐘）")) {
+        mode = "big";
+      }
       btn.disabled = true;
-      setMsg("⏳ 正在觸發更新…", "warn");
+      setMsg("⏳ 正在觸發" + (mode === "small" ? "小更新" : "大更新") + "…", "warn");
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "https://api.github.com/repos/" + REPO + "/actions/workflows/" + WF + "/dispatches", true);
       xhr.setRequestHeader("Accept", "application/vnd.github+json");
@@ -1568,7 +1573,7 @@
         }
       };
       xhr.onerror = function () { btn.disabled = false; setMsg("⚠ 網絡錯誤，請稍後重試", "err"); };
-      xhr.send();
+      xhr.send(JSON.stringify({ ref: "main", inputs: { mode: mode } }));
     });
   }
 
@@ -1748,7 +1753,9 @@
 
     /* 殖利率曲線快照（FFR→30Y，按到期年限橫軸） */
     html += '<div class="card" style="margin-top:10px;"><h4 style="margin:0 0 6px;">殖利率曲線快照（FFR / 3M / 2Y / 5Y / 10Y / 30Y）</h4>' +
+      '<div class="chart-scroll"><div style="min-width:600px;">' +
       curveSVG(T.curve || []) +
+      '</div></div>' +
       '<p class="s-note">曲線形狀即第一層「形態」的直觀呈現；數據源 FRED。</p></div>';
 
     /* ---- 第一層：形態 ---- */
@@ -1894,7 +1901,7 @@
       var tx = i === 0 ? x + 6 : (i === arr.length - 1 ? x - 6 : x);
       var ty = (i % 2 === 0) ? y - 7 : y + 17;
       return dot + '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" text-anchor="' + anchor +
-        '" font-size="11" fill="#4b5563">' + esc(p[0]) + " " + p[2].toFixed(2) + "%</text>";
+        '" font-size="12" fill="#4b5563">' + esc(p[0]) + " " + p[2].toFixed(2) + "%</text>";
     }).join("");
     var grid = "", i, gy, gx;
     for (i = 0; i <= 4; i++) {
