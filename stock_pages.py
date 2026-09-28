@@ -215,6 +215,13 @@ EXTRA_COMPANIES = [
     {"name": "巴西石油", "ticker": "PBR", "sector": "能源", "region": "新興市場"},
     {"name": "淡水河谷", "ticker": "VALE", "sector": "材料", "region": "新興市場"},
     {"name": "伊塔乌银行", "ticker": "ITUB", "sector": "金融", "region": "新興市場"},
+    {"name": "楷登电子", "ticker": "CDNS", "sector": "科技", "region": "美股"},
+    {"name": "戴尔科技", "ticker": "DELL", "sector": "科技", "region": "美股"},
+    {"name": "通用动力", "ticker": "GD", "sector": "工業", "region": "美股"},
+    {"name": "KURA寿司美国", "ticker": "KRUS", "sector": "消費", "region": "美股"},
+    {"name": "诺斯罗普格鲁曼", "ticker": "NOC", "sector": "工業", "region": "美股"},
+    {"name": "新思科技", "ticker": "SNPS", "sector": "科技", "region": "美股"},
+    {"name": "Workday", "ticker": "WDAY", "sector": "科技", "region": "美股"},
 ]
 
 # 熱門加厚清單（迭代 2 深度版對象；迭代 1 先標記「深度版即將上線」）

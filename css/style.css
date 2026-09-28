@@ -81,7 +81,8 @@ body {
   background: var(--page);
   color: var(--ink);
   font-family: system-ui, -apple-system, "Segoe UI", "PingFang TC",
-    "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    "Noto Sans TC", "PingFang SC", "Noto Sans SC", "Microsoft JhengHei",
+    "Microsoft YaHei", sans-serif;
   font-size: 15px;
   line-height: 1.65;
 }
@@ -1005,6 +1006,9 @@ body[data-page="home"] .co-actions { display: none; }
 /* 美聯儲追蹤頁 */
 .fed-big { font-size: 46px; font-weight: 800; line-height: 1.15; }
 .fed-big span { font-size: 22px; font-weight: 600; color: var(--muted); margin-left: 4px; }
+/* 美聯儲頁縮小主數字（估值頁巴菲特指標保持原尺寸） */
+body[data-page="fed"] .fed-big { font-size: 30px; }
+body[data-page="fed"] .fed-big span { font-size: 16px; }
 .fed-sub { font-size: 14px; color: var(--muted); margin-top: 6px; }
 .fed-next { display: inline-block; margin-top: 12px; padding: 6px 14px; border-radius: 999px;
   background: var(--brand-tint, #e8f3ee); color: var(--brand); font-weight: 600; font-size: 14px; }
@@ -1022,6 +1026,7 @@ body[data-page="home"] .co-actions { display: none; }
     padding: 8px 10px;
   }
   .fed-big { font-size: 34px; }
+  body[data-page="fed"] .fed-big { font-size: 26px; }
   .hero h1 { font-size: 26px; }
   .s-grid2 { grid-template-columns: 1fr; }
 }

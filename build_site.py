@@ -702,6 +702,139 @@ def build_score_mapping(fred, vix):
     return out
 
 
+def _chg_at(v, back=0):
+    """序列某觀測相對 back 個觀測前的變動（bp）。"""
+    if v is None or len(v) <= back:
+        return None
+    return round((v[-1][1] - v[-1 - back][1]) * 100, 0)
+
+
+def build_treasury_desk(fred, targets):
+    """美聯儲頁「國債交易台視角」：用 FRED 真實序列生成短端定價、
+    曲線形狀、長端 term premium、通脹盈虧平衡與買賣建議（規則式、數據驅動）。
+    分析框架參考 CME 期貨日報 2025-09-04（通脹粘性+債務 → 長端難下）。"""
+    dgs2, dgs10, dgs30 = fred.get("DGS2") or [], fred.get("DGS10") or [], fred.get("DGS30") or []
+    ffr = _yv(fred, "DFF")
+    real10 = _yv(fred, "DFII10")
+    spread = _yv(fred, "T10Y2Y")
+    spread3m = _yv(fred, "T10Y3M")
+    baa = _yv(fred, "BAA10Y")
+    cpi = _yoy_at(fred, "CPIAUCSL")
+    pce = _yoy_at(fred, "PCEPILFE")
+    unrate = _yv(fred, "UNRATE")
+    gdp = _gdp_yoy(fred)
+    asof = (dgs2 or [["—"]])[-1][0]
+    if not dgs2 or not dgs10 or not dgs30:
+        return None
+
+    # 過去 1 月／3 月／1 年變動（bp）：DGS2/DGS10/DGS30 日頻
+    ch = {}
+    for sid, v in (("2Y", dgs2), ("10Y", dgs10), ("30Y", dgs30)):
+        ch[sid] = {"m1": _chg_at(v, 21), "m3": _chg_at(v, 63), "y1": _chg_at(v, 252)}
+
+    # 曲線利差歷史（按日期對齊）
+    by_date = {d: v for d, v in dgs10}
+    spread_hist = [[d, v2 - (dict(dgs2).get(d, 0) or 0)] for d, v2 in dgs10
+                   if d in dict(dgs2)][-504:]
+    spread_now = round((dgs10[-1][1] - dgs2[-1][1]) * 100, 0)  # bp
+
+    # ---- 規則式解讀 ----
+    gap2y = round((dgs2[-1][1] - ffr) * 100, 0) if ffr is not None else None
+    if gap2y is not None:
+        if gap2y > 50:
+            short = (f"2 年期 {dgs2[-1][1]:.2f}% 比聯邦基金有效利率 {ffr:.2f}% 高 {gap2y}bp"
+                     f"——短端在定價<b>升息預期／通脹溢價</b>，而非降息。")
+        elif gap2y < -50:
+            short = (f"2 年期 {dgs2[-1][1]:.2f}% 比聯邦基金有效利率 {ffr:.2f}% 低 {abs(gap2y)}bp"
+                     f"——短端在定價<b>降息預期</b>。")
+        else:
+            short = (f"2 年期 {dgs2[-1][1]:.2f}% 與聯邦基金有效利率 {ffr:.2f}% 大致持平"
+                     f"（差 {gap2y}bp）——市場認為政策利率短期不變。")
+    else:
+        short = ""
+    if spread_now > 50:
+        curve_txt = (f"2s10s 利差 +{spread_now}bp，曲線<b>陡峭</b>；10Y−3M +{spread3m:.0f}bp "
+                     "無倒掛——期限溢價（term premium）回歸定價。")
+    elif spread_now < 0:
+        curve_txt = (f"2s10s 利差 {spread_now}bp，曲線<b>倒掛</b>"
+                     "——經典衰退警報；本站衰退概率模型與之交叉驗證。")
+    else:
+        curve_txt = (f"2s10s 利差 +{spread_now}bp，<b>正斜率但偏平</b>；"
+                     f"10Y−3M +{spread3m:.0f}bp 無倒掛——曲線已正常化，但平坦的斜率"
+                     "意味著期限溢價對長端的補償有限。")
+    if real10 is not None:
+        be = round((dgs10[-1][1] - real10) * 100, 0)
+        long_txt = (f"10 年期 {dgs10[-1][1]:.2f}%、30 年期 {dgs30[-1][1]:.2f}%——名義收益率絕對水平高，"
+                    f"但 10Y 實質利率 {real10:.2f}% 遠高於歷史中性（≈0.5–1.5%）：長債的"
+                    f"<b>實質回報有吸引力</b>，同時市場隱含 10 年通脹 {be / 100:.2f}%"
+                    f"（CPI 同比 {cpi:.1f}%、核心 PCE {pce:.1f}%）——盈虧平衡低於現行通脹，"
+                    "TIPS 相對名義債有配置價值。")
+    else:
+        long_txt = ""
+    # 過去一年變動敘述
+    if ch["2Y"]["y1"] is not None:
+        move = (f"過去一年：2Y {ch['2Y']['y1']:+.0f}bp、10Y {ch['10Y']['y1']:+.0f}bp、"
+                f"30Y {ch['30Y']['y1']:+.0f}bp——"
+                f"{'熊陡（短端跌得比長端多）' if ch['2Y']['y1'] > ch['30Y']['y1'] else '熊平'}"
+                "；近一個月 2Y " + f"{ch['2Y']['m1']:+.0f}bp、10Y {ch['10Y']['m1']:+.0f}bp"
+                f"（{'拋售加速' if (ch['2Y']['m1'] or 0) > 20 else '壓力緩和'}）。")
+    else:
+        move = ""
+    # 配置含義（引用本站目標配置）
+    t_國債 = next((t['pct'] for t in targets if t['cls'] == '國債'), '—')
+    t_現金 = next((t['pct'] for t in targets if t['cls'] == '現金'), '—')
+    alloc_txt = (f"對本站配置的含義：流動性評分由聯邦基金利率、曲線與信用利差決定"
+                 f"（信用利差 BAA−10Y {baa:.2f}% 仍低）——曲線正斜率加分、利率高位減分，"
+                 f"國債目標權重維持 {t_國債}%、現金 {t_現金}%。"
+                 f"若通脹回落使短端定價反轉，流動性評分上行將觸發「股票增配」；"
+                 "在此之前，短債吃 carry、長債僅作配置型久期。")
+
+    # ---- 買賣建議（規則式，全部基於上述數值） ----
+    trades = [
+        f"【短端 carry】買 2–5 年期：2Y {dgs2[-1][1]:.2f}% 在歷史高位、久期僅 2–4 年"
+        "——carry 為正、對升息衝擊的久期損失可控，是當前賠率最好的「收入倉」。",
+    ]
+    if spread_now > 0 and (ch["2Y"]["y1"] or 0) > (ch["30Y"]["y1"] or 0):
+        trades.append(
+            "【曲線】過去一年熊陡之後，若通脹數據轉弱，最大戰術機會是<b>牛平</b>"
+            "（久期中立地買長賣短）；在通脹確認回落前，不做大規模曲線方向押注，"
+            "僅保留 2s10s 區間交易倉。")
+    else:
+        trades.append(
+            "【曲線】曲線平坦／倒掛區：陡峭化交易（買短賣長）在數據反轉時啟動；"
+            "當前以持有短端為主。")
+    trades.append(
+        f"【長端】10Y {dgs10[-1][1]:.2f}%、實質利率 {real10:.2f}% 的長債屬「配置型」"
+        "而非「交易型」：分 3–4 批建倉 10–30Y（每跌 10–15bp 加一批），"
+        "用 30Y 期貨（ZB/UB）或 TLT 分批介入，避免一次承受 term premium 擴張風險。")
+    trades.append(
+        f"【通脹保護】盈虧平衡 {be / 100:.2f}% 低於現行 CPI {cpi:.1f}%——"
+        "TIPS（TIP ETF）優於名義長債；若通脹粘性延續（服務業通脹為重點，"
+        "參見 CME 期貨日報 2025-09-04），TIPS 跑贏名義債。")
+    trades.append(
+        "【執行工具】調整久期用國債期貨而非實券：ZN（10Y）／ZB（30Y）DV01 大、"
+        "保證金效率高、免資金全額佔用；1 手 ZN≈DV01 $80、ZB≈$150（近似值，隨價格變化）。")
+
+    return {
+        "asof": asof,
+        "rates": {"ffr": ffr, "dgs2": dgs2[-1][1], "dgs10": dgs10[-1][1],
+                  "dgs30": dgs30[-1][1], "spread_bp": spread_now,
+                  "spread3m_bp": round(spread3m * 100, 0) if spread3m is not None else None,
+                  "real10": real10, "baa10y": baa, "cpi": cpi, "pce": pce,
+                  "unrate": unrate, "gdp": gdp, "gap2y_bp": gap2y},
+        "hist": {"dgs2": dgs2[-504:], "dgs10": dgs10[-504:], "dgs30": dgs30[-504:],
+                 "spread": spread_hist},
+        "changes": ch,
+        "view": {"short": short, "curve": curve_txt, "long": long_txt, "move": move,
+                 "alloc": alloc_txt},
+        "trades": trades,
+        "ref": ("分析框架回顧自 CME 期貨日報《美債收益率為何「長短不一」？"
+                "一文看懂通脹與債務的交織影響》（2025-09-04）：降息預期壓低短端、"
+                "通脹粘性與財政擔憂支撐長端——一年後的今天，該框架依然適用於解釋"
+                "長端的堅挺。"),
+    }
+
+
 def compute_allocation(fred, quotes, asset_perf):
     """規則式宏觀評分 + 資產配置（全部規則公開透明，見頁面方法論）。"""
     vix_q = quotes.get("^VIX", {})
@@ -868,6 +1001,7 @@ def compute_allocation(fred, quotes, asset_perf):
         "unrate": _yv(fred, "UNRATE"),
         "fomc": fomc,
         "asof": (fred.get("DFF") or [["—"]])[-1][0],
+        "treasury": build_treasury_desk(fred, targets),
     }
 
     return {
@@ -1160,18 +1294,17 @@ POLITICIAN_CONGRESS = {
         ],
         "source": "CNN 分析（Capitol Trades 2026-02-12 新聞稿）",
     },
-    "legislation": {
-        "title": "立法改革進展（119 屆國會）",
-        "rows": [
-            {"name": "PELOSI Act（S. 1498）", "status": "出委員會", "date": "2025-07-30",
-             "detail": "唯一推進至委員會通過的措施：禁止議員、配偶與受扶養子女持有或交易涵蓋資產；罰款為一個月薪資或未剝離投資價值的 10%（取較高者）"},
-            {"name": "Stop Insider Trading Act", "status": "眾院通過", "date": "2026-07",
-             "detail": "全面禁止國會議員購買個股；眾院 232-198 通過，特朗普表態支持，參院前景未明"},
-            {"name": "其他提案", "status": "提案中", "date": "—",
-             "detail": "第 119 屆國會共提出約 25 項限制國會股票交易的法案／決議（H.R. 253、H.Res. 491 等），多數未過委員會"},
-        ],
-        "source": "CRS R48641、GovInfo 聽證記錄 2026",
-    },
+}
+
+# 披露中出現、但站內 companies 未有頁面的個股 → 對應 stock_pages.py 生成的獨立分析頁
+POLIT_PAGES = {
+    "CDNS": "楷登电子.html",
+    "DELL": "戴尔科技.html",
+    "GD": "通用动力.html",
+    "KRUS": "KURA寿司美国.html",
+    "NOC": "诺斯罗普格鲁曼.html",
+    "SNPS": "新思科技.html",
+    "WDAY": "Workday.html",
 }
 
 
@@ -1207,6 +1340,23 @@ def build_polit_holdings(polit, companies):
     return dict(hold)
 
 
+def build_politician(companies):
+    """政要區數據：披露交易逐筆附上站內個股獨立分析頁路徑（僅披露中明確的個股，無頁面者為空）。"""
+    by_ticker = {}
+    for c in companies:
+        t = (c.get("ticker") or "").strip().upper()
+        if t:
+            by_ticker[t] = c.get("page") or ""
+    dis = json.loads(json.dumps(POLITICIAN_DISCLOSURES))
+    for p in dis:
+        for side in ("buys", "sells"):
+            for it in p.get(side) or []:
+                tk = (it.get("ticker") or "").strip().upper()
+                pg = by_ticker.get(tk) or POLIT_PAGES.get(tk, "")
+                it["page"] = pg if not pg or pg.startswith("stocks/") else "stocks/" + pg
+    return {"disclosures": dis, "congress": POLITICIAN_CONGRESS}
+
+
 # 中國資產專區（模組 8）：宏觀與指數為公開數據手動維護（附來源），個股行情由站內抓取
 CHINA_MACRO = {
     "lpr_1y": 3.0, "lpr_5y": 3.5,
@@ -1219,7 +1369,7 @@ CHINA_MACRO = {
 }
 
 CHINA_INDICES = [
-    {"name": "恒生指數", "ticker": "^HSI", "price": 24693.40, "chg": 183.31,
+    {"name": "恆生指數", "ticker": "^HSI", "price": 24693.40, "chg": 183.31,
      "ytd": -4.37, "asof": "2026-09-28", "note": "月內區間 24,510–25,275"},
     {"name": "滬深300", "ticker": "000300.SS", "price": 4342.58, "chg": -96.56,
      "ytd": -4.12, "asof": "2026-09-28", "note": "月內區間 4,340–4,990"},
@@ -3115,7 +3265,7 @@ def main():
         "fund_holdings": fund_holdings,
         "f13f": f13f,
         # 政要交易追蹤（模組 7）：披露整理 + 國會動態 + 反向匹配
-        "politician": {"disclosures": POLITICIAN_DISCLOSURES, "congress": POLITICIAN_CONGRESS},
+        "politician": build_politician(companies),
         "polit_holdings": polit_holdings,
         # 中國資產專區（模組 8）
         "china": {

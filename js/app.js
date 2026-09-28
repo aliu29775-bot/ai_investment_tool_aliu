@@ -959,8 +959,10 @@
     host.innerHTML = P.disclosures.map(function (p) {
       var items = function (side, icon) {
         return (p[side] || []).map(function (it) {
-          var nm = it.ticker ? '<a href="stocks/' + encodeURIComponent(it.name) + '.html">' + esc(it.name) +
-            " (" + esc(it.ticker) + ")</a>" : esc(it.name);
+          var nm = it.page
+            ? '<a href="' + esc(it.page) + '">' + esc(it.name) +
+              (it.ticker ? " (" + esc(it.ticker) + ")" : "") + "</a>"
+            : esc(it.name) + (it.ticker ? " (" + esc(it.ticker) + ")" : "");
           return "<li>" + nm + (it.range ? ' <span class="s-n">' + esc(it.range) + "</span>" : "") + "</li>";
         }).join("");
       };
@@ -1003,14 +1005,7 @@
       '<div class="card" style="margin-top:12px;"><h3>🔎 ' + esc(C.overlap.title) + "</h3>" +
       '<p class="s-note" style="margin:6px 0;">' + esc(C.overlap.note) + "</p>" +
       table(C.overlap.rows, true) +
-      '<p class="s-note">來源：' + esc(C.overlap.source) + "</p></div>" +
-      '<div class="card" style="margin-top:12px;"><h3>📜 ' + esc(C.legislation.title) + "</h3>" +
-      '<table class="s-table"><thead><tr><th>法案</th><th>狀態</th><th>日期</th><th>內容</th></tr></thead><tbody>' +
-      C.legislation.rows.map(function (r) {
-        return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.status) + "</td><td>" +
-          esc(r.date) + "</td><td>" + esc(r.detail) + "</td></tr>";
-      }).join("") + "</tbody></table>" +
-      '<p class="s-note">來源：' + esc(C.legislation.source) + "</p></div>";
+      '<p class="s-note">來源：' + esc(C.overlap.source) + "</p></div>";
   }
 
   /* ---------- 中國資產專區（模組 8） ---------- */
@@ -1712,6 +1707,123 @@
         "</div>" +
         '<p class="s-note">利差為負（倒掛）時市場預期衰退；數據源 FRED。</p>';
     }
+    renderTreasury(F.treasury);
+  }
+
+  /* ---------- 國債交易台 ---------- */
+  function renderTreasury(T) {
+    var host = document.getElementById("fed-treasury");
+    if (!host) return;
+    if (!T || !T.rates) {
+      host.innerHTML = "<p>國債交易台數據暫缺。</p>";
+      return;
+    }
+    var R = T.rates;
+    function bp(v) {
+      if (v == null) return '<span class="s-note">—</span>';
+      var s = (v > 0 ? "▲ +" : (v < 0 ? "▼ " : "± ")) + Math.abs(v).toFixed(0) + "bp";
+      return '<span class="' + (v > 0 ? "up" : v < 0 ? "down" : "") + '">' + s + "</span>";
+    }
+    function kv(k, v, note) {
+      return '<div class="s-kv"><span class="s-k">' + k + "</span><span class='s-v'>" +
+        v + "</span>" + (note ? '<span class="s-note">' + note + "</span>" : "") + "</div>";
+    }
+    var ch = T.changes || {};
+    /* 關鍵利率（帶 1 月/1 年變化） */
+    var heads = [
+      ["聯邦基金有效利率", R.ffr != null ? R.ffr.toFixed(2) + "%" : "—", "DFF"],
+      ["2 年期殖利率", R.dgs2 != null ? R.dgs2.toFixed(2) + "%" : "—",
+        bp(ch["2Y"] ? ch["2Y"].m1 : null) + " 1M / " + bp(ch["2Y"] ? ch["2Y"].y1 : null) + " 1Y"],
+      ["10 年期殖利率", R.dgs10 != null ? R.dgs10.toFixed(2) + "%" : "—",
+        bp(ch["10Y"] ? ch["10Y"].m1 : null) + " 1M / " + bp(ch["10Y"] ? ch["10Y"].y1 : null) + " 1Y"],
+      ["30 年期殖利率", R.dgs30 != null ? R.dgs30.toFixed(2) + "%" : "—",
+        bp(ch["30Y"] ? ch["30Y"].m1 : null) + " 1M / " + bp(ch["30Y"] ? ch["30Y"].y1 : null) + " 1Y"],
+    ];
+    var curve = [
+      ["10Y−2Y 利差", R.spread_bp != null ? (R.spread_bp > 0 ? "+" : "") +
+        R.spread_bp.toFixed(0) + "bp" : "—",
+        R.spread_bp > 0 ? "陡峭化（正斜率）" : R.spread_bp < 0 ? "倒掛" : "平坦"],
+      ["10Y−3M 利差", R.spread3m_bp != null ? (R.spread3m_bp > 0 ? "+" : "") +
+        R.spread3m_bp.toFixed(0) + "bp" : "—", "衰退領先指標"],
+      ["2Y−FFR 利差", R.gap2y_bp != null ? (R.gap2y_bp > 0 ? "+" : "") +
+        R.gap2y_bp.toFixed(0) + "bp" : "—",
+        R.gap2y_bp > 50 ? "短端定價升息／通脹溢價" : R.gap2y_bp > 0 ? "定價少量升息" : "定價降息"],
+      ["10Y 實質利率", R.real10 != null ? R.real10.toFixed(2) + "%" : "—", "DFII10（TIPS 隱含）"],
+      ["BAA−10Y 信用利差", R.baa10y != null ? R.baa10y.toFixed(2) + "%" : "—",
+        "Moody's Baa 企業債利差"],
+      ["CPI 同比", R.cpi != null ? R.cpi.toFixed(1) + "%" : "—",
+        R.cpi != null && R.dgs10 != null
+          ? "10Y 盈虧平衡 ≈ " + (R.dgs10 - R.real10).toFixed(2) + "%" : ""],
+      ["失業率", R.unrate != null ? R.unrate.toFixed(1) + "%" : "—",
+        R.gdp != null ? "GDP 同比 " + R.gdp.toFixed(1) + "%" : ""],
+    ];
+    var html = '<div class="s-grid2">' +
+      heads.map(function (h) { return kv(h[0], h[1], h[2]); }).join("") + "</div>" +
+      '<div class="s-grid2" style="margin-top:6px;">' +
+      curve.map(function (c) { return kv(c[0], c[1], c[2]); }).join("") + "</div>";
+
+    /* 圖：近 2 年 2Y/10Y/30Y 殖利率 */
+    var h = T.hist || {};
+    var lines = [];
+    var svg2 = fedLineSVG(h.dgs2, "#3b89e3");
+    var svg10 = fedLineSVG(h.dgs10, "#e58c2e");
+    var svg30 = fedLineSVG(h.dgs30, "#c2543a");
+    if (svg2 && svg10 && svg30) {
+      lines = '<div class="card" style="margin-top:10px;"><h4 style="margin:0 0 6px;">近 2 年：2Y／10Y／30Y 殖利率（日頻）</h4>' +
+        '<p class="fed-legend" style="margin:0 0 4px;">' +
+        '<span style="color:#3b89e3;">▬ 2Y</span>' +
+        '<span style="color:#e58c2e;margin-left:14px;">▬ 10Y</span>' +
+        '<span style="color:#c2543a;margin-left:14px;">▬ 30Y</span></p>' +
+        svg2 + svg10 + svg30 +
+        '<p class="s-note">熊陡（短端升幅大於長端）或牛平一目了然；數據源 FRED DGS。</p></div>';
+    }
+    var spr = fedLineSVG(h.spread, R.spread_bp > 0 ? "#2e9e6b" : "#c2543a");
+    var sprBox = spr
+      ? '<div class="card" style="margin-top:10px;"><h4 style="margin:0 0 6px;">近 2 年：10Y−2Y 利差</h4>' +
+        spr + '<p class="s-note">利差 > 0 陡峭、< 0 倒掛（市場預期衰退）；零線為正負分界。</p></div>'
+      : "";
+
+    /* 交易台觀點卡片 */
+    var V = T.view || {};
+    var views = [["🟦 短端定價", V.short], ["📐 曲線形態", V.curve],
+      ["🏔 長端實質利率", V.long], ["🧭 策略取向", V.move], ["⚖️ 配置含義", V.alloc]];
+    var vBox = '<div class="s-grid2" style="margin-top:10px;">' +
+      views.map(function (v) {
+        return '<div class="card"><h4 style="margin:0 0 4px;">' + v[0] + '</h4>' +
+          '<p class="s-note" style="margin:0;">' + (v[1] || "—") + "</p></div>";
+      }).join("") + "</div>";
+
+    /* 買賣建議 */
+    var tBox = (T.trades && T.trades.length)
+      ? '<div class="card" style="margin-top:10px;"><h4 style="margin:0 0 6px;">📋 交易台建議（買／賣什麼長短債）</h4><ol style="margin:0 0 4px;padding-left:20px;line-height:1.7;">' +
+        T.trades.map(function (t) { return "<li>" + t + "</li>"; }).join("") +
+        "</ol></div>" : "";
+
+    /* Treasury 產品工具表 */
+    var trow = function (n, d, dv, u) {
+      return "<tr><td>" + n + "</td><td>" + d + "</td><td>" + dv + "</td><td>" + u + "</td></tr>";
+    };
+    var pBox = '<div class="card" style="margin-top:10px;"><h4 style="margin:0 0 6px;">🧰 Treasury 產品工具箱（久期/DV01 為近似值）</h4>' +
+      '<table class="s-table"><thead><tr><th>標的</th><th>到期／久期（約）</th><th>DV01（約）</th><th>用途</th></tr></thead><tbody>' +
+      trow("ZT（2Y 期貨）", "2 年", "$41", "短端 carry 核心工具") +
+      trow("ZF（5Y 期貨）", "5 年", "$77", "中短端曲線腿") +
+      trow("ZN（10Y 期貨）", "10 年", "$80", "久期調整主力") +
+      trow("TN（超長期 10Y）", "10 年+", "$119", "10Y 區間交易") +
+      trow("ZB（30Y 期貨）", "30 年", "$150", "長端分批建倉") +
+      trow("UB（Ultra Bond）", "30 年+", "$228", "超長久期對沖") +
+      trow("Micro 2Y/10Y/30Y", "同上 1/10 規模", "1/10", "小倉位精細調整") +
+      trow("BIL（0-3M T-Bill ETF）", "≈0.1 年", "≈$0.4", "現金管理") +
+      trow("SHY（1-3Y ETF）", "≈1.9 年", "≈$2.3", "短端配置替代") +
+      trow("IEI（3-7Y ETF）", "≈4.5 年", "≈$5.4", "曲線中段") +
+      trow("IEF（7-10Y ETF）", "≈7.3 年", "≈$8.8", "10Y 配置型") +
+      trow("TLT（20Y+ ETF）", "≈16 年", "≈$16", "長端／避險") +
+      trow("EDV（零息長債 ETF）", "≈24 年", "≈$24", "超長久期衛星倉") +
+      trow("TIP（TIPS ETF）", "≈6.7 年（實質）", "≈$8", "通脹保護腿") +
+      "</tbody></table>" +
+      '<p class="s-note">CME 國債期貨為保證金交易、內含槓桿，DV01 會隨價格與殖利率變化；ETF 久期以發行商披露為準。以上為工具列舉，非推薦個別產品。</p></div>';
+
+    host.innerHTML = html + lines + sprBox + vBox + tBox + pBox +
+      (T.ref ? '<p class="s-note" style="margin-top:10px;">📚 ' + esc(T.ref) + "</p>" : "");
   }
 
   /* ---------- 估值儀表板 ---------- */
