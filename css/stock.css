@@ -36,7 +36,7 @@
 .s-verdict.neutral { background: #fff3cd; color: #8a6d00; }
 
 .s-summary { font-size: 15px; line-height: 1.7; margin: 4px 0; }
-.s-biz { font-size: 14px; line-height: 1.8; color: var(--text, #1f2937); }
+.s-biz { font-size: 15px; line-height: 1.8; color: var(--text, #1f2937); }
 
 .s-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 24px; }
 .s-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 24px; }
