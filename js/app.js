@@ -793,6 +793,33 @@
     "消費": "#e08c3a", "材料": "#c2543a", "通訊": "#17b2a0", "能源": "#5a6b8c",
     "指數ETF": "#98a2b3", "其他": "#b0b8c4",
   };
+  function hedgeFundCardHTML(f) {
+    var maxP = 1;
+    f.alloc.forEach(function (a) { if (a.pct > maxP) maxP = a.pct; });
+    var rows = f.alloc.length ? f.alloc.map(function (a) {
+      var w = Math.round(a.pct / maxP * 100);
+      var dlt = a.delta != null ?
+        '<span class="f-delta' + (a.delta.indexOf("↓") !== -1 || a.delta.indexOf("減") !== -1 ? " down" : "") + '">' +
+        esc(a.delta) + "</span>" : "";
+      return '<div class="f-row">' +
+        '<span class="f-cls">' + esc(a.cls) + "</span>" +
+        '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+        (HF_COLORS[a.cls] || "#98a2b3") + '" aria-hidden="true"></div></div>' +
+        '<span class="f-val">' + a.pct + "%</span>" + dlt + "</div>" +
+        (a.sub ? '<div class="f-sub">' + esc(a.sub) + "</div>" : "");
+    }).join("") :
+      '<div class="empty" style="padding:14px 0;">13F 美股多頭規模過小，行業配置不具代表性（見備註）</div>';
+    var tops = f.tops && f.tops.length ?
+      '<div class="fund-note">重倉：' + esc(f.tops.join(" · ")) + "</div>" : "";
+    return '<div class="card fund-card">' +
+      '<div class="fund-head"><span class="fund-rank">' + f.rank + "</span>" +
+      '<div class="fund-title"><h3>' + esc(f.name) + "</h3>" +
+      '<div class="fund-meta">' + esc(f.mgr) + " · " + esc(f.country) + " · " +
+      esc(f.aum) + " · 截至 " + esc(f.asof) + "</div></div></div>" +
+      rows + tops +
+      '<div class="fund-note">' + esc(f.note) + ' · 來源：' + esc(f.source) + "</div></div>";
+  }
+
   function renderHedgeFunds() {
     var host = document.getElementById("hedge-list");
     if (!host || !D.hedgefunds || !D.hedgefunds.length) return;
@@ -803,32 +830,68 @@
           '"></span>' + k + "</span>";
       }).join("");
     }
-    host.innerHTML = D.hedgefunds.map(function (f) {
-      var maxP = 1;
-      f.alloc.forEach(function (a) { if (a.pct > maxP) maxP = a.pct; });
-      var rows = f.alloc.length ? f.alloc.map(function (a) {
-        var w = Math.round(a.pct / maxP * 100);
-        var dlt = a.delta != null ?
-          '<span class="f-delta' + (a.delta.indexOf("↓") !== -1 || a.delta.indexOf("減") !== -1 ? " down" : "") + '">' +
-          esc(a.delta) + "</span>" : "";
-        return '<div class="f-row">' +
-          '<span class="f-cls">' + esc(a.cls) + "</span>" +
-          '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
-          (HF_COLORS[a.cls] || "#98a2b3") + '" aria-hidden="true"></div></div>' +
-          '<span class="f-val">' + a.pct + "%</span>" + dlt + "</div>" +
-          (a.sub ? '<div class="f-sub">' + esc(a.sub) + "</div>" : "");
-      }).join("") :
-        '<div class="empty" style="padding:14px 0;">13F 美股多頭規模過小，行業配置不具代表性（見備註）</div>';
-      var tops = f.tops && f.tops.length ?
-        '<div class="fund-note">重倉：' + esc(f.tops.join(" · ")) + "</div>" : "";
-      return '<div class="card fund-card">' +
-        '<div class="fund-head"><span class="fund-rank">' + f.rank + "</span>" +
-        '<div class="fund-title"><h3>' + esc(f.name) + "</h3>" +
-        '<div class="fund-meta">' + esc(f.mgr) + " · " + esc(f.country) + " · " +
-        esc(f.aum) + " · 截至 " + esc(f.asof) + "</div></div></div>" +
-        rows + tops +
-        '<div class="fund-note">' + esc(f.note) + ' · 來源：' + esc(f.source) + "</div></div>";
-    }).join("");
+    host.innerHTML = D.hedgefunds.map(hedgeFundCardHTML).join("");
+  }
+
+  /* ---------- 13F 頂級基金追蹤頁（模組 6） ---------- */
+  function renderF13F() {
+    if (document.body.getAttribute("data-page") !== "funds") return;
+    renderHedgeFunds();
+    renderF13FCalendar();
+    renderFundHeat();
+  }
+
+  function renderF13FCalendar() {
+    var host = document.getElementById("f13f-cal");
+    var nextEl = document.getElementById("f13f-next");
+    if (!host || !D.f13f) return;
+    var next = null;
+    D.f13f.forEach(function (r) { if (r.status === "next") next = r; });
+    if (nextEl && next) {
+      nextEl.textContent = "下一次申報截止：" + next.deadline + "（" +
+        (next.days_left <= 0 ? "今日截止" : "還有 " + next.days_left + " 天") + "）";
+    }
+    host.innerHTML = '<table class="s-table"><thead><tr>' +
+      "<th>季度</th><th>季末</th><th>申報截止</th><th>狀態</th></tr></thead><tbody>" +
+      D.f13f.map(function (r) {
+        var st = r.status === "past" ? '<span class="s-chip off">已截止</span>'
+          : r.status === "next" ? '<span class="s-chip on">下一次</span>'
+          : '<span class="s-chip off">未來</span>';
+        var d = r.days_left <= 0 ? "—" : (r.days_left + " 天後");
+        return "<tr" + (r.status === "next" ? ' style="background:var(--brand-tint);"' : "") + ">" +
+          "<td>" + esc(r.quarter) + "</td><td>" + esc(r.period_end) + "</td><td>" +
+          esc(r.deadline) + "</td><td>" + st + " " + d + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      '<p class="s-note">SEC 規則：管理超 1 億美元美股資產的機構須於季末後 45 天內申報 13F（慣例截止日如上）。僅美股多頭；空頭、衍生品與非美資產不披露。13D/G 大股東變動則須 10 天內申報。</p>';
+  }
+
+  function renderFundHeat() {
+    var host = document.getElementById("fund-heat");
+    if (!host || !D.fund_holdings || !D.companies) return;
+    var agg = {};
+    (D.companies || []).forEach(function (c) {
+      var ms = D.fund_holdings[c.ticker];
+      if (ms && ms.length) {
+        var funds = {};
+        ms.forEach(function (m) { funds[m.fund] = true; });
+        agg[c.ticker] = { c: c, n: Object.keys(funds).length, funds: Object.keys(funds) };
+      }
+    });
+    var rows = Object.keys(agg).map(function (k) { return agg[k]; })
+      .sort(function (a, b) { return b.n - a.n || (a.c.name < b.c.name ? -1 : 1); });
+    if (!rows.length) {
+      host.innerHTML = "<p>暫無匹配（基金披露文本與本站覆蓋公司無交集）。</p>";
+      return;
+    }
+    host.innerHTML = rows.slice(0, 15).map(function (r) {
+      return '<div class="f-row">' +
+        '<a class="f-cls" href="' + stockLink(r.c) + '">' + esc(r.c.name) +
+        " · " + esc(r.c.ticker) + "</a>" +
+        '<span class="f-sub">' + r.funds.map(function (fn) {
+          return '<span class="s-chip on">' + esc(fn) + "</span>";
+        }).join(" ") + "</span></div>";
+    }).join("") +
+      (rows.length > 15 ? '<p class="s-note">… 另有 ' + (rows.length - 15) + " 家公司在各基金披露中被提及（詳見個股頁「頂級基金持倉」）。</p>" : "");
   }
 
   /* ---------- 組合頁：總渲染 ---------- */
@@ -1494,6 +1557,7 @@
     if (page === "fed") renderFed();
     if (page === "valuation") renderValuation();
     if (page === "events") renderEvents();
+    if (page === "funds") renderF13F();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

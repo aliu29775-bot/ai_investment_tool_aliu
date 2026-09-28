@@ -49,7 +49,8 @@
 .s-chip { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
 .s-chip.up { color: var(--good, #15803d); background: rgba(21, 128, 61, .1); }
 .s-chip.down { color: var(--crit, #b91c1c); background: rgba(185, 28, 28, .1); }
-.s-chip.mid { color: var(--muted, #6b7280); background: var(--chip, #eef1f5); }
+.s-chip.mid, .s-chip.off { color: var(--muted, #6b7280); background: var(--chip, #eef1f5); }
+.s-chip.on { color: var(--brand-ink, #0a5240); background: var(--brand-tint, #e3f0ea); }
 
 .s-prem { font-size: 14px; margin: 10px 0; font-weight: 600; }
 

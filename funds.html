@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13F 頂級基金追蹤 — AIShan+ 投研網站</title>
+<meta name="description" content="13F 頂級基金追蹤：SEC 13F 法定申報日曆、全球前五大對沖基金最新美股多頭配置、跨基金共識持倉榜。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="funds">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html">事件</a>
+      <a href="funds.html" class="on">基金</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">13F 頂級基金追蹤</h1>
+    <span class="freshness" id="f13f-next"></span>
+  </div>
+  <p class="section-desc">追蹤 SEC 13F 披露節奏：法定申報日曆、全球前五大對沖基金最新美股多頭配置，以及跨基金共識持倉榜。持倉數據由站長按各基金最新 13F 公開披露手動維護；反向持倉在每家公司個股頁的「頂級基金持倉」卡片同步顯示。</p>
+
+  <!-- 13F 申報日曆 -->
+  <section class="section">
+    <div class="section-head"><h2>📁 13F 申報日曆</h2></div>
+    <div class="card" id="f13f-cal">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 前五大對沖基金 -->
+  <section class="section">
+    <div class="section-head"><h2>🌍 前五大對沖基金配置動態</h2></div>
+    <p class="section-desc">按淨資產規模選取的全球前五大對沖基金：橋水、千禧年、城堡、Man Group、D.E. Shaw。配置數據取自 SEC 13F 披露（僅美股多頭，不含空頭、衍生品與非美資產），▲▼ 類標籤為較上期變化；同類行業沿用同一顏色。規模為 2026 年公開估算。</p>
+    <div class="legend" id="hedge-legend"></div>
+    <div class="funds-grid" id="hedge-list"></div>
+  </section>
+
+  <!-- 共識持倉榜 -->
+  <section class="section">
+    <div class="section-head"><h2>🔥 共識持倉榜</h2></div>
+    <p class="section-desc">被最多頂級基金披露持有的站內覆蓋公司（按提及基金數排序，最多 15 家）。點擊公司名進入個股分析頁。</p>
+    <div class="card" id="fund-heat">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>📐 方法論</h3>
+      <p class="section-desc" style="margin:6px 0 0;">
+        SEC 規則：管理超過 1 億美元美股資產的機構投資管理人，須於每季季末後 45 天內申報 13F 持倉（慣例截止日為次季次月 14/15 日）。
+        13F 僅披露美股多頭，不含空頭、衍生品與非美資產；13D/G 為大股東變動的快速披露（10 天內）。
+        各基金持倉數據取自 13radar、StockDrifts 等公開匯總，由站長按最新披露手動維護；反向持倉為基金披露文本與本站覆蓋公司的機械匹配（代碼與中文名），不構成任何投資建議。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

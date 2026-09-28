@@ -327,6 +327,16 @@
     bear.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div></div>" +
     "<p class='s-combo'>" + comboLine + "</p>";
 
+  /* ---------- 頂級基金持倉（13F 反向匹配） ---------- */
+  var fmBody = "";
+  if ((S.fund_mentions || []).length) {
+    fmBody = '<table class="s-table"><thead><tr><th>基金</th><th>披露內容</th></tr></thead><tbody>' +
+      S.fund_mentions.map(function (m) {
+        return "<tr><td>" + esc(m.fund) + "</td><td>" + esc(m.detail) + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      '<p class="s-note">來源：各基金最新 SEC 13F 披露（僅美股多頭口徑）的機械匹配，僅供參考。</p>';
+  }
+
   /* ---------- 研報 ---------- */
   var repBody = "";
   if ((S.reports || []).length) {
@@ -347,6 +357,7 @@
     card("💰 估值建模", valBody) +
     card("📈 技術面與動量", taBody) +
     card("🏦 機構持倉與分析師", instBody + '<h3 class="s-h3">🎯 分析師</h3>' + anBody) +
+    (fmBody ? card("🏰 頂級基金持倉", fmBody) : "") +
     card("🎯 催化劑與風險", catBody) +
     card("🤖 AI 投資論點", aiBody) +
     card("📄 研究報告", repBody);

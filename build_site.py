@@ -907,6 +907,70 @@ def compute_events(fred, companies, fund_data):
     return events
 
 
+_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9.\-]*")
+
+
+def build_fund_holdings(hedge_funds, companies):
+    """13F 反向持倉：從各對沖基金披露文本（tops/alloc sub/delta，無 tops 時加 note）中
+    提取代碼與公司名，反查「哪些頂級基金持有這家公司」。只以站內覆蓋公司的代碼/名稱匹配，
+    ETF（SPY/IVV 等）與未覆蓋個股自然排除，不臆造任何持倉。"""
+    tickers, names = {}, []
+    for c in companies:
+        t = (c.get("ticker") or "").strip().upper()
+        if t:
+            tickers[t] = c
+        n = (c.get("name") or "").strip()
+        if len(n) >= 2:
+            names.append((n, c))
+    hold = defaultdict(list)
+    for f in hedge_funds:
+        texts = []
+        for a in f.get("alloc") or []:
+            cls = a.get("cls") or ""
+            for k in ("sub", "delta"):
+                if a.get(k):
+                    texts.append((cls, str(a[k])))
+        for t in f.get("tops") or []:
+            texts.append(("重倉", str(t)))
+        if not f.get("tops"):
+            texts.append(("備註", str(f.get("note") or "")))
+        for cls, txt in texts:
+            matched = set()
+            for tok in _TOKEN_RE.findall(txt):
+                if tok.upper() in tickers:
+                    matched.add(tickers[tok.upper()]["ticker"])
+            for n, c in names:
+                if n in txt:
+                    matched.add(c.get("ticker") or "")
+            for tk in matched:
+                if tk:
+                    hold[tk].append({"fund": f["name"], "detail": txt[:140], "cls": cls})
+    return dict(hold)
+
+
+def build_13f_calendar():
+    """SEC 13F 法定申報日曆：季末後 45 天內（慣例截止日為次季次月 14/15 日）。"""
+    today = datetime.now().date()
+    rows = []
+    qs = ([(2025, 4)] + [(y, q) for y in (2026, 2027) for q in (1, 2, 3, 4)])[:7]
+    for y, q in qs:
+        pe = ("03-31", "06-30", "09-30", "12-31")[q - 1]
+        d_y = y + (1 if q == 4 else 0)
+        d_md = ("02-14" if q == 4 else "05-15" if q == 1 else "08-14" if q == 2 else "11-14")
+        dead = datetime.strptime("%d-%s" % (d_y, d_md), "%Y-%m-%d").date()
+        rows.append({"quarter": "%d Q%d" % (y, q), "period_end": "%d-%s" % (y, pe),
+                     "deadline": dead.isoformat(), "days_left": (dead - today).days})
+    upcoming = [r for r in rows if r["days_left"] >= 0]
+    for r in rows:
+        if r["days_left"] < 0:
+            r["status"] = "past"
+        elif upcoming and r is upcoming[0]:
+            r["status"] = "next"
+        else:
+            r["status"] = "future"
+    return rows
+
+
 def compute_portfolio(asset_perf, targets):
     """依建議配置權重，用日線序列計算組合的實時收益（買入持有、每日以目標權重再平衡），對比 SPY 基準。"""
     sym_map = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
@@ -1409,10 +1473,6 @@ def main():
     render_reports(repo, reports + extra)
     print(f"   完成，輸出至 {os.path.relpath(os.path.join(SITE_DIR, 'reports'))}")
 
-    # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型）
-    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names)
-    print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁）")
-
     # 全球前五大基金資產配置動態（公開披露數據，按各基金最新年報／政策區間，站長手動維護）
     # delta 為較上一披露期的百分點變化（數字）或文字說明；min/max 為政策區間（ADIA）
     FUNDS = [
@@ -1577,6 +1637,15 @@ def main():
         },
     ]
 
+    # 13F 反向持倉（公司 → 持有該股的頂級基金）與法定申報日曆
+    fund_holdings = build_fund_holdings(HEDGE_FUNDS, companies)
+    f13f = build_13f_calendar()
+
+    # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型；帶反向持倉引用）
+    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdings)
+    print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁，"
+          f"頂級基金持倉引用 {sum(len(v) for v in fund_holdings.values())} 條）")
+
     # 網站資料（報告、公司、行情、配置、基金與對沖基金公開披露）
     data = {
         "stats": {
@@ -1588,6 +1657,9 @@ def main():
         "funds": FUNDS,
         # 前五大對沖基金配置動態（SEC 13F 美股多頭口徑，站長手動維護）
         "hedgefunds": HEDGE_FUNDS,
+        # 13F 反向持倉映射與法定申報日曆（模組 6）
+        "fund_holdings": fund_holdings,
+        "f13f": f13f,
         "companies": companies,
         "topics": topics,
         "latest_reports": [
