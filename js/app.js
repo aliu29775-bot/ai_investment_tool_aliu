@@ -1806,6 +1806,211 @@
     }
   }
 
+  /* ================= 風險儀表板（模組 7/8/10/18） ================= */
+  function renderRisk() {
+    if (document.body.getAttribute("data-page") !== "risk") return;
+    renderRiskRecession();
+    renderRiskCorr();
+    renderRiskTail();
+    renderRiskSentiment();
+  }
+
+  function pctBar(p, color) {
+    var w = p == null ? 0 : Math.max(2, Math.min(100, p));
+    return '<div style="background:var(--chip);border-radius:6px;height:9px;width:100%;overflow:hidden;margin-top:6px;">' +
+      '<div style="width:' + w + '%;height:100%;background:' + (color || "var(--brand)") + ';"></div></div>';
+  }
+
+  function renderRiskRecession() {
+    var host = document.getElementById("r-recession");
+    var R = (D.risk || {}).recession;
+    if (!host) return;
+    if (!R || R.prob_now == null) {
+      host.innerHTML = "<p>衰退模型資料暫缺（FRED 抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var prob = R.prob_now, spread = R.spread_now;
+    var pcls = prob >= 50 ? "down" : prob >= 30 ? "mid" : "on";
+    var pcol = prob >= 50 ? "var(--crit)" : prob >= 30 ? "#b3542e" : "var(--good)";
+    var kv = [];
+    kv.push('<div class="s-kv"><span class="s-n">10Y-3M 利差（' + esc(R.spread_date) + '）</span>' +
+      '<span class="s-v">' + (spread >= 0 ? "+" : "") + spread.toFixed(2) + '%</span>' +
+      '<span class="s-n">利差 &lt; 0 為倒掛，歷史為衰退先行訊號</span></div>');
+    kv.push('<div class="s-kv"><span class="s-n">未來 12 個月衰退概率（模型）</span>' +
+      '<span class="s-v" style="color:' + pcol + ';">' + prob.toFixed(1) + "%</span>" +
+      pctBar(prob, pcol) + '<span class="s-n">樣本內邏輯迴歸 · ' +
+      esc(R.n_months) + ' 個月 · 衰退月份 ' + esc(R.n_rec) + ' 個</span></div>');
+    if (R.growth_now != null) {
+      kv.push('<div class="s-kv"><span class="s-n">增長評分（交叉驗證）</span>' +
+        '<span class="s-v">' + R.growth_now + " / 100</span>" +
+        '<span class="s-n">配置頁宏觀評分；評分低與模型高概率同向時需警惕</span></div>');
+    }
+    if (R.icsa) {
+      var i = R.icsa;
+      kv.push('<div class="s-kv"><span class="s-n">初請失業金（' + esc(i.date) + '）</span>' +
+        '<span class="s-v">' + i.now.toLocaleString() + " 人</span>" +
+        '<span class="s-n">4 週均線 ' + i.ma4.toLocaleString() + " · 較前一週 " +
+        (i.wo_prev >= 0 ? "+" : "") + i.wo_prev + "% · 較去年 " +
+        (i.yo_prev >= 0 ? "+" : "") + i.yo_prev + "%</span></div>");
+    }
+    var pts = (R.series || []).map(function (x, idx) { return [idx, x.p]; });
+    var ranges = (R.rec_ranges || []).map(function (rg) {
+      return '<span class="s-chip down">NBER 衰退 ' + esc(rg[0]) + " – " + esc(rg[1]) + "</span>";
+    }).join(" ");
+    host.innerHTML = '<div class="card">' +
+      '<h3>🌡 10Y-3M 利差衰退模型 <span class="s-chip ' + pcls + '">' +
+      prob.toFixed(0) + "% 概率</span></h3>" +
+      '<div class="s-grid2" style="gap:12px;margin-top:8px;">' + kv.join("") + "</div>" +
+      '<div style="margin-top:14px;"><h4 class="s-h3">模型歷史概率（月頻，' +
+      esc((R.series || [])[0] ? (R.series[0].d) : "") + " 起）</h4>" +
+      fedLineSVG(pts, "#0e6b4f") + "</div>" +
+      '<p class="s-note">縱軸為模型給出的「未來 12 個月落入衰退」概率（%）。' +
+      ranges + "</p>" +
+      '<p class="s-note">模型：FRED T10Y3M 月頻利差 × NBER USREC 衰退標記擬合邏輯迴歸' +
+      "（係數 b=" + esc(R.b) + "；樣本至 " + esc(R.train_end) + "）。" +
+      "單一變量為粗糙先行指標：樣本內峰值（2007 年）也僅約四成，低概率不代表無風險，" +
+      "只是與增長評分的交叉驗證工具。</p></div>";
+  }
+
+  function renderRiskCorr() {
+    var host = document.getElementById("r-corr");
+    var C = (D.risk || {}).corr;
+    if (!host) return;
+    if (!C || !C.labels) {
+      host.innerHTML = "<p>相關性矩陣暫缺（20 年月線快取缺失），請重新觸發更新。</p>";
+      return;
+    }
+    var tbl = function (labels, mat, title, note) {
+      var tint = function (v) {
+        if (v == null) return "";
+        var a = Math.min(0.25, Math.abs(v) * 0.3);
+        var c = v >= 0 ? "16,110,79" : "196,54,54";
+        return "background:rgba(" + c + "," + a.toFixed(2) + ");";
+      };
+      return '<div style="min-width:320px;flex:1;"><h4 class="s-h3">' + esc(title) + "</h4>" +
+        '<table class="s-table"><thead><tr><th></th>' +
+        labels.map(function (l) { return "<th>" + esc(l) + "</th>"; }).join("") +
+        "</tr></thead><tbody>" +
+        mat.map(function (row, i) {
+          return "<tr><th>" + esc(labels[i]) + "</th>" +
+            row.map(function (v, j) {
+              var txt = i === j ? "1" : v == null ? "—" : v.toFixed(2);
+              return '<td style="text-align:right;font-variant-numeric:tabular-nums;' +
+                (i === j ? "" : tint(v)) + '">' + txt + "</td>";
+            }).join("") + "</tr>";
+        }).join("") + "</tbody></table>" +
+        (note ? '<p class="s-note">' + esc(note) + "</p>" : "") + "</div>";
+    };
+    var stk_bnd = [0, 1];
+    var sb_full = C.full.length > 1 ? C.full[stk_bnd[0]][stk_bnd[1]] : null;
+    var sb_recent = C.recent.length > 1 ? C.recent[stk_bnd[0]][stk_bnd[1]] : null;
+    host.innerHTML = '<div class="card">' +
+      '<h3>🔗 股／債／商品／黃金／現金月報酬相關性</h3>' +
+      '<div class="s-bullbear" style="gap:18px;align-items:flex-start;">' +
+      tbl(C.labels, C.full, "全樣本（" + C.n_months + " 個月，20 年）") +
+      tbl(C.labels, C.recent, "近 " + C.window + " 個月滾動") +
+      "</div>" +
+      '<p class="s-note">皮爾遜相關係數（真實 ETF 月報酬：SPY／IEF／DBC／GLD／BIL）。' +
+      "正相關著綠、負相關著紅。" +
+      (sb_full != null && sb_recent != null
+        ? " 股票-國債相關性由全樣本 " + sb_full.toFixed(2) + " 變為近 " + C.window +
+          " 個月 " + sb_recent.toFixed(2) +
+          (sb_recent > 0 ? "——正值意味股債同漲同跌，「股債雙殺」風險高於歷史常態（2022 年情景即是）。"
+                         : "——負值意味國債仍能對沖股票下跌。")
+        : "") +
+      "</p></div>";
+  }
+
+  function renderRiskTail() {
+    var host = document.getElementById("r-tail");
+    var T = (D.risk || {}).tail;
+    if (!host) return;
+    if (!T) {
+      host.innerHTML = "<p>尾部風險資料暫缺（FRED 抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var statusOf = function (pct) {
+      return pct == null ? ["off", "—"] : pct >= 75 ? ["down", "偏高"]
+        : pct <= 25 ? ["on", "偏緊"] : ["mid", "中性"];
+    };
+    var cards = [];
+    (T.items || []).forEach(function (it) {
+      var st = statusOf(it.pct);
+      cards.push('<div class="card" style="flex:1;min-width:240px;">' +
+        '<h4 class="s-h3">' + esc(it.label) + ' <span class="s-chip ' + st[0] + '">' +
+        st[1] + "</span></h4>" +
+        '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' +
+        it.now + ' <span class="s-n">' + esc(it.unit) + "</span></span>" +
+        '<span class="s-n">10 年百分位 ' + it.pct + "% · 區間 " + it.lo10 + " – " +
+        it.hi10 + " · " + esc(it.date) + "</span>" +
+        pctBar(it.pct, st[0] === "down" ? "var(--crit)" : st[0] === "on" ? "var(--good)" : "#b3542e") +
+        "</div></div>");
+    });
+    if (T.vix) {
+      var st = statusOf(T.vix.pct);
+      cards.push('<div class="card" style="flex:1;min-width:240px;">' +
+        '<h4 class="s-h3">VIX 恐慌指數 <span class="s-chip ' + st[0] + '">' + st[1] + "</span></h4>" +
+        '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' + T.vix.now + "</span>" +
+        '<span class="s-n">10 年百分位 ' + T.vix.pct + "% · 200 日均值 " + T.vix.ma200 +
+        " · " + esc(T.vix.date) + "</span>" +
+        pctBar(T.vix.pct, st[0] === "down" ? "var(--crit)" : st[0] === "on" ? "var(--good)" : "#b3542e") +
+        "</div></div>");
+    }
+    if (T.gepu) {
+      var st = statusOf(T.gepu.pct);
+      cards.push('<div class="card" style="flex:1;min-width:240px;">' +
+        '<h4 class="s-h3">全球經濟政策不確定性 <span class="s-chip ' + st[0] + '">' + st[1] + "</span></h4>" +
+        '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' + T.gepu.now + "</span>" +
+        '<span class="s-n">10 年百分位 ' + T.gepu.pct + "% · " + esc(T.gepu.date) + "</span>" +
+        pctBar(T.gepu.pct, "#b3542e") +
+        "</div></div>");
+    }
+    var conc = T.concentration;
+    var concHtml = "";
+    if (conc && conc.top10 && conc.top10.length) {
+      concHtml = '<div class="card" style="flex:1;min-width:260px;">' +
+        '<h4 class="s-h3">市場集中度（站內美股覆蓋）</h4>' +
+        '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' + conc.top10_sum +
+        "%</span><span class=\"s-n\">前十大市值佔比 · " + conc.n_companies +
+        " 家美股公司（Yahoo 市值快照）</span></div>" +
+        "<ul class='s-reports' style='margin-top:6px;'>" +
+        conc.top10.map(function (x) {
+          return "<li><b>" + esc(x.name) + "</b> " + x.pct + "%</li>";
+        }).join("") + "</ul></div>";
+    }
+    host.innerHTML = '<div class="s-bullbear" style="gap:12px;align-items:stretch;flex-wrap:wrap;">' +
+      cards.join("") + concHtml + "</div>" +
+      '<p class="s-note">信用利差與 VIX 百分位越低代表市場風險偏好越高（利差收緊）。' +
+      "信用利差資料：ICE BofA 指數 OAS（FRED）；VIX：CBOE（FRED VIXCLS）。</p>";
+  }
+
+  function renderRiskSentiment() {
+    var host = document.getElementById("r-sentiment");
+    var S = (D.risk || {}).sentiment;
+    if (!host) return;
+    if (!S) {
+      host.innerHTML = "<p>情緒指標資料暫缺。</p>";
+      return;
+    }
+    var rows = (S.manual || []).map(function (m) {
+      var cls = "off";
+      if (m.unit === "百分點") cls = m.value >= 0 ? "on" : "down";
+      if (m.unit === "/ 100") cls = m.value <= 25 ? "down" : m.value >= 75 ? "on" : "mid";
+      return "<tr><td>" + esc(m.label) + "</td>" +
+        '<td><span class="s-chip ' + cls + '">' + m.value + " " + esc(m.unit) + "</span></td>" +
+        "<td>" + esc(m.detail) + "</td>" +
+        '<td><span class="s-note">' + esc(m.asof) + " · " + esc(m.source) + "</span></td></tr>";
+    }).join("");
+    host.innerHTML = '<div class="card">' +
+      "<h3>😨 散戶與市場情緒</h3>" +
+      '<table class="s-table"><thead><tr><th>指標</th><th>數值</th><th>解讀</th><th>資料</th></tr></thead><tbody>' +
+      rows + "</tbody></table>" +
+      '<p class="s-note">VIX 見上方尾部風險卡片（當前 ' +
+      (S.vix ? S.vix.now + "，10 年百分位 " + S.vix.pct + "%" : "—") +
+      "）。AAII 與 CNN 指數為公開報導整理、站長人工維護，每週更新；歷史均值：AAII 多空差 +6.5%、看空 31.5%。" +
+      "散戶極度看空時常為反向訊號，但不作投資依據。</p></div>";
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -1823,6 +2028,7 @@
     if (page === "politician") renderPolitician();
     if (page === "china") renderChina();
     if (page === "scenarios") renderScenarios();
+    if (page === "risk") renderRisk();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

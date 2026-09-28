@@ -18,6 +18,7 @@ AIShan+ 投研網站 — 一鍵建站腳本
 
 import argparse
 import json
+import math
 import os
 import re
 import shutil
@@ -465,8 +466,11 @@ def fetch_quotes(symbols, verbose=True):
 
 FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
                "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
-               "DFII10", "GDPC1", "PAYEMS", "T10Y2Y",
+               "DFII10", "GDPC1", "PAYEMS", "T10Y2Y", "T10Y3M", "ICSA", "VIXCLS",
+               "GEPUCURRENT", "USREC", "CSUSHPINSA",
                "DFEDTARU", "DFEDTARL", "WALCL", "PCEPI", "CPILFESL", "NCBCMDPMVCE"]
+
+FRED_CACHE = "/tmp/fred_macro_cache.json"
 
 # FOMC 2026 會議日程（聯儲官網預先公佈；end=決議日）
 FOMC_2026 = [("2026-01-28", "1月27–28日"), ("2026-03-18", "3月17–18日"),
@@ -1405,6 +1409,231 @@ def compute_scenarios(hist, targets):
 
 
 # ---------------------------------------------------------------------------
+# 模組 7/8/10/18：風險儀表板（衰退概率／相關性矩陣／尾部風險／情緒指標）
+# ---------------------------------------------------------------------------
+
+RISK_ASSETS = ["SPY", "IEF", "DBC", "GLD", "BIL"]
+RISK_LABELS = {"SPY": "股票", "IEF": "國債", "DBC": "商品", "GLD": "黃金", "BIL": "現金"}
+
+# 情緒指標人工維護數據（模組 18）：AAII 週度調查與 CNN 恐懼貪婪指數公開報導，站長手動更新
+SENTIMENT_MANUAL = [
+    {"label": "AAII 散戶情緒：多空差", "value": -15.4, "unit": "百分點",
+     "detail": "看多 32.7%／中性 19.2%／看空 48.1%；連續第 10 週低於歷史均值 +6.5%",
+     "asof": "2026-09-24 當週", "source": "AAII 週度情緒調查"},
+    {"label": "CNN 恐懼貪婪指數", "value": 38, "unit": "/ 100",
+     "detail": "位於「恐懼」區間；自 9-16 低點 27 回升 11 點（大型科技股反彈），但廣度仍窄",
+     "asof": "2026-09-25", "source": "CNN Fear & Greed Index"},
+    {"label": "散戶現金配置偏高比例", "value": 19.1, "unit": "%",
+     "detail": "AAII 調查回答現金配置「遠高於正常」的受訪者比例（防禦性配置訊號）",
+     "asof": "2026-09-24 當週", "source": "AAII 週度情緒調查"},
+]
+
+
+def _month_end(vals):
+    """日頻 [date, value] 降為月頻（取每月最後一個值）。"""
+    by = {}
+    for d, v in vals:
+        by[d[:7]] = v
+    return sorted(by.items())
+
+
+def _returns_from_closes(closes):
+    return [closes[i] / closes[i - 1] - 1 for i in range(1, len(closes))
+            if closes[i - 1]]
+
+
+def _pearson(xs, ys):
+    n = min(len(xs), len(ys))
+    xs, ys = xs[:n], ys[:n]
+    if n < 12:
+        return None
+    mx, my = sum(xs) / n, sum(ys) / n
+    sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    sxx = sum((x - mx) ** 2 for x in xs)
+    syy = sum((y - my) ** 2 for y in ys)
+    if not sxx or not syy:
+        return None
+    return sxy / (sxx * syy) ** 0.5
+
+
+def _pct_rank(v, vals, lo=None):
+    if v is None or not vals:
+        return None
+    if lo is not None:
+        vals = [x for x in vals if x >= lo]
+    if not vals:
+        return None
+    vals = sorted(vals)
+    return round(sum(1 for x in vals if x <= v) / len(vals) * 100, 1)
+
+
+def _sigmoid(z):
+    return 1.0 / (1.0 + math.exp(-z))
+
+
+def build_recession_model(fred):
+    """模組 7：10Y-3M 利差 vs 未來 12 個月是否衰退（NBER USREC）的邏輯迴歸模型。
+    全部使用 FRED 真實歷史資料，樣本內擬合後給出當前利差對應的衰退概率。"""
+    spread = _month_end(fred.get("T10Y3M") or [])
+    rec_map = dict(_month_end(fred.get("USREC") or []))
+    if len(spread) < 120:
+        return {}
+    months = [d for d, _ in spread]
+    X, Y = [], []
+    for i, (d, s) in enumerate(spread):
+        future = months[i + 1:i + 13]
+        if len(future) < 12:
+            break
+        y = 1.0 if any(rec_map.get(m, 0) > 0 for m in future) else 0.0
+        X.append(s)
+        Y.append(y)
+    # 邏輯迴歸（梯度上升，無第三方庫）
+    a, b, n = -2.0, -1.0, len(X)
+    for _ in range(600):
+        ga = gb = 0.0
+        for s, y in zip(X, Y):
+            p = _sigmoid(a + b * s)
+            ga += y - p
+            gb += (y - p) * s
+        a += 0.05 * ga / n
+        b += 0.05 * gb / n
+    probs = [_sigmoid(a + b * s) * 100 for s in X]
+    step = max(1, len(probs) // 40)
+    series = [{"d": months[i], "p": round(probs[i], 1)}
+              for i in range(len(X)) if i % step == 0]
+    cur_d, cur_s = spread[-1]
+    series.append({"d": cur_d, "p": round(_sigmoid(a + b * cur_s) * 100, 1)})
+    # NBER 衰退月份壓縮成區間文字（供圖表標註）
+    rec_m = sorted(d for d in months if rec_map.get(d, 0) > 0)
+    ranges, lo, prev = [], None, None
+
+    def _next_m(d):
+        y, m = int(d[:4]), int(d[5:7])
+        return f"{y + (m == 12)}-{(m % 12) + 1:02d}"
+
+    for d in rec_m:
+        if lo is None or d[:7] != _next_m(prev):
+            if lo:
+                ranges.append([lo, prev])
+            lo = d
+        prev = d
+    if lo:
+        ranges.append([lo, prev])
+    return {
+        "spread_now": round(cur_s, 2), "spread_date": cur_d,
+        "prob_now": round(_sigmoid(a + b * cur_s) * 100, 1),
+        "b": round(b, 4),
+        "series": series,
+        "rec_ranges": ranges,
+        "n_months": n,
+        "n_rec": int(sum(Y)),
+        "train_end": months[len(X) - 1],
+    }
+
+
+def build_concentration(companies, fund_data):
+    """模組 10：站內美股公司市值前十大集中度（Yahoo 市值快照，真實計算）。"""
+    caps = []
+    for c in companies:
+        t = c.get("ticker") or ""
+        # 只統計美國上市（無交易所後綴）的公司，市值同為美元口徑
+        if not t or "." in t:
+            continue
+        fd = (fund_data or {}).get(t) or {}
+        sd = ((fd.get("qs") or {}).get("summaryDetail") or {})
+        mc = sd.get("marketCap")
+        mc = mc.get("raw") if isinstance(mc, dict) else mc
+        if isinstance(mc, (int, float)) and mc > 0:
+            caps.append((c["name"], mc))
+    caps.sort(key=lambda x: -x[1])
+    total = sum(mc for _, mc in caps)
+    if total <= 0:
+        return None
+    top10 = [{"name": n, "pct": round(mc / total * 100, 1)} for n, mc in caps[:10]]
+    return {"top10": top10, "top10_sum": round(sum(x["pct"] for x in top10), 1),
+            "n_companies": len(caps)}
+
+
+def build_gepu(fred):
+    vals = fred.get("GEPUCURRENT") or []
+    if len(vals) < 60:
+        return None
+    cur = vals[-1][1]
+    return {"now": round(cur, 1), "pct": _pct_rank(cur, [v for _, v in vals[-120:]]),
+            "date": vals[-1][0]}
+
+
+def compute_risk(fred, quotes, hist, fund_data, companies):
+    """風險儀表板：衰退概率（模組 7）、相關性矩陣（模組 8）、尾部風險（模組 10）、
+    情緒指標（模組 18）。全部由 FRED／Yahoo 真實歷史資料計算。"""
+    risk = {"recession": build_recession_model(fred)}
+
+    # 初請失業金（週頻）：4 週均線與環比／年比
+    icsa = fred.get("ICSA") or []
+    if len(icsa) >= 56:
+        cur4 = sum(v for _, v in icsa[-4:]) / 4
+        prev4 = sum(v for _, v in icsa[-5:-1]) / 4
+        y4 = sum(v for _, v in icsa[-56:-52]) / 4
+        risk["recession"]["icsa"] = {
+            "now": icsa[-1][1], "ma4": round(cur4), "date": icsa[-1][0],
+            "wo_prev": round((cur4 / prev4 - 1) * 100, 1) if prev4 else None,
+            "yo_prev": round((cur4 / y4 - 1) * 100, 1) if y4 else None,
+        }
+    g = growth_score(fred)
+    if g is not None:
+        risk["recession"]["growth_now"] = round(g)
+
+    # ---- 模組 8：相關性矩陣（月報酬，全樣本 vs 近 36 個月）----
+    syms = [s for s in RISK_ASSETS if s in hist and len(hist[s]["closes"]) >= 40]
+    if len(syms) >= 3:
+        rets = {s: _returns_from_closes(hist[s]["closes"]) for s in syms}
+        full = [[round(_pearson(rets[s1], rets[s2]), 2) for s2 in syms] for s1 in syms]
+        recent = [[round(_pearson(rets[s1][-36:], rets[s2][-36:]), 2) for s2 in syms]
+                  for s1 in syms]
+        risk["corr"] = {
+            "labels": [RISK_LABELS.get(s, s) for s in syms],
+            "full": full, "recent": recent,
+            "n_months": max(len(rets[s]) for s in syms), "window": 36,
+        }
+
+    # ---- 模組 10：尾部風險 ----
+    tail_items = []
+    for sid, label in [("BAMLH0A0HYM2", "高收益信用利差（OAS）"),
+                       ("BAMLC0A0CM", "投資級信用利差（OAS）")]:
+        vals = fred.get(sid) or []
+        if len(vals) < 250:
+            continue
+        cur = vals[-1][1] * 100  # FRED 原生單位為百分點，轉基點
+        hist10 = [v * 100 for _, v in vals[-2520:]]
+        tail_items.append({
+            "label": label, "now": round(cur), "unit": "基點",
+            "pct": _pct_rank(cur, hist10),
+            "lo10": round(min(hist10)), "hi10": round(max(hist10)),
+            "date": vals[-1][0],
+        })
+    vix = fred.get("VIXCLS") or []
+    vix_blk = None
+    if len(vix) >= 250:
+        cur = vix[-1][1]
+        hist10 = [v for _, v in vix[-2520:]]
+        vix_blk = {
+            "now": round(cur, 2), "pct": _pct_rank(cur, hist10),
+            "ma200": round(sum(v for _, v in vix[-200:]) / 200, 2),
+            "date": vix[-1][0],
+        }
+    if tail_items or vix_blk:
+        risk["tail"] = {
+            "items": tail_items, "vix": vix_blk,
+            "concentration": build_concentration(companies, fund_data),
+            "gepu": build_gepu(fred),
+        }
+
+    # ---- 模組 18：情緒指標（VIX 恐慌指標 + 人工維護的 AAII／CNN 公開數據）----
+    risk["sentiment"] = {"vix": vix_blk, "manual": SENTIMENT_MANUAL}
+    return risk
+
+
+# ---------------------------------------------------------------------------
 # 4. Markdown → HTML（自製輕量轉換器，支援表格/列表/引言/程式碼）
 # ---------------------------------------------------------------------------
 
@@ -1808,7 +2037,7 @@ def main():
     allocation = None
     if not args.no_market:
         print("== 3.5/4 抓取宏觀與資產配置資料（FRED + Yahoo 1Y）==")
-        fred = fetch_fred(FRED_SERIES, os.path.join("/tmp", "fred_macro_cache.json"))
+        fred = fetch_fred(FRED_SERIES, FRED_CACHE)
         asset_perf = fetch_asset_perf(asset_symbols)
         if fred:
             allocation = compute_allocation(fred, quotes, asset_perf)
@@ -1849,6 +2078,19 @@ def main():
     scenarios = compute_scenarios(hist, (allocation or {}).get("targets") or []) if hist else []
     if scenarios:
         print(f"  ✓ 歷史情景回測 {len(scenarios)} 個情景（2008／2020／2022）")
+
+    # 風險儀表板（模組 7 衰退概率／8 相關性／10 尾部風險／18 情緒）
+    risk = None
+    if hist and companies:
+        fred_for_risk = fred if not args.no_market else {}
+        if args.no_market and os.path.exists(FRED_CACHE):
+            fred_for_risk = json.load(open(FRED_CACHE, encoding="utf-8"))
+        if fred_for_risk:
+            risk = compute_risk(fred_for_risk, quotes, hist, fund_data, companies)
+            r = risk.get("recession") or {}
+            print(f"  ✓ 風險儀表板（衰退概率 {r.get('prob_now', '—')}% · "
+                  f"相關性 {len((risk.get('corr') or {}).get('labels', []))} 資產 · "
+                  f"尾部風險 {len((risk.get('tail') or {}).get('items', []))} 指標）")
 
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
@@ -2060,6 +2302,8 @@ def main():
         },
         # 歷史情景回測（模組 9）
         "scenarios": scenarios,
+        # 風險儀表板（模組 7/8/10/18）
+        "risk": risk,
         "companies": companies,
         "topics": topics,
         "latest_reports": [

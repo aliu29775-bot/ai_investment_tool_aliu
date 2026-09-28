@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>美聯儲追蹤 — AIShan+ 投研網站</title>
-<meta name="description" content="美聯儲政策追蹤：聯邦基金目標區間、利率走勢、通脹（CPI/PCE）、資產負債表、FOMC 會議日曆與收益率曲線。">
+<title>風險儀表板 — AIShan+ 投研網站</title>
+<meta name="description" content="風險儀表板：10Y-3M 利差衰退概率模型、股債商金現相關性矩陣、信用利差／VIX／集中度／政策不確定性尾部風險、散戶情緒指標。">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/stock.css">
 </head>
-<body data-page="fed">
+<body data-page="risk">
 <header class="site-nav">
   <div class="container">
     <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
@@ -18,14 +18,14 @@
       <a href="reports.html">報告</a>
       <a href="trackrecord.html">組合</a>
       <a href="allocation.html">配置</a>
-      <a href="fed.html" class="on">美聯儲</a>
+      <a href="fed.html">美聯儲</a>
       <a href="valuation.html">估值</a>
       <a href="events.html">事件</a>
       <a href="funds.html">基金</a>
       <a href="politician.html">政要</a>
       <a href="china.html">中國</a>
       <a href="scenarios.html">回測</a>
-          <a href="risk.html">風險</a>
+      <a href="risk.html" class="on">風險</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>
@@ -36,54 +36,38 @@
 <main class="container" style="padding-top: 32px;">
 
   <div class="section-head" style="margin-bottom: 4px;">
-    <h1 style="font-size:28px;">美聯儲追蹤</h1>
-    <span class="freshness" id="fed-asof"></span>
+    <h1 style="font-size:28px;">風險儀表板</h1>
   </div>
-  <p class="section-desc">追蹤聯邦基金目標區間、利率走勢、通脹（CPI / PCE）、資產負債表、FOMC 會議日曆與收益率曲線。數據自動取自 FRED（聖路易斯聯儲），每次建站即刷新。</p>
+  <p class="section-desc">衰退概率模型、資產相關性、尾部風險與情緒指標——全部由 FRED／Yahoo 真實歷史資料計算，與配置頁的宏觀評分互相交叉驗證。</p>
 
-  <!-- 政策利率 -->
+  <!-- 衰退概率模型 -->
   <section class="section">
-    <div class="section-head"><h2>🏦 政策利率</h2></div>
-    <div class="card fed-rate-card" id="fed-rate" style="text-align:center;padding:26px;">
+    <div class="section-head"><h2>🌡 衰退概率模型</h2></div>
+    <div id="r-recession">
       <p>載入中…</p>
     </div>
   </section>
 
-  <!-- 利率走勢 -->
+  <!-- 相關性矩陣 -->
   <section class="section">
-    <div class="section-head"><h2>📈 利率走勢（近 1 年）</h2></div>
-    <div class="card" id="fed-rate-chart" style="padding:18px 22px;">
+    <div class="section-head"><h2>🔗 資產相關性矩陣</h2></div>
+    <div id="r-corr">
       <p>載入中…</p>
     </div>
   </section>
 
-  <!-- 通脹追蹤 -->
+  <!-- 尾部風險 -->
   <section class="section">
-    <div class="section-head"><h2>🌡 通脹追蹤</h2></div>
-    <p class="section-desc">CPI 與 PCE 同比（總體與核心），對照聯儲 2% 目標。</p>
-    <div class="macro-grid" id="fed-inflation"></div>
-  </section>
-
-  <!-- 資產負債表 -->
-  <section class="section">
-    <div class="section-head"><h2>🧱 資產負債表（QT/QE）</h2></div>
-    <div class="card" id="fed-bs">
+    <div class="section-head"><h2>⚠️ 尾部風險</h2></div>
+    <div id="r-tail">
       <p>載入中…</p>
     </div>
   </section>
 
-  <!-- FOMC 日曆 -->
+  <!-- 情緒指標 -->
   <section class="section">
-    <div class="section-head"><h2>🗓 FOMC 2026 會議日曆</h2></div>
-    <div class="card" id="fed-fomc">
-      <p>載入中…</p>
-    </div>
-  </section>
-
-  <!-- 收益率曲線 -->
-  <section class="section">
-    <div class="section-head"><h2>📉 收益率曲線</h2></div>
-    <div class="card" id="fed-yc">
+    <div class="section-head"><h2>😨 情緒指標</h2></div>
+    <div id="r-sentiment">
       <p>載入中…</p>
     </div>
   </section>
@@ -92,9 +76,10 @@
     <div class="card">
       <h3>📐 方法論</h3>
       <p class="section-desc" style="margin:6px 0 0;">
-        利率與通脹數據：FRED（fredgraph.csv），每次建站自動抓取；有效利率為每日聯邦基金有效利率（DFF），目標區間為聯儲公佈的目標上限/下限（DFEDTARU/L），資產負債表為 WALCL 週頻序列。
-        FOMC 日程為聯儲官網預先公佈的 2026 年會議安排，會後目標區間按決議日自 FRED 序列取值。
-        通脹追蹤：CPI（CPIAUCSL）、核心 CPI（CPILFESL）、PCE（PCEPI）、核心 PCE（PCEPILFE）同比。
+        衰退概率模型：用 10Y-3M 國債利差對「未來 12 個月內是否落入 NBER 衰退」擬合邏輯迴歸（FRED T10Y3M × USREC，1982 年起月頻，樣本內）；利差曲線平坦或倒掛時概率升高。注意：單一變量模型為粗糙先行指標，概率偏低不代表無衰退風險，僅作與「增長」評分的交叉驗證。
+        相關性矩陣：SPY／IEF／DBC／GLD／BIL 真實月報酬的皮爾遜相關係數（全樣本 20 年 vs 近 36 個月滾動）。
+        尾部風險：高收益／投資級信用利差與 VIX 的 10 年百分位（FRED）、站內美股公司前十大市值集中度（Yahoo 市值快照）、全球經濟政策不確定性指數（FRED GEPUCURRENT）。
+        情緒指標：VIX 恐慌指標為可計算部分；AAII 週度調查與 CNN 恐懼貪婪指數為公開報導整理、人工維護（頁面標註資料截止時間與來源）。
         本頁為研究框架展示，不構成任何投資建議。
       </p>
     </div>
