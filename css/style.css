@@ -116,15 +116,25 @@ h1, h2, h3 { line-height: 1.3; }
   color: var(--ink);
   letter-spacing: 0.02em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .brand .mark { color: var(--brand); }
 .brand span { color: var(--ink-2); font-weight: 500; }
-.site-nav nav { display: flex; gap: 4px; margin-left: auto; }
+.site-nav nav {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  /* 鏈接太多放不下時橫向滾動，不壓扁文字 */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .site-nav nav a {
   color: var(--ink-2);
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 15px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .site-nav nav a:hover { color: var(--ink); background: var(--surface-2); text-decoration: none; }
 .site-nav nav a.active { color: var(--brand-ink); font-weight: 600; }
@@ -144,6 +154,8 @@ body[data-page="trackrecord"] .site-nav a[href$="trackrecord.html"] {
   padding: 6px 10px;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .theme-toggle:hover { color: var(--ink); }
 
@@ -159,6 +171,8 @@ body[data-page="trackrecord"] .site-nav a[href$="trackrecord.html"] {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .btn-update:hover { border-color: var(--brand-ink); }
 .btn-update:disabled { opacity: .55; cursor: wait; }
@@ -231,7 +245,7 @@ body[data-page="trackrecord"] .site-nav a[href$="trackrecord.html"] {
 /* ---------- 區塊 ---------- */
 
 .section { padding: 44px 0; }
-.section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; }
+.section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
 .section-head h2 { font-size: 24px; margin: 0; }
 .section-head .more { margin-left: auto; font-size: 14px; }
 .section-desc { color: var(--ink-2); margin: -12px 0 22px; font-size: 15px; }
@@ -535,6 +549,7 @@ table.data-table {
   border-radius: 999px;
   padding: 3px 12px;
   background: var(--surface-2);
+  white-space: nowrap;
 }
 
 /* 市場總覽報價條 */
@@ -1056,9 +1071,12 @@ body[data-page="fed"] .fed-big span { font-size: 16px; }
 
 /* ---------- 模組 32：行動端優化 ---------- */
 @media (max-width: 760px) {
-  .site-nav .container { flex-wrap: wrap; }
-  .site-nav nav { flex-wrap: wrap; margin-left: 0; width: 100%; }
+  .site-nav .container { flex-wrap: wrap; height: auto; min-height: 56px; padding: 4px 0; }
+  .site-nav nav { flex-wrap: wrap; margin-left: 0; width: 100%; order: 2; }
   .site-nav nav a { white-space: nowrap; }
+  /* 按鈕與主題切換提到品牌同一行，省一列高度 */
+  .site-nav .btn-update, .site-nav .update-status, .site-nav .theme-toggle { order: 1; }
+  .site-nav .btn-update { margin-left: auto; }
   .s-table, .s-matrix, .data-table {
     display: block; overflow-x: auto; white-space: nowrap;
   }

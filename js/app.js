@@ -218,12 +218,6 @@
         combo.textContent = "—";
       }
     }
-    var asof = document.getElementById("home-alloc-asof");
-    if (asof) {
-      var d0 = D.market_asof || (D.market && D.market.SPY && D.market.SPY.asof) || A.asof;
-      if (d0) asof.textContent = "⏱ 數據日期 " + d0;
-    }
-
     /* 宏觀儀錶（精簡版） */
     var mg = document.getElementById("home-macro");
     if (mg) {
@@ -3091,8 +3085,8 @@
   function stampPage() {
     var asof = D.market_asof;
     if (!asof) return;
-    var existing = document.querySelector(".freshness");
-    if (existing && /截至/.test(existing.textContent || "")) return;
+    // 頁面已有任何日期徽章就不再追加，避免同一節出現兩條日期
+    if (document.querySelector(".freshness")) return;
     var d = document.querySelector(".section-desc");
     if (!d) return;
     if (/資料截至|截至/.test(d.textContent || "")) return;
