@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工商銀行 — AIShan+ 個股分析</title>
+<meta name="description" content="工商銀行 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "工商銀行", "ticker": "1398.HK", "sector": "金融", "region": "", "score": {"stars": 4, "value": 4.0, "text": "綜合评分：★★★★☆（4.0/5"}, "verdict": "✅通过", "verdict_class": "positive", "summary": "全球最大银行+6%+股息+低估值，收息型配置的核心标的——逢回调分批。", "reports": [{"title": "工商銀行（1398.HK）研究报告", "date": "2026-09-26", "type": "研究", "path": "工商銀行/工商銀行研究报告-2026-09-26.html"}], "hot": false, "in_combo": false, "quote": {"price": 7.71, "currency": "HKD", "change_pct": 2.53, "asof": "2026-09-28", "name": "ICBC", "closes": [7.54, 7.54, 7.66, 7.51, 7.7]}, "finance": {"margins": 0.5482, "op_margins": 0.65739, "roe": 0.089099996, "rev_growth": 0.058, "earn_growth": -0.001, "fcf": null, "debt_equity": null, "cash": 3030868033536, "debt": 6466731245568, "revenue": 682491969536, "ebitda": null, "eps": 1.18}, "multiples": {"pe": 6.533898305084746, "fwd_pe": 7.118901, "pb": 0.59324926, "ps": null, "evebitda": null, "peg": 1.09, "dy": 0.0494, "beta": 0.143, "mktcap": null, "shares": 86794044550}, "dcf": {"g": -0.001, "r": 0.085, "fcf": null, "shares": 86794044550, "gs": [-0.031, -0.001, 0.028999999999999998], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": {"value": 4.86, "dps": 0.37, "g": -0.001, "premium": -0.3692}, "relative": {"pe": {"own": 6.53, "median": 6.53, "premium": 0.0}, "pb": {"own": 0.59, "median": 6.53, "premium": -0.9092}}, "ta": {"n": 245, "ma50": 7.43, "ma200": 6.81, "support": 6.49, "resistance": 7.7, "ret_1y": 0.3447, "vol_trend": -0.2386, "spy_1y": 0.1655, "rs": 0.1792}, "holders": [{"org": "Financial Gravity Asset Management, Inc.", "pct": 0.0, "value": 184}], "inst_pct": 0.4939, "analyst": {"target": 8.3797655, "n": 15, "rec": 1.53333, "low": 7.7079353, "high": 9.254897}, "earnings_date": "2026-10-29", "profile": {"biz": "Industrial and Commercial Bank of China Limited, together with its subsidiaries, provides banking products and services in the People's Republic of China and internationally. It operates through Corporate Banking, Personal Banking, and Treasury Operations segments. The Corporate Banking segment offers corporate loans, trade financing, deposit-taking activities, corporate wealth management services, custody services, and various types of corporate intermediary services, as well as corporate loans to corporations, government agencies, and financial institutions. Its Personal Banking segment provides personal loans, deposit-taking activities, card business, personal wealth management services, and various types of personal intermediary services to individual customers. The Treasury Operations segment engages in money market transactions, investment securities, and foreign exchange transaction activities. In addition, the company is involved in the fund raising, fund sales, asset management, and other businesses; financial leasing; insurance businesses, such as life, health, and accident insurance, as well as reinsurance; debt-for-equity swaps; and issuance of wealth management products, wealth management advisory, and consulting services. Industrial and Commercial Bank of China Limited was founded in 1984 and is headquartered in Beijing, the People's Republic of China.", "industry": "Banks - Diversified", "website": "https://www.icbc-ltd.com", "country": "China"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

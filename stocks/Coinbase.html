@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coinbase — AIShan+ 個股分析</title>
+<meta name="description" content="Coinbase 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Coinbase", "ticker": "COIN", "sector": "金融", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": true, "in_combo": false, "quote": {"price": 195.11, "currency": "USD", "change_pct": -2.06, "asof": "2026-09-28", "name": "Coinbase Global, Inc.", "closes": [201.05, 201.07, 198.13, 199.21, 195.11]}, "finance": {"margins": -0.16344, "op_margins": -0.13922, "roe": -0.07847, "rev_growth": -0.173, "earn_growth": null, "fcf": 2668452864, "debt_equity": 50.982, "cash": 8788842496, "debt": 6668290048, "revenue": 6043752960, "ebitda": 699548992, "eps": -3.86}, "multiples": {"pe": -50.546632124352335, "fwd_pe": 68.81677, "pb": 3.9348595, "ps": null, "evebitda": 70.555, "peg": 2.33, "dy": null, "beta": 3.388, "mktcap": null, "shares": 222803032}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 2668452864, "shares": 222803032, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 146.19827666409302, "matrix": [{"r": 0.075, "cells": [174.3, 174.3, 200.35]}, {"r": 0.085, "cells": [146.2, 146.2, 167.58]}, {"r": 0.095, "cells": [126.1, 126.1, 144.16]}], "pessimistic": 126.1, "neutral": 146.2, "optimistic": 200.35, "premium": -0.2507}, "ddm": null, "relative": {"pe": {"own": -50.55, "median": 6.53, "premium": -8.7361}, "pb": {"own": 3.93, "median": 6.53, "premium": -0.3978}, "evebitda": {"own": 70.56, "median": 6.53, "premium": 9.7983}}, "ta": {"n": 251, "ma50": 170.44, "ma200": 187.4, "support": 145.41, "resistance": 201.07, "52w_low": 141.09, "52w_high": 387.27, "ret_1y": -0.3758, "vol_trend": 0.4265, "spy_1y": 0.1655, "rs": -0.5413}, "holders": [{"org": "Blackrock Inc.", "pct": 7.5, "value": 3260440881}, {"org": "Vanguard Capital Management LLC", "pct": 6.36, "value": 2763923390}, {"org": "Vanguard Portfolio Management LLC", "pct": 4.3, "value": 1867571658}, {"org": "State Street Corporation", "pct": 4.29, "value": 1865681433}, {"org": "Geode Capital Management, LLC", "pct": 2.76, "value": 1200832204}], "inst_pct": 0.68683, "analyst": {"target": 203.60333, "n": 30, "rec": 1.97143, "low": 95.0, "high": 330.0}, "earnings_date": "2026-10-29", "profile": {"biz": "Coinbase Global, Inc. operates platform for crypto assets in the United States and internationally. It provides the primary financial account in the crypto economy for consumers; a brokerage platform with a pool of liquidity across the crypto marketplace for institutions; and a suite of products granting access to build onchain for developers. The company was founded in 2012 and is based in New York, New York.", "industry": "Financial Data & Stock Exchanges", "website": "https://www.coinbase.com", "country": "United States"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

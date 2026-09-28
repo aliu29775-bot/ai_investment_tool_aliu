@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snowflake — AIShan+ 個股分析</title>
+<meta name="description" content="Snowflake 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Snowflake", "ticker": "SNOW", "sector": "科技", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 335.94, "currency": "USD", "change_pct": 0.58, "asof": "2026-09-28", "name": "Snowflake Inc.", "closes": [339.39, 336.59, 334.81, 334.0, 335.94]}, "finance": {"margins": -0.20071, "op_margins": -0.17001, "roe": -0.48063, "rev_growth": 0.351, "earn_growth": null, "fcf": 1739526656, "debt_equity": 128.57, "cash": 2344695040, "debt": 2763814912, "revenue": 5434647040, "ebitda": -1036284992, "eps": -3.16}, "multiples": {"pe": -106.31012658227847, "fwd_pe": 111.48353, "pb": 55.08116, "ps": null, "evebitda": -114.651, "peg": 8.44, "dy": null, "beta": 1.328, "mktcap": null, "shares": 352800000}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 1739526656, "shares": 352800000, "gs": [0.22, 0.25, 0.28], "value": 209.41024878482287, "matrix": [{"r": 0.075, "cells": [226.9, 254.51, 284.81]}, {"r": 0.085, "cells": [186.93, 209.41, 234.07]}, {"r": 0.095, "cells": [158.45, 177.28, 197.93]}], "pessimistic": 158.45, "neutral": 209.41, "optimistic": 284.81, "premium": -0.3766}, "ddm": null, "relative": {"pe": {"own": -106.31, "median": 16.37, "premium": -7.4934}, "pb": {"own": 55.08, "median": 16.37, "premium": 2.3644}, "evebitda": {"own": -114.65, "median": 16.37, "premium": -8.0029}}, "ta": {"n": 251, "ma50": 317.03, "ma200": 225.05, "support": 260.15, "resistance": 356.47, "52w_low": 121.11, "52w_high": 356.47, "ret_1y": 0.4955, "vol_trend": -0.2845, "spy_1y": 0.1655, "rs": 0.33}, "holders": [{"org": "Blackrock Inc.", "pct": 8.9, "value": 10550336871}, {"org": "Vanguard Capital Management LLC", "pct": 4.27, "value": 5061345311}, {"org": "Vanguard Portfolio Management LLC", "pct": 3.65, "value": 4326415415}, {"org": "JPMORGAN CHASE & CO", "pct": 2.61, "value": 3096969069}, {"org": "State Street Corporation", "pct": 2.26, "value": 2673368210}], "inst_pct": 0.80998003, "analyst": {"target": 425.14166, "n": 48, "rec": 1.4902, "low": 110.0, "high": 525.0}, "earnings_date": "2026-12-02", "profile": {"biz": "Snowflake Inc. provides a cloud-based data platform for various organizations in the United States and internationally. The company's platform includes artificial intelligence (AI) Data Cloud, which enables customers to consolidate data into a single source of truth to drive meaningful business insights, build data applications, and share data and data products, as well as applies AI for solving business problems. It serves financial services, advertising, media and entertainment, retail and consumer goods, healthcare and life sciences, manufacturing, technology, telecom, travel and hospitality, and government and defense industries, as well as the public sector. the company has a collaboration with OpenAI, L.L.C. for the development of AI solutions for joint enterprise customers that deliver tangible return on investment. The company was formerly known as Snowflake Computing, Inc. and changed its name to Snowflake Inc. in April 2019. Snowflake Inc. was incorporated in 2012 and is based in Menlo Park, California.", "industry": "Software - Application", "website": "https://www.snowflake.com", "country": "United States"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

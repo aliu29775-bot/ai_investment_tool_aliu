@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Berkshire — AIShan+ 個股分析</title>
+<meta name="description" content="Berkshire 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Berkshire", "ticker": "BRK-B", "sector": "金融", "region": "", "score": {"stars": 4, "value": 4.3, "text": "綜合评分：★★★★☆（4.3/5"}, "verdict": "✅通过", "verdict_class": "positive", "summary": "终极防御型核心资产：现金堡垒+保险浮存金+顶级子公司组合，回调即买入。", "reports": [{"title": "Berkshire（BRK-B）研究报告", "date": "2026-09-26", "type": "研究", "path": "Berkshire/Berkshire研究报告-2026-09-26.html"}], "hot": true, "in_combo": false, "quote": {"price": 505.48, "currency": "USD", "change_pct": 0.06, "asof": "2026-09-28", "name": "Berkshire Hathaway Inc. New", "closes": [502.01, 503.49, 507.17, 505.18, 505.48]}, "finance": {"margins": 0.22296, "op_margins": 0.32561, "roe": 0.121199995, "rev_growth": 0.1, "earn_growth": 1.078, "fcf": 71975247872, "debt_equity": 17.142, "cash": 365513998336, "debt": 128598999040, "revenue": 384687013888, "ebitda": 130683002880, "eps": 39.78}, "multiples": {"pe": 12.70688788335847, "fwd_pe": 22.777025, "pb": 0.0009679336, "ps": null, "evebitda": -1.79, "peg": 10.06, "dy": null, "beta": 0.603, "mktcap": null, "shares": 1408035161}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 71975247872, "shares": 1408035161, "gs": [0.22, 0.25, 0.28], "value": 2171.026328485509, "matrix": [{"r": 0.075, "cells": [2352.38, 2638.6, 2952.74]}, {"r": 0.085, "cells": [1937.98, 2171.03, 2426.66]}, {"r": 0.095, "cells": [1642.7, 1837.94, 2051.98]}], "pessimistic": 1642.7, "neutral": 2171.03, "optimistic": 2952.74, "premium": 3.295}, "ddm": null, "relative": {"pe": {"own": 12.71, "median": 6.53, "premium": 0.9448}, "pb": {"own": 0.0, "median": 6.53, "premium": -0.9999}, "evebitda": {"own": -1.79, "median": 6.53, "premium": -1.274}}, "ta": {"n": 251, "ma50": 506.29, "ma200": 492.65, "support": 488.35, "resistance": 529.42, "52w_low": 465.4, "52w_high": 529.42, "ret_1y": 0.0109, "vol_trend": 0.1775, "spy_1y": 0.1655, "rs": -0.1546}, "holders": [{"org": "Blackrock Inc.", "pct": 8.61, "value": 61255640785}, {"org": "Vanguard Capital Management LLC", "pct": 8.41, "value": 59828705086}, {"org": "State Street Corporation", "pct": 5.38, "value": 38288992710}, {"org": "Geode Capital Management, LLC", "pct": 2.95, "value": 20990204045}, {"org": "Morgan Stanley", "pct": 1.89, "value": 13479650111}], "inst_pct": 0.66882, "analyst": {"target": 547.6667, "n": 3, "rec": 2.0, "low": 510.0, "high": 604.0}, "earnings_date": "2026-11-07", "profile": {"biz": "Berkshire Hathaway Inc., together with its subsidiaries, engages in the insurance, freight rail transportation, and utility businesses. The company provides property, casualty, life, accident, and health insurance and reinsurance; operates railroad systems in North America; generates, transmits, stores, and distributes electricity from natural gas, coal, wind, solar, hydroelectric, nuclear, and geothermal sources; operates natural gas distribution and storage facilities, interstate pipelines, liquefied natural gas facilities, and compressor and meter stations; and holds interest in coal mining assets. It manufactures boxed chocolates and other confectionery products; specialty chemicals, metal cutting tools, and components for aerospace and power generation applications; prefabricated and site-built residential homes, flooring products; insulation, roofing, and engineered products; building and engineered components; paints and coatings; and bricks and masonry products, as well as offers manufactured and site-built home construction, and related lending and financial services. In addition, the company provides recreational vehicles, apparel, footwear, toys, jewelry, custom picture framing products, alkaline batteries, logistics services, and professional aviation training and shared aircraft ownership programs; castings, forgings, fasteners/fastener systems, aerostructures, and precision components; and cobalt, nickel, and titanium alloys. Further, it distributes televisions and information, and grocery and non-food consumer products; franchises and services quick service restaurants; and distributes electronic components. Additionally, it retails automobiles; furniture, bedding, and accessories; household appliances, electronics, and floor coverings; watches, home decor and repair services; sells kitchenware; and motorcycle clothing and equipment. The company was incorporated in 1998 and is headquartered in Omaha, Nebraska.", "industry": "Insurance - Diversified", "website": "https://www.berkshirehathaway.com", "country": "United States"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

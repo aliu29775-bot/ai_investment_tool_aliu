@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>上汽集團 — AIShan+ 個股分析</title>
+<meta name="description" content="上汽集團 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "上汽集團", "ticker": "600104.SS", "sector": "汽車", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 10.77, "currency": "CNY", "change_pct": 0.47, "asof": "2026-09-28", "name": "SAIC MOTOR CORPORATION LIMITED", "closes": [11.06, 11.07, 10.87, 10.72, 10.77]}, "finance": {"margins": 0.014099999, "op_margins": 0.01126, "roe": 0.04761, "rev_growth": -0.003, "earn_growth": -0.287, "fcf": 52052250624, "debt_equity": 27.156, "cash": 317246210048, "debt": 98289451008, "revenue": 655308488704, "ebitda": 31414417408, "eps": 0.81}, "multiples": {"pe": 13.296296296296294, "fwd_pe": 9.729174, "pb": 0.4118547, "ps": null, "evebitda": -1.06, "peg": null, "dy": 0.0248, "beta": 0.104, "mktcap": null, "shares": 11495277504}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 52052250624, "shares": 11495277504, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 55.27437829093656, "matrix": [{"r": 0.075, "cells": [65.9, 65.9, 75.75]}, {"r": 0.085, "cells": [55.27, 55.27, 63.36]}, {"r": 0.095, "cells": [47.68, 47.68, 54.5]}], "pessimistic": 47.68, "neutral": 55.27, "optimistic": 75.75, "premium": 4.1318}, "ddm": {"value": 2.05, "dps": 0.27, "g": -0.05, "premium": -0.8095}, "relative": {"pe": {"own": 13.3, "median": 2.52, "premium": 4.2807}, "pb": {"own": 0.41, "median": 2.52, "premium": -0.8364}, "evebitda": {"own": -1.06, "median": 2.52, "premium": -1.421}}, "ta": {"n": 241, "ma50": 10.65, "ma200": 12.79, "support": 9.91, "resistance": 11.72, "ret_1y": -0.3627, "vol_trend": -0.0262, "spy_1y": 0.1655, "rs": -0.5282}, "holders": [], "inst_pct": 0.028959999, "analyst": {"target": 12.76917, "n": 12, "rec": 2.69231, "low": 8.0, "high": 19.9}, "earnings_date": null, "profile": {"biz": "SAIC Motor Corporation Limited engages in the research and development, production, and sale of vehicles and their parts in the China and internationally. The company operates through Vehicles & Components and Financial Services segments. Its Vehicles & Components segment produces and sells complete vehicles and components. The Financial Services segment engages in financial services. SAIC Motor Corporation Limited was founded in 1997 and is based in Shanghai, the People's Republic of China. SAIC Motor Corporation Limited operates as a subsidiary of Shanghai Automotive Industry Corporation (Group) Corp.", "industry": "Auto Manufacturers", "website": "https://www.saicmotor.com", "country": "China"}, "rel_peers_n": 40}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

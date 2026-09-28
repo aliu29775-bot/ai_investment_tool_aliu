@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiniMax — AIShan+ 個股分析</title>
+<meta name="description" content="MiniMax 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "MiniMax", "ticker": "0100.HK", "sector": "科技", "region": "", "score": {"stars": 3, "value": 2.6, "text": "综合评分：2.6 / 5"}, "verdict": "好公司苗子", "verdict_class": "positive", "summary": "MiniMax 是一家\"真价值创造、假护城河\"的公司：增长一流（2025 年收入 +159%）、现金极厚（备考约 30~36 亿美元、几乎不可能死于现金流）、管理层利益绑定罕见地强；但没有定价权、技术领先是\"一代拳王\"、73% 收入悬在中美关系钢丝上，估值静态市销率约 119 倍、按官方最新 ARR 3 亿美元口径约 31 倍——已接近 OpenAI（34x", "reports": [{"title": "MiniMax差异化与护城河研究报告", "date": "2026-09-06", "type": "研究", "path": "MINIMAX/MiniMax-差异化与护城河研究-20260906.html"}, {"title": "MiniMax（0100.HK）研究报告", "date": "2026-09-06", "type": "研究", "path": "MINIMAX/MiniMax研究报告-20260906.html"}, {"title": "MiniMax（0100.HK）麦肯锡 7S 组织诊断", "date": "2026-08-28", "type": "组织管理", "path": "MINIMAX/MiniMax-7S组织诊断-20260828.html"}, {"title": "MiniMax（0100.HK）：给定「8月ARR = 8亿美元」，合理估值是多少", "date": "2026-08-27", "type": "估值仓位", "path": "MINIMAX/MiniMax-ARR8亿情景估值-20260827.html"}, {"title": "MiniMax（0100.HK）三大报表逐项解析", "date": "2026-08-26", "type": "研究", "path": "MINIMAX/MiniMax-三大报表解析-1H2026-20260826.html"}, {"title": "MiniMax（0100.HK）三大报表逐项解析", "date": "2026-08-24", "type": "研究", "path": "MINIMAX/MiniMax-三大报表解析-FY2025-20260824.html"}, {"title": "MiniMax 研究增量：开源许可反向收紧、B 端结构翻转的最新口径", "date": "2026-08-15", "type": "研究", "path": "MINIMAX/MiniMax-研究增量-20260815.html"}, {"title": "MiniMax 深度研究：护城河、生存期限、10 年利润推演与衰落概率", "date": "2026-08-13", "type": "深度系列", "path": "MINIMAX/MiniMax-深度研究-两轮对抗验证-20260813.html"}, {"title": "MiniMax（稀宇科技，00100.HK）投资研究报告", "date": "2026-07-31", "type": "研究", "path": "MINIMAX/MiniMax投资研究报告_20260731.html"}, {"title": "4 个月跌 85%，ARR 涨到 3 倍：把 MiniMax 的账算一遍", "date": "2026-07-25", "type": "公众号", "path": "MINIMAX/MiniMax-公众号-20260725.html"}, {"title": "搞懂 MiniMax：六个问题的深度研究", "date": "2026-07-25", "type": "深度系列", "path": "MINIMAX/MiniMax-深度研究-20260725.html"}, {"title": "MiniMax：表面出海公司，利润表上是 B 端 API 公司", "date": "2026-07-14", "type": "公众号", "path": "MINIMAX/MiniMax-公众号-模型与护城河-20260714.html"}, {"title": "MiniMax（稀宇科技）：模型到底什么水平，护城河到底是什么", "date": "2026-07-14", "type": "研究", "path": "MINIMAX/MiniMax-模型水平与护城河-20260714.html"}, {"title": "MiniMax跌破首日开盘价：把最近的传闻和事实，一条条分开看", "date": "2026-07-13", "type": "公众号", "path": "MINIMAX/MiniMax-公众号-20260713.html"}, {"title": "模型排第25，却最像一家公司：拆解 MiniMax 的护城河", "date": "2026-07-13", "type": "公众号", "path": "MINIMAX/MiniMax-公众号-模型与护城河-20260713.html"}, {"title": "MiniMax（稀宇科技 · 00100.HK）最新情报全景文档", "date": "2026-07-13", "type": "研究", "path": "MINIMAX/MiniMax-最新情报-20260713.html"}, {"title": "竞争格局——好赛道、坏生意，与一条窄路", "date": "2026-07-13", "type": "深度系列", "path": "MINIMAX/《看懂MINIMAX》/03-竞争格局-好赛道坏生意与一条窄路.html"}, {"title": "商业化与风险——烧钱赛跑，和一个36岁的赌徒", "date": "2026-07-13", "type": "深度系列", "path": "MINIMAX/《看懂MINIMAX》/04-商业化与风险-烧钱赛跑和一个36岁的赌徒.html"}, {"title": "MiniMax：不领工资的老板，假装巨亏的财报", "date": "2026-07-11", "type": "公众号", "path": "MINIMAX/MiniMax-公众号-20260711.html"}, {"title": "MiniMax（稀宇科技，00100.HK）投资研究报告", "date": "2026-07-04", "type": "研究", "path": "MINIMAX/MiniMax投资研究报告fable.html"}, {"title": "MiniMax（稀宇科技，00100.HK）投资研究报告", "date": "2026-07-02", "type": "研究", "path": "MINIMAX/MiniMax-research-20260702.html"}, {"title": "大模型公司怎么赚钱：从 MiniMax、智谱到 OpenAI、Anthropic", "date": "2026-07-02", "type": "研究", "path": "MINIMAX/大模型公司商业模式与现金流分析-20260702.html"}, {"title": "产品与技术——385人的多模态战争", "date": "2026-05-22", "type": "深度系列", "path": "MINIMAX/《看懂MINIMAX》/02-产品与技术-385人的多模态战争.html"}, {"title": "MiniMax（稀宇科技）深度研究报告", "date": "2026-04-10", "type": "研究", "path": "MINIMAX/MiniMax-研究报告-20260410.html"}, {"title": "MINIMAX（9922.HK）商业模式分析", "date": "2026-04-09", "type": "研究", "path": "MINIMAX/01-商业模式分析-段永平视角.html"}, {"title": "MINIMAX（9922.HK）财务与估值分析报告", "date": "2026-04-09", "type": "估值仓位", "path": "MINIMAX/02-财务估值分析-巴菲特视角.html"}, {"title": "MINIMAX（9922.HK）行业竞争分析报告", "date": "2026-04-09", "type": "研究", "path": "MINIMAX/03-行业竞争分析-芒格视角.html"}, {"title": "MINIMAX（9922.HK）风险与管理层评估报告", "date": "2026-04-09", "type": "组织管理", "path": "MINIMAX/04-风险管理层评估-李录视角.html"}, {"title": "MINIMAX（9922.HK）投资研究最终报告", "date": "2026-04-09", "type": "研究", "path": "MINIMAX/最终报告.html"}, {"title": "MINIMAX——中国AI大模型赛道的野生样本", "date": "2026-01-09", "type": "深度系列", "path": "MINIMAX/《看懂MINIMAX》/01-开篇-中国AI大模型赛道的野生样本.html"}], "hot": false, "in_combo": false, "quote": {"price": 250.2, "currency": "HKD", "change_pct": -9.08, "asof": "2026-09-28", "name": "MINIMAX-W", "closes": [286.4, 275.0, 279.0, 275.2, 250.2]}, "finance": {"margins": 0.0, "op_margins": -2.86828, "roe": null, "rev_growth": 2.831, "earn_growth": null, "fcf": null, "debt_equity": 10.205, "cash": 1223289984, "debt": 137423008, "revenue": 165182000, "ebitda": -486581504, "eps": -48.05}, "multiples": {"pe": -5.2070759625390215, "fwd_pe": -109.53794, "pb": 8.272562, "ps": null, "evebitda": -195.288, "peg": null, "dy": null, "beta": null, "mktcap": null, "shares": 268132774}, "dcf": {"g": 0.25, "r": 0.085, "fcf": null, "shares": 268132774, "gs": [0.22, 0.25, 0.28], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {"pe": {"own": -5.21, "median": 16.37, "premium": -1.318}, "pb": {"own": 8.27, "median": 16.37, "premium": -0.4947}, "evebitda": {"own": -195.29, "median": 16.37, "premium": -12.9282}}, "ta": {"n": 177, "ma50": 286.91, "support": 193.1, "resistance": 376.8, "ret_1y": -0.2748, "vol_trend": 0.0398, "spy_1y": 0.1655, "rs": -0.4403}, "holders": [{"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 31274}], "inst_pct": 0.20207001, "analyst": {"target": 588.4299, "n": 22, "rec": 1.69565, "low": 140.09741, "high": 1301.6039}, "earnings_date": "2026-08-26", "profile": {"biz": "MiniMax Group Inc. engages in research and development of an artificial intelligence (AI) foundation model. The company's platform offers a wide range of modalities, including language, video, speech, and music. It also provides AI-based enterprise services; AI-native products, including enterprise-facing open platform; and consumer products, such as MiniMax Agent, Hailuo AI, Talkie and Xingye. The company was founded in 2022 and is headquartered in Shanghai, the People's Republic of China.", "industry": "Software - Infrastructure", "website": "https://www.minimaxi.com", "country": "China"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

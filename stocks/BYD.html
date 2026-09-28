@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BYD — AIShan+ 個股分析</title>
+<meta name="description" content="BYD 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "BYD", "ticker": "1211.HK", "sector": "汽車", "region": "", "score": {"stars": 3, "value": 3.4, "text": "四维评分表抽取：生意质量4.0,护城河4.0,管理层4.0,最大风险2.0,估值3.0"}, "verdict": null, "verdict_class": null, "summary": null, "reports": [{"title": "比亚迪（BYD）投资研究报告", "date": "2026-06-24", "type": "研究", "path": "BYD/BYD-research-20260624.html"}], "hot": true, "in_combo": false, "quote": {"price": 77.7, "currency": "HKD", "change_pct": -0.51, "asof": "2026-09-28", "name": "BYD COMPANY", "closes": [81.35, 80.35, 79.5, 78.1, 77.7]}, "finance": {"margins": 0.03786, "op_margins": 0.07244, "roe": 0.11602, "rev_growth": -0.032, "earn_growth": 0.337, "fcf": -96303865856, "debt_equity": 46.056, "cash": 128678313984, "debt": 125904445440, "revenue": 777499443200, "ebitda": 117829091328, "eps": 3.76}, "multiples": {"pe": 20.664893617021278, "fwd_pe": 13.998335, "pb": 2.5179029, "ps": null, "evebitda": 6.105, "peg": 0.76, "dy": 0.0053, "beta": 0.327, "mktcap": null, "shares": 3683400000}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -96303865856, "shares": 3683400000, "gs": [0.22, 0.25, 0.28], "value": -1110.427627072684, "matrix": [{"r": 0.075, "cells": [-1203.19, -1349.58, -1510.26]}, {"r": 0.085, "cells": [-991.23, -1110.43, -1241.18]}, {"r": 0.095, "cells": [-840.2, -940.06, -1049.54]}], "pessimistic": -840.2, "neutral": -1110.43, "optimistic": -1510.26, "premium": -15.2912}, "ddm": null, "relative": {"pe": {"own": 20.66, "median": 2.52, "premium": 7.2072}, "pb": {"own": 2.52, "median": 2.52, "premium": 0.0}, "evebitda": {"own": 6.11, "median": 2.52, "premium": 1.4246}}, "ta": {"n": 245, "ma50": 87.29, "ma200": 93.56, "support": 77.7, "resistance": 94.9, "ret_1y": -0.2845, "vol_trend": -0.3344, "spy_1y": 0.1655, "rs": -0.45}, "holders": [{"org": "Ascentis Wealth Management, LLC", "pct": 0.0, "value": 160372}, {"org": "Winch Advisory Services LLC", "pct": 0.0, "value": 9323}, {"org": "Strengthening Families & Communities, LL", "pct": 0.0, "value": 46619}, {"org": "Kelly (Lawrence W.) & Associates Inc.", "pct": 0.0, "value": 466199}], "inst_pct": 0.41369, "analyst": {"target": 125.70762, "n": 26, "rec": 1.46429, "low": 95.21175, "high": 150.33453}, "earnings_date": "2026-10-29", "profile": {"biz": "BYD Company Limited, together with its subsidiaries, engages in automobiles and batteries business in the People's Republic of China, Hong Kong, Macau, Taiwan, and internationally. It operates in two segments, Mobile Handset Components, Assembly Service and Other Products; and Automobiles and Related Products and Other Products. The Mobile Handset Components, Assembly Service and Other Products segment manufactures and sells mobile handset components, such as housings and electronic components, and provides assembly services. Its Automobiles and Related Products and Other Products segment is involved in the manufacturing and sale of automobiles, and auto-related molds and components; provision of automobile leasing and after sales services, automobile power batteries, lithium-ion batteries, photovoltaic, and iron battery products; and rail transport and related business. The company develops urban rail transportation business. BYD Company Limited was founded in 1994 and is headquartered in Shenzhen, China.", "industry": "Auto Manufacturers", "website": "https://www.bydglobal.com", "country": "China"}, "rel_peers_n": 40}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

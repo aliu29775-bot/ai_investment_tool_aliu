@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中科飞测 — AIShan+ 個股分析</title>
+<meta name="description" content="中科飞测 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "中科飞测", "ticker": "688361.SS", "sector": "科技", "region": "", "score": null, "verdict": "减仓或清仓", "verdict_class": "negative", "summary": null, "reports": [{"title": "中科飞测（688361.SH）投资研究报告", "date": "2026-06-24", "type": "研究", "path": "skyverse-tech/skyverse-tech-investment-research-20260624.html"}], "hot": false, "in_combo": false, "quote": {"price": 361.24, "currency": "CNY", "change_pct": -2.45, "asof": "2026-09-28", "name": "SKYVERSE TECHNOLOGY CO LTD", "closes": [386.99, 378.84, 381.32, 370.3, 361.24]}, "finance": {"margins": -0.022, "op_margins": -0.26976, "roe": -0.013259999, "rev_growth": 0.336, "earn_growth": null, "fcf": -1291881728, "debt_equity": 14.275, "cash": 2101051392, "debt": 725450816, "revenue": 2292141824, "ebitda": -250872432, "eps": -0.11}, "multiples": {"pe": -3284.0, "fwd_pe": null, "pb": 25.023552, "ps": null, "evebitda": -514.162, "peg": null, "dy": null, "beta": 0.712, "mktcap": null, "shares": 352051671}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -1291881728, "shares": 352051671, "gs": [0.22, 0.25, 0.28], "value": -155.85178000944404, "matrix": [{"r": 0.075, "cells": [-168.87, -189.42, -211.97]}, {"r": 0.085, "cells": [-139.12, -155.85, -174.2]}, {"r": 0.095, "cells": [-117.92, -131.94, -147.31]}], "pessimistic": -117.92, "neutral": -155.85, "optimistic": -211.97, "premium": -1.4314}, "ddm": null, "relative": {"pe": {"own": -3284.0, "median": 16.37, "premium": -201.5864}, "pb": {"own": 25.02, "median": 16.37, "premium": 0.5284}, "evebitda": {"own": -514.16, "median": 16.37, "premium": -32.405}}, "ta": {"n": 241, "ma50": 345.26, "ma200": 241.53, "support": 299.8, "resistance": 446.5, "ret_1y": 2.0718, "vol_trend": -0.2118, "spy_1y": 0.1655, "rs": 1.9063}, "holders": [], "inst_pct": 0.39394, "analyst": {"target": 248.66, "n": 2, "rec": null, "low": 76.53, "high": 420.79}, "earnings_date": null, "profile": {"biz": "Skyverse Technology Co., Ltd. manufactures and sells quality control equipment to enterprises involved in the front-end integrated circuit processes and packaging in China and internationally. The company offers unpatterned, three-in-one patterned, dark-field nano patterned, patterned, and bright- field nano patterned wafer defect inspection equipment; and optical critical dimension, metal film thickness, ratio etch, overlay, e-beam critical dimension, optical diffraction, wafer flatness, 3D surface profiling, and dielectric film metrology equipment series. It also provides software services, such as yield management, semiconductor auto defect classification, and semiconductor litho analysis and control systems. The company was founded in 2014 and is based in Shenzhen, China.", "industry": "Semiconductor Equipment & Materials", "website": "https://www.skyverse.cn", "country": "China"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

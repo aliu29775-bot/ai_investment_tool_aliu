@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中国中免 — AIShan+ 個股分析</title>
+<meta name="description" content="中国中免 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "中国中免", "ticker": "601888.SS", "sector": "消費", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 50.79, "currency": "CNY", "change_pct": -1.3, "asof": "2026-09-28", "name": "CHINA TOURISM GROUP DUTY FREE C", "closes": [52.23, 52.27, 52.19, 51.46, 50.79]}, "finance": {"margins": 0.07694, "op_margins": 0.07026, "roe": 0.06163, "rev_growth": -0.057, "earn_growth": 0.141, "fcf": 3934905344, "debt_equity": 16.109, "cash": 36206854144, "debt": 10172155904, "revenue": 53198032896, "ebitda": 5461462016, "eps": 1.98}, "multiples": {"pe": 25.651515151515152, "fwd_pe": 19.276386, "pb": 1.8368233, "ps": null, "evebitda": 15.853, "peg": 0.88, "dy": 0.0136, "beta": 0.354, "mktcap": null, "shares": 1952475544}, "dcf": {"g": 0.141, "r": 0.085, "fcf": 3934905344, "shares": 1952475544, "gs": [0.11099999999999999, 0.141, 0.17099999999999999], "value": 56.02789771021782, "matrix": [{"r": 0.075, "cells": [59.85, 67.74, 76.48]}, {"r": 0.085, "cells": [49.58, 56.03, 63.16]}, {"r": 0.095, "cells": [42.26, 47.67, 53.65]}], "pessimistic": 42.26, "neutral": 56.03, "optimistic": 76.48, "premium": 0.1032}, "ddm": null, "relative": {"pe": {"own": 25.65, "median": 11.42, "premium": 1.2453}, "pb": {"own": 1.84, "median": 11.42, "premium": -0.8392}, "evebitda": {"own": 15.85, "median": 11.42, "premium": 0.3876}}, "ta": {"n": 241, "ma50": 53.92, "ma200": 67.77, "support": 50.79, "resistance": 58.08, "ret_1y": -0.2816, "vol_trend": -0.6066, "spy_1y": 0.1655, "rs": -0.4471}, "holders": [], "inst_pct": 0.06062, "analyst": {"target": 69.326, "n": 15, "rec": 1.68421, "low": 57.2, "high": 79.0}, "earnings_date": null, "profile": {"biz": "China Tourism Group Duty Free Corporation Limited engages in duty-free tourism retail business in China. The company engages in the wholesale and retail of duty-free commodities, such as tobacco, alcohol, cosmetics, watches and jewelry, apparel and bags, and electronic products, as well as food. It is also involved in the investment and development of commercial complexes for duty-free businesses. The company was formerly known as China International Travel Service Corporation Limited and changed its name to China Tourism Group Duty Free Corporation Limited in June 2020. The company was founded in 2008 and is based in Beijing, China. China Tourism Group Duty Free Corporation Limited operates as a subsidiary of China Tourism Group Co., Ltd.", "industry": "Specialty Retail", "website": "https://www.ctgdutyfree.com.cn", "country": "China"}, "rel_peers_n": 144}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

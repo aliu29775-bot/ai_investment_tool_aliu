@@ -74,6 +74,10 @@
     return "reports/" + r.path;
   }
 
+  function stockLink(c) {
+    return c.page || ("stocks/" + encodeURIComponent(c.name) + ".html");
+  }
+
   /* 資產類別統一色板：所有棒形圖按類別取色，同一類別全站同色 */
   var FUND_COLORS = {
     "股票": "#3b89e3", "債券": "#8a6fd1", "不動產": "#2e9e6b",
@@ -308,7 +312,8 @@
       '<div class="co-mid">' + score + verdictBadge(c) + "</div>" +
       sum +
       '<div class="co-foot"><span>📄 ' + c.count + " 份報告</span>" +
-      "<span>🕐 最近 " + c.latest + "</span></div>" +
+      "<span>🕐 " + (c.latest ? "最近 " + c.latest : "監測中（無研報）") + "</span></div>" +
+      '<a class="co-stock-link" href="' + stockLink(c) + '">📈 個股分析 →</a>' +
       '<div class="co-actions">' +
         '<button class="watch-btn' + (watched ? " on" : "") + '" data-watch="' + esc(c.name) +
           '" aria-pressed="' + watched + '">' + (watched ? "⭐" : "☆") + " 關注</button>" +

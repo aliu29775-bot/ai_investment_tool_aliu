@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>任天堂 — AIShan+ 個股分析</title>
+<meta name="description" content="任天堂 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "任天堂", "ticker": "7974.T", "sector": "科技", "region": "日本", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 7999.0, "currency": "JPY", "change_pct": -1.25, "asof": "2026-09-28", "name": "NINTENDO CO LTD", "closes": [8475.0, 8339.0, 8196.0, 8100.0, 7999.0]}, "finance": {"margins": 0.0, "op_margins": 0.27538002, "roe": null, "rev_growth": -0.095, "earn_growth": 0.55, "fcf": null, "debt_equity": null, "cash": 1967908061184, "debt": 0, "revenue": 2258501107712, "ebitda": 461762265088, "eps": 364.5}, "multiples": {"pe": 21.945130315500688, "fwd_pe": null, "pb": 3.1604848, "ps": null, "evebitda": 15.963, "peg": 2.05, "dy": 0.027, "beta": null, "mktcap": null, "shares": 1152873205}, "dcf": {"g": 0.25, "r": 0.085, "fcf": null, "shares": 1152873205, "gs": [0.22, 0.25, 0.28], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {"pe": {"own": 21.95, "median": 16.37, "premium": 0.3404}, "pb": {"own": 3.16, "median": 16.37, "premium": -0.807}, "evebitda": {"own": 15.96, "median": 16.37, "premium": -0.025}}, "ta": {"n": 242, "ma50": 8151.18, "ma200": 8680.08, "support": 6815.0, "resistance": 9103.0, "ret_1y": -0.3751, "vol_trend": -0.1392, "spy_1y": 0.1655, "rs": -0.5406}, "holders": [{"org": "McIlrath & Eck, LLC", "pct": 0.0, "value": 191976}, {"org": "Paradigm Asset Management Company, LLC", "pct": 0.0, "value": 143982000}, {"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 100899386}], "inst_pct": 0.54855996, "analyst": {"target": 10248.846, "n": 26, "rec": 2.0, "low": 5000.0, "high": 21260.0}, "earnings_date": "2026-11-05", "profile": {"biz": "Nintendo Co., Ltd., together with its subsidiaries, develops, manufactures, and sells home entertainment products in Japan, the Americas, Europe, and internationally. It offers home console gaming hardware, software, accessories, and other products. The company also provides various services, such as Nintendo Switch Online; and content through mobile application. In addition, it offers develop IP, including video content and mobile apps. The company was formerly known as Nintendo Playing Card Co., Ltd. and changed its name to Nintendo Co., Ltd. in 1963. Nintendo Co., Ltd. was founded in 1889 and is headquartered in Kyoto, Japan.", "industry": "Electronic Gaming & Multimedia", "website": "https://www.nintendo.co.jp", "country": "Japan"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

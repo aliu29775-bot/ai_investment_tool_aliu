@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海光信息 — AIShan+ 個股分析</title>
+<meta name="description" content="海光信息 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "海光信息", "ticker": "688041.SS", "sector": "科技", "region": "", "score": {"stars": 4, "value": 3.6, "text": "綜合评分：★★★★☆（3.6/5"}, "verdict": "❓灰色地带", "verdict_class": "neutral", "summary": "国产算力替代的真龙头，但百倍PE买的是国运不是现金流——小仓位博弈，非价值投资。", "reports": [{"title": "海光信息（688041.SS）研究报告", "date": "2026-09-26", "type": "研究", "path": "海光信息/海光信息研究报告-2026-09-26.html"}], "hot": false, "in_combo": false, "quote": {"price": 240.5, "currency": "CNY", "change_pct": -3.14, "asof": "2026-09-28", "name": "HYGON INFORMATION TECHNOLOGY CO", "closes": [246.45, 256.0, 251.66, 248.3, 240.5]}, "finance": {"margins": 0.17444, "op_margins": 0.18785, "roe": 0.15231, "rev_growth": 0.653, "earn_growth": 0.598, "fcf": -3671173376, "debt_equity": 15.149, "cash": 10748205056, "debt": 4410468864, "revenue": 18011674624, "ebitda": 4904906752, "eps": 1.37}, "multiples": {"pe": 175.54744525547443, "fwd_pe": 86.510796, "pb": 21.985556, "ps": null, "evebitda": 116.896, "peg": null, "dy": 0.001, "beta": 0.556, "mktcap": null, "shares": 2324338091}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -3671173376, "shares": 2324338091, "gs": [0.22, 0.25, 0.28], "value": -67.08122992695706, "matrix": [{"r": 0.075, "cells": [-72.68, -81.53, -91.23]}, {"r": 0.085, "cells": [-59.88, -67.08, -74.98]}, {"r": 0.095, "cells": [-50.76, -56.79, -63.4]}], "pessimistic": -50.76, "neutral": -67.08, "optimistic": -91.23, "premium": -1.2789}, "ddm": null, "relative": {"pe": {"own": 175.55, "median": 16.37, "premium": 9.7224}, "pb": {"own": 21.99, "median": 16.37, "premium": 0.3429}, "evebitda": {"own": 116.9, "median": 16.37, "premium": 6.14}}, "ta": {"n": 241, "ma50": 264.78, "ma200": 266.71, "support": 223.69, "resistance": 363.46, "ret_1y": -0.06, "vol_trend": -0.253, "spy_1y": 0.1655, "rs": -0.2255}, "holders": [], "inst_pct": 0.10609999, "analyst": {"target": 378.66666, "n": 6, "rec": 1.75, "low": 138.0, "high": 500.0}, "earnings_date": null, "profile": {"biz": "Hygon Information Technology Co., Ltd. engages in the research and development of processors, accelerators, and other computing chip products and systems in China. It offers high-performance processors for data centers; mid-range processors for industry customers; and other processors for various scenarios, as well as high-performance domestic processors. The company's products are used in various applications, including commercial workstations, artificial intelligence, cloud computing, cloud storage, data center, scientific computing, industrial computing, and safety. Hygon Information Technology Co., Ltd. was founded in 2014 and is based in Beijing, China.", "industry": "Computer Hardware", "website": "https://www.hygon.cn", "country": "China"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

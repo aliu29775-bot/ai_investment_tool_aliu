@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蚂蚁数科 — AIShan+ 個股分析</title>
+<meta name="description" content="蚂蚁数科 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "蚂蚁数科", "ticker": null, "sector": "金融", "region": "", "score": {"stars": 3, "value": 3.0, "text": "综合评分：★★★ / 5"}, "verdict": "观望（信息不足以做出高确信度投资决策）                 │", "verdict_class": "neutral", "summary": "蚂蚁数科2025年营收推算约82-88亿元（取中值85亿），2024年盈亏平衡后2025年首次实现规模盈利。5年后（2031年）三情景预测：", "reports": [{"title": "《看懂蚂蚁数科》系列说明", "date": "2026-07-13", "type": "深度系列", "path": "蚂蚁数科/《看懂蚂蚁数科》/00-系列说明.html"}, {"title": "从蚂蚁集团到蚂蚁数科", "date": "2026-05-22", "type": "深度系列", "path": "蚂蚁数科/《看懂蚂蚁数科》/01-开篇-从蚂蚁集团到蚂蚁数科.html"}, {"title": "一台金融科技的瑞士军刀", "date": "2026-05-22", "type": "深度系列", "path": "蚂蚁数科/《看懂蚂蚁数科》/02-商业模式-一台金融科技的瑞士军刀.html"}, {"title": "小赛道的龙头，大赛道的追赶者", "date": "2026-05-22", "type": "深度系列", "path": "蚂蚁数科/《看懂蚂蚁数科》/03-竞争格局-小赛道的龙头大赛道的追赶者.html"}, {"title": "估值迷雾与三重不确定性", "date": "2026-05-22", "type": "深度系列", "path": "蚂蚁数科/《看懂蚂蚁数科》/04-终章-估值迷雾与三重不确定性.html"}, {"title": "蚂蚁数科（Ant Digital Technologies）5年估值预测（2026-2031）", "date": "2026-05-15", "type": "估值仓位", "path": "蚂蚁数科/蚂蚁数科-5年估值预测-20260515.html"}, {"title": "蚂蚁数科竞争全景研究报告", "date": "2026-05-12", "type": "研究", "path": "蚂蚁数科/蚂蚁数科-竞争全景-20260512.html"}, {"title": "蚂蚁数科（Ant Digital Technologies）未上市公司深度研究报告", "date": "2026-05-11", "type": "研究", "path": "蚂蚁数科/蚂蚁数科-private-20260511.html"}, {"title": "蚂蚁数科商业模式深度分析", "date": "2026-05-08", "type": "研究", "path": "蚂蚁数科/蚂蚁数科-team-20260508/01-商业模式分析-段永平视角.html"}, {"title": "蚂蚁数科财务与估值深度分析", "date": "2026-05-08", "type": "估值仓位", "path": "蚂蚁数科/蚂蚁数科-team-20260508/02-财务估值分析-巴菲特视角.html"}, {"title": "蚂蚁数科行业与竞争格局分析", "date": "2026-05-08", "type": "研究", "path": "蚂蚁数科/蚂蚁数科-team-20260508/03-行业竞争分析-芒格视角.html"}, {"title": "蚂蚁数科风险与管理层评估", "date": "2026-05-08", "type": "组织管理", "path": "蚂蚁数科/蚂蚁数科-team-20260508/04-风险管理层评估-李录视角.html"}, {"title": "蚂蚁数科投资研究最终报告", "date": "2026-05-08", "type": "研究", "path": "蚂蚁数科/蚂蚁数科-team-20260508/最终报告.html"}, {"title": "蚂蚁数科基础大模型路线深度分析（2026/04/30）", "date": "2026-04-30", "type": "研究", "path": "蚂蚁数科/大模型分析-20260430.html"}, {"title": "蚂蚁数科 合理估值聚焦报告（11天Update版）", "date": "2026-04-28", "type": "估值仓位", "path": "蚂蚁数科/估值聚焦-20260428/01-合理估值.html"}, {"title": "蚂蚁数科上市时间深度判断", "date": "2026-04-28", "type": "估值仓位", "path": "蚂蚁数科/估值聚焦-20260428/02-上市时间.html"}, {"title": "蚂蚁数科 总股本结构深度还原", "date": "2026-04-28", "type": "估值仓位", "path": "蚂蚁数科/估值聚焦-20260428/03-总股本.html"}, {"title": "蚂蚁数科 每股价值推算", "date": "2026-04-28", "type": "估值仓位", "path": "蚂蚁数科/估值聚焦-20260428/04-每股价值.html"}, {"title": "蚂蚁数科估值聚焦研究：合理估值 / 上市时间 / 总股本 / 每股价值", "date": "2026-04-28", "type": "估值仓位", "path": "蚂蚁数科/估值聚焦-20260428/最终报告.html"}, {"title": "蚂蚁数科 商业模式与产品用户分析", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/01-商业模式分析.html"}, {"title": "蚂蚁数科 财务数据拼凑与估值推演", "date": "2026-04-17", "type": "估值仓位", "path": "蚂蚁数科-team-20260417/02-财务估值分析.html"}, {"title": "蚂蚁数科 行业格局与竞争态势分析", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/03-行业竞争分析.html"}, {"title": "蚂蚁数科 风险与治理评估", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/04-风险治理分析.html"}, {"title": "05-对标公司分析", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/05-对标公司分析.html"}, {"title": "蚂蚁数科 IPO 概率团队研究", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/06-IPO概率分析.html"}, {"title": "蚂蚁数科 业务+财务成熟度对IPO的影响分析", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/06-业务财务成熟度详细.html"}, {"title": "中国\"母公司分拆型金融科技子公司\"IPO完整盘点", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/07-分拆金融科技公司IPO盘点.html"}, {"title": "蚂蚁数科（Ant Digital Technologies）深度研究报告", "date": "2026-04-17", "type": "研究", "path": "蚂蚁数科-team-20260417/最终报告.html"}], "hot": false, "in_combo": false, "quote": {}, "finance": {"margins": null, "op_margins": null, "roe": null, "rev_growth": null, "earn_growth": null, "fcf": null, "debt_equity": null, "cash": null, "debt": null, "revenue": null, "ebitda": null, "eps": null}, "multiples": {"pe": null, "fwd_pe": null, "pb": null, "ps": null, "evebitda": null, "peg": null, "dy": null, "beta": null, "mktcap": null, "shares": null}, "dcf": {"g": 0.05, "r": 0.085, "fcf": null, "shares": null, "gs": [0.020000000000000004, 0.05, 0.08], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {}, "ta": {"n": 0}, "holders": [], "inst_pct": null, "analyst": {"target": null, "n": null, "rec": null, "low": null, "high": null}, "earnings_date": null, "profile": {"biz": "", "industry": "", "website": "", "country": ""}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -29,6 +29,9 @@ from datetime import datetime
 import urllib.request
 from collections import Counter, defaultdict
 
+from stock_pages import (EXTRA_COMPANIES, load_or_fetch_fundamentals,
+                         render_stock_pages, slugify)
+
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------------------
@@ -1155,12 +1158,35 @@ def main():
             "verdict": verdict,
             "verdict_class": classify_verdict(verdict),
             "summary": summary,
+            "page": "stocks/" + slugify(name) + ".html",
             "reports": [
                 {"title": r["title"], "date": r["date"], "type": r["type"],
                  "path": site_path(r["path"])}
                 for r in reversed(rs)
             ],
         })
+
+    # 個股分析系統：補充監測公司（無研報，僅行情＋基本面監測），覆蓋擴至 300 家
+    have_tickers = {c["ticker"] for c in companies}
+    have_names = {c["name"] for c in companies}
+    for x in EXTRA_COMPANIES:
+        if not x["ticker"] or x["ticker"] in have_tickers or x["name"] in have_names:
+            continue
+        companies.append({
+            "name": x["name"], "sector": x["sector"], "ticker": x["ticker"],
+            "region": x["region"], "count": 0, "latest": "",
+            "score": None, "verdict": None, "verdict_class": None,
+            "summary": None, "page": "stocks/" + slugify(x["name"]) + ".html",
+            "reports": [],
+        })
+        have_tickers.add(x["ticker"])
+
+    # 選定公司組合（與 app.js selectedCombo 同規則：結論正面且評分最高的 8 家）
+    pos = [c for c in companies
+           if c.get("score") and c["score"].get("value") is not None
+           and c.get("verdict_class") == "positive"]
+    pos.sort(key=lambda c: -c["score"]["value"])
+    in_combo_names = {c["name"] for c in pos[:8]}
 
     topics = []
     for name, rs in sorted(by_topic.items(), key=lambda kv: -len(kv[1])):
@@ -1193,6 +1219,9 @@ def main():
         quotes = json.load(open(cache_file, encoding="utf-8"))
         print(f"== 3/4 使用行情快取（{len(quotes)} 檔，{cache_file}）==")
 
+    # 個股基本面（Yahoo quoteSummary + 1y 日線，供個股分析頁）
+    fund_data = load_or_fetch_fundamentals(tickers, args.no_market)
+
     # 首頁市場總覽用：主要指數行情（取得到幾個就顯示幾個）
     indices = [{"sym": s, "label": l} for s, l in MARKET_INDICES.items() if s in quotes]
 
@@ -1218,6 +1247,10 @@ def main():
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
     print(f"   完成，輸出至 {os.path.relpath(os.path.join(SITE_DIR, 'reports'))}")
+
+    # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型）
+    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names)
+    print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁）")
 
     # 全球前五大基金資產配置動態（公開披露數據，按各基金最新年報／政策區間，站長手動維護）
     # delta 為較上一披露期的百分點變化（數字）或文字說明；min/max 為政策區間（ADIA）
@@ -1388,6 +1421,7 @@ def main():
         "stats": {
             "reports": idx["count"], "companies": len(companies),
             "topics": len(topics), "updated": max(r["date"] for r in reports),
+            "stocks": st_stats["pages"],
         },
         # 全球前五大基金資產配置（公開披露數據，按最新年報／政策區間，站長手動維護）
         "funds": FUNDS,

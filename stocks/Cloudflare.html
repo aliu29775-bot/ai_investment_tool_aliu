@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloudflare — AIShan+ 個股分析</title>
+<meta name="description" content="Cloudflare 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Cloudflare", "ticker": "NET", "sector": "科技", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 349.02, "currency": "USD", "change_pct": -2.73, "asof": "2026-09-28", "name": "Cloudflare, Inc.", "closes": [351.67, 353.0, 352.33, 358.82, 349.02]}, "finance": {"margins": -0.082100004, "op_margins": -0.07603, "roe": -0.14425999, "rev_growth": 0.359, "earn_growth": null, "fcf": 691946368, "debt_equity": 217.858, "cash": 4162798080, "debt": 3529349888, "revenue": 2512349952, "ebitda": -3610000, "eps": -0.59}, "multiples": {"pe": -591.5593220338983, "fwd_pe": 208.22842, "pb": 76.67399, "ps": null, "evebitda": -34250.83, "peg": 2.38, "dy": null, "beta": 1.664, "mktcap": null, "shares": 322618775}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 691946368, "shares": 322618775, "gs": [0.22, 0.25, 0.28], "value": 91.0915762797025, "matrix": [{"r": 0.075, "cells": [98.7, 110.71, 123.89]}, {"r": 0.085, "cells": [81.31, 91.09, 101.82]}, {"r": 0.095, "cells": [68.92, 77.12, 86.1]}], "pessimistic": 68.92, "neutral": 91.09, "optimistic": 123.89, "premium": -0.739}, "ddm": null, "relative": {"pe": {"own": -591.56, "median": 16.37, "premium": -37.1324}, "pb": {"own": 76.67, "median": 16.37, "premium": 3.6832}, "evebitda": {"own": -34250.83, "median": 16.37, "premium": -2093.037}}, "ta": {"n": 251, "ma50": 299.73, "ma200": 231.59, "support": 242.41, "resistance": 358.82, "52w_low": 160.19, "52w_high": 358.82, "ret_1y": 0.6133, "vol_trend": -0.0121, "spy_1y": 0.1655, "rs": 0.4478}, "holders": [{"org": "Capital World Investors", "pct": 7.57, "value": 8490152754}, {"org": "Blackrock Inc.", "pct": 6.72, "value": 7538450283}, {"org": "Vanguard Portfolio Management LLC", "pct": 5.24, "value": 5870420583}, {"org": "Morgan Stanley", "pct": 4.75, "value": 5325461121}, {"org": "BAILLIE GIFFORD & CO", "pct": 4.55, "value": 5095201117}], "inst_pct": 0.90182, "analyst": {"target": 336.80646, "n": 31, "rec": 1.97059, "low": 160.0, "high": 400.0}, "earnings_date": "2026-10-29", "profile": {"biz": "Cloudflare, Inc. operates as a cloud services provider that delivers a range of services to businesses worldwide. The company provides a cloud-based security solution to secure a range of combination of platforms, including public and private cloud, on-premises, software-as-a-service applications, and Internet of things (IoT) devices; and application security products comprising web application firewall, bot management, distributed denial of service mitigation, API security, SSL/TLS encryption, client-side security, and security center products. It also offers application performance solutions, such as content delivery, load balancing, DNS, smart shield, video stream delivery, web optimization, cloudfare waiting room, and cloudfare data localization suite; SASE platform that combines network services and Zero Trust and workplace security products that provides a cloud-based network and security-as-a-service; network services, including magic WAN, magic transit, magic firewall, cloudflare network interconnect, and spectrum. In addition, the company provides zero trust security services which include cloudflare zero trust network access, secure web gateway, and one client; and remote browser isolation, cloud access security broker, cloud email security, digital experience monitoring, and data loss prevention products. Further, it provides developer-based solutions comprising workers AI, vectorize, AI gateway, cloudflare workers, cloudflare pages, R2 object storage, workers KV, durable objects, D1, hyperdrive, queues, cloudfare stream, cloudfare images, and cloudflare realtime; and consumer offerings, such as 1.1.1.1 DNS and with WARPm and cloudfare registrar that offers secure registration and management of domain names. The company serves customers in technology, healthcare, financial services, consumer and retail, industrial, and non-profit industries, as well as government. The company was incorporated in 2009 and is headquartered in San Francisco, California.", "industry": "Software - Infrastructure", "website": "https://www.cloudflare.com", "country": "United States"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

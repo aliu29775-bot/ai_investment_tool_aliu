@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>洛克希德马丁 — AIShan+ 個股分析</title>
+<meta name="description" content="洛克希德马丁 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "洛克希德马丁", "ticker": "LMT", "sector": "工業", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 519.56, "currency": "USD", "change_pct": -0.79, "asof": "2026-09-28", "name": "Lockheed Martin Corporation", "closes": [535.4, 522.34, 524.68, 523.7, 519.56]}, "finance": {"margins": 0.08163, "op_margins": 0.119569995, "roe": 0.89165, "rev_growth": 0.105, "earn_growth": 4.438, "fcf": 5562625024, "debt_equity": 234.238, "cash": 3791000064, "debt": 20537999360, "revenue": 77013999616, "ebitda": 9680000000, "eps": 27.12}, "multiples": {"pe": 19.15781710914454, "fwd_pe": 15.862427, "pb": 13.628875, "ps": null, "evebitda": 14.117, "peg": 0.98, "dy": 0.026600001, "beta": 0.104, "mktcap": null, "shares": 230790753}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 5562625024, "shares": 230790753, "gs": [0.22, 0.25, 0.28], "value": 1023.6625191494246, "matrix": [{"r": 0.075, "cells": [1109.18, 1244.13, 1392.25]}, {"r": 0.085, "cells": [913.78, 1023.66, 1144.2]}, {"r": 0.095, "cells": [774.55, 866.61, 967.53]}], "pessimistic": 774.55, "neutral": 1023.66, "optimistic": 1392.25, "premium": 0.9702}, "ddm": null, "relative": {"pe": {"own": 19.16, "median": 17.05, "premium": 0.1236}, "pb": {"own": 13.63, "median": 17.05, "premium": -0.2007}, "evebitda": {"own": 14.12, "median": 17.05, "premium": -0.172}}, "ta": {"n": 251, "ma50": 557.31, "ma200": 562.01, "support": 507.09, "resistance": 608.68, "52w_low": 439.19, "52w_high": 676.7, "ret_1y": 0.0659, "vol_trend": 0.0259, "spy_1y": 0.1655, "rs": -0.0996}, "holders": [{"org": "State Street Corporation", "pct": 14.29, "value": 17132579244}, {"org": "Blackrock Inc.", "pct": 8.18, "value": 9808242203}, {"org": "Vanguard Capital Management LLC", "pct": 6.13, "value": 7356324271}, {"org": "Charles Schwab Investment Management, In", "pct": 3.38, "value": 4055685340}, {"org": "Morgan Stanley", "pct": 2.47, "value": 2964821326}], "inst_pct": 0.76662004, "analyst": {"target": 637.8421, "n": 19, "rec": 2.42857, "low": 503.0, "high": 756.0}, "earnings_date": "2026-10-20", "profile": {"biz": "Lockheed Martin Corporation, an aerospace and defense company, engages in the research, design, development, manufacture, integration, and sustainment of technology systems, products, and services in the United States, Europe, Asia, the Middle East, and internationally. The company operates through four segments: Aeronautics; Missiles and Fire Control (MFC); Rotary and Mission Systems (RMS); and Space. The Aeronautics segment offers combat and air mobility aircraft, unmanned air vehicles, and related technologies. The MFC segment provides air and missile defense systems; tactical missiles and precision strike weapon systems; logistics; fire control systems; mission operations support, readiness, engineering support, and integration services; and ground vehicles. The RMS segment offers military and commercial helicopters, surface ships, sea- and land-based missile defense systems, radar and laser systems, sea- and air-based mission and combat systems, command and control mission solutions, cyber solutions, simulation and training solutions, and services and support for surface ships. The Space segment provides satellites; space transportation systems; strategic, advanced strike, and defensive systems; and classified systems and services in support of national security systems. This segment also provides network-enabled situational awareness; and integrates space and ground global systems to help its customers gather, analyze, and securely distribute critical intelligence data. It primarily serves the U.S. government and international customers, as well as foreign military sales contracted through the U.S. government. The company was formerly known as The Lockheed Corporation and changed its name to Lockheed Martin Corporation in March 1995. Lockheed Martin Corporation was founded in 1912 and is based in Bethesda, Maryland.", "industry": "Aerospace & Defense", "website": "https://www.lockheedmartin.com", "country": "United States"}, "rel_peers_n": 72}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

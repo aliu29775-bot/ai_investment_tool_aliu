@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>兴业银行 — AIShan+ 個股分析</title>
+<meta name="description" content="兴业银行 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "兴业银行", "ticker": "601166.SS", "sector": "金融", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 17.77, "currency": "CNY", "change_pct": -0.62, "asof": "2026-09-28", "name": "INDUSTRIAL BANK CO LTD", "closes": [17.73, 17.89, 17.87, 17.88, 17.77]}, "finance": {"margins": 0.49668, "op_margins": 0.56608003, "roe": 0.08176, "rev_growth": -0.054, "earn_growth": -0.006, "fcf": null, "debt_equity": null, "cash": 2101799944192, "debt": 1702695010304, "revenue": 151927996416, "ebitda": null, "eps": 3.2}, "multiples": {"pe": 5.553125, "fwd_pe": 5.4676924, "pb": 0.44834113, "ps": null, "evebitda": null, "peg": 2.04, "dy": 0.1189, "beta": 0.206, "mktcap": null, "shares": 21162859513}, "dcf": {"g": -0.006, "r": 0.085, "fcf": null, "shares": 21162859513, "gs": [-0.036, -0.006, 0.024], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": {"value": 26.14, "dps": 2.13, "g": -0.006, "premium": 0.4709}, "relative": {"pe": {"own": 5.55, "median": 6.53, "premium": -0.1501}, "pb": {"own": 0.45, "median": 6.53, "premium": -0.9314}}, "ta": {"n": 241, "ma50": 18.14, "ma200": 18.63, "support": 17.07, "resistance": 19.1, "ret_1y": -0.1137, "vol_trend": -0.3904, "spy_1y": 0.1655, "rs": -0.2792}, "holders": [], "inst_pct": 0.19685, "analyst": {"target": 21.60455, "n": 11, "rec": 2.07692, "low": 15.91, "high": 26.4}, "earnings_date": null, "profile": {"biz": "Industrial Bank Co., Ltd. provides banking products and services in the People's Republic of China. The company's banking services include accepting deposits from the public; granting short-term, medium-term, and long-term loans; domestic and overseas settlement services; issuance of discount and acceptance bills and notes, as well as financial bonds; agency issuance and encashment, and underwriting of government bonds and debentures; trading of government and financial bonds and debentures; agency trading and trading of marketable securities except stock; asset custody business; settlement and sale of foreign exchanges; and inter-bank lending and borrowings. It also provides bank cards; letters of credit and guarantees; remittance and insurance agent services; safety deposit box and financial advisory services; and credit investigation, advisory, and attestation services. In addition, the company is involved in finance leasing, trust, fund raising and marketing, asset management, consumer finance, equity investment, industrial investment, and investment management and consulting; financial, business, and enterprise management consulting; financial data processing, commodity and financial futures brokerage, futures investment consulting, and economic information consulting; import and export of gold and its products; sale of public offering of fund; custody of securities investment funds; wealth management consulting and advisory services; and application software development and operational, and system integration services. Further, it engages in the acquisition, transfer, and disposal of bad debts in batches of financial and non-financial institutions; issuance of wealth management products and debt-to-equity swaps services; and other banking activities. Additionally, the company offers debit and credit card, and internet and mobile banking services. Industrial Bank Co., Ltd. was founded in 1988 and is headquartered in Fuzhou, the People's Republic of China.", "industry": "Banks - Regional", "website": "https://www.cib.com.cn", "country": "China"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

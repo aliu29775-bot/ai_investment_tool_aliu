@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>李宁 — AIShan+ 個股分析</title>
+<meta name="description" content="李宁 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "李宁", "ticker": "2331.HK", "sector": "消費", "region": "港股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 12.45, "currency": "HKD", "change_pct": 1.72, "asof": "2026-09-28", "name": "LI NING", "closes": [12.36, 12.38, 12.3, 12.24, 12.45]}, "finance": {"margins": 0.100430004, "op_margins": 0.16517, "roe": 0.10799, "rev_growth": 0.028, "earn_growth": 0.045, "fcf": 1618724352, "debt_equity": 6.906, "cash": 15219100672, "debt": 1979270016, "revenue": 30016903168, "ebitda": 4863459840, "eps": 1.36}, "multiples": {"pe": 9.15441176470588, "fwd_pe": 11.3648815, "pb": 0.9592976, "ps": null, "evebitda": 3.77, "peg": 1.52, "dy": 0.0551, "beta": 0.932, "mktcap": null, "shares": 2584813753}, "dcf": {"g": 0.045, "r": 0.085, "fcf": 1618724352, "shares": 2584813753, "gs": [0.015, 0.045, 0.075], "value": 11.667904241385562, "matrix": [{"r": 0.075, "cells": [12.28, 14.02, 15.97]}, {"r": 0.085, "cells": [10.24, 11.67, 13.26]}, {"r": 0.095, "cells": [8.78, 9.99, 11.33]}], "pessimistic": 8.78, "neutral": 11.67, "optimistic": 15.97, "premium": -0.0627}, "ddm": {"value": 23.34, "dps": 0.67, "g": 0.045, "premium": 0.8746}, "relative": {"pe": {"own": 9.15, "median": 11.42, "premium": -0.1987}, "pb": {"own": 0.96, "median": 11.42, "premium": -0.916}, "evebitda": {"own": 3.77, "median": 11.42, "premium": -0.67}}, "ta": {"n": 245, "ma50": 13.86, "ma200": 17.87, "support": 12.24, "resistance": 15.27, "ret_1y": -0.2753, "vol_trend": -0.4093, "spy_1y": 0.1655, "rs": -0.4408}, "holders": [{"org": "Pacer Advisors, Inc.", "pct": 0.03, "value": 8342271}], "inst_pct": 0.43012002, "analyst": {"target": 18.900682, "n": 29, "rec": 1.73333, "low": 12.026342, "high": 40.073784}, "earnings_date": "2026-08-20", "profile": {"biz": "Li Ning Company Limited, a sports brand company, engages in the research and development, design, manufacture, marketing, distribution, and retail of sporting goods in the People's Republic of China and internationally. The company offers sporting goods, including professional and leisure footwear, apparel, equipment, and accessories under the LI-NING brand. It also develops, manufactures, markets, distributes, and sells outdoor sports products under the AIGLE brand; table tennis products under the Double Happiness brand name; and badminton products under the Kason brand name. In addition, the company provides brand licensing, administrative, research and development, and property management services. Further, it operates conventional stores, flagship stores, China LI-NING stores, factory outlets, and multi-brand stores under the LI-NING brand. Li Ning Company Limited was founded in 1990 and is headquartered in Beijing, the People's Republic of China.", "industry": "Leisure", "website": "https://www.lining.com", "country": "China"}, "rel_peers_n": 144}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

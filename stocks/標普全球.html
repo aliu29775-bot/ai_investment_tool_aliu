@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>標普全球 — AIShan+ 個股分析</title>
+<meta name="description" content="標普全球 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "標普全球", "ticker": "SPGI", "sector": "金融", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 403.3, "currency": "USD", "change_pct": 0.01, "asof": "2026-09-28", "name": "S&P Global Inc.", "closes": [404.47, 402.44, 406.5, 403.25, 403.3]}, "finance": {"margins": 0.30536, "op_margins": 0.4479, "roe": 0.14255, "rev_growth": 0.104, "earn_growth": 0.177, "fcf": 5448249856, "debt_equity": 42.98, "cash": 4134000128, "debt": 15747999744, "revenue": 16122000384, "ebitda": 8143000064, "eps": 16.41}, "multiples": {"pe": 24.57647775746496, "fwd_pe": 19.946339, "pb": 3.7742734, "ps": null, "evebitda": 16.658, "peg": 1.93, "dy": 0.0095999995, "beta": 1.077, "mktcap": null, "shares": 294800000}, "dcf": {"g": 0.177, "r": 0.085, "fcf": 5448249856, "shares": 294800000, "gs": [0.147, 0.177, 0.207], "value": 593.0252582279057, "matrix": [{"r": 0.075, "cells": [636.63, 718.39, 808.61]}, {"r": 0.085, "cells": [526.35, 593.03, 666.55]}, {"r": 0.095, "cells": [447.71, 503.66, 565.31]}], "pessimistic": 447.71, "neutral": 593.03, "optimistic": 808.61, "premium": 0.4704}, "ddm": null, "relative": {"pe": {"own": 24.58, "median": 6.53, "premium": 2.7614}, "pb": {"own": 3.77, "median": 6.53, "premium": -0.4224}, "evebitda": {"own": 16.66, "median": 6.53, "premium": 1.5495}}, "ta": {"n": 251, "ma50": 421.6, "ma200": 426.06, "support": 402.44, "resistance": 457.38, "52w_low": 369.69, "52w_high": 516.89, "ret_1y": -0.125, "vol_trend": -0.2509, "spy_1y": 0.1655, "rs": -0.2905}, "holders": [{"org": "Blackrock Inc.", "pct": 8.13, "value": 9671773341}, {"org": "Vanguard Capital Management LLC", "pct": 6.55, "value": 7784584687}, {"org": "State Street Corporation", "pct": 4.91, "value": 5840908626}, {"org": "TCI Fund Management Ltd", "pct": 4.78, "value": 5679253086}, {"org": "Morgan Stanley", "pct": 2.48, "value": 2947831728}], "inst_pct": 0.90816003, "analyst": {"target": 520.3, "n": 20, "rec": 1.33333, "low": 485.0, "high": 553.0}, "earnings_date": "2026-10-29", "profile": {"biz": "S&P Global Inc., together with its subsidiaries, provides benchmarks, data, analytics, and workflow solutions in the global capital, energy and commodity, and automotive markets. It operates through four segments: S&P Global Market Intelligence, S&P Global Ratings, S&P Global Energy, and S&P Dow Jones Indices. The S&P Global Market Intelligence segment provides multi-asset-class data and analytics integrated with purpose-built workflow solutions. This segment offers Data, Analytics & Insights, a desktop product suite that provides data, analytics, and third-party research for global finance and corporate professionals; research, reference data, market data, derived analytics, and valuation services; enterprise solutions, such as software and workflow solutions; and credit and risk solutions for selling Ratings' credit ratings and related data and research, analytics, and financial risk solutions. The S&P Global Ratings segment operates as an independent provider of credit ratings, research, and analytics offering investors information and independent benchmarks for their investment and financial decisions as well as access to the capital markets. The S&P Global Energy segment provides information and benchmark prices for the energy and commodity markets. The S&P Dow Jones Indices segment operates as an index provider that maintains various valuation and index benchmarks for investment advisors, wealth managers, and institutional investors. It has operations in the United States, European region, Asia, and internationally. S&P Global Inc. was founded in 1860 and is headquartered in New York, New York.", "industry": "Financial Data & Stock Exchanges", "website": "https://www.spglobal.com", "country": "United States"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

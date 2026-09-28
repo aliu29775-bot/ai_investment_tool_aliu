@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>平安银行 — AIShan+ 個股分析</title>
+<meta name="description" content="平安银行 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "平安银行", "ticker": "000001.SZ", "sector": "金融", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 11.3, "currency": "CNY", "change_pct": -0.0, "asof": "2026-09-28", "name": "PAB", "closes": [11.73, 11.71, 11.6, 11.3, 11.3]}, "finance": {"margins": 0.47349, "op_margins": 0.57585996, "roe": 0.08213, "rev_growth": -0.011, "earn_growth": 0.048, "fcf": null, "debt_equity": null, "cash": 1148908994560, "debt": 819644006400, "revenue": 91785003008, "ebitda": null, "eps": 2.13}, "multiples": {"pe": 5.305164319248827, "fwd_pe": 5.124391, "pb": 0.46835494, "ps": null, "evebitda": null, "peg": 0.95, "dy": 0.0539, "beta": 0.499, "mktcap": null, "shares": 19405918198}, "dcf": {"g": 0.048, "r": 0.085, "fcf": null, "shares": 19405918198, "gs": [0.018000000000000002, 0.048, 0.078], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": {"value": 23.68, "dps": 0.61, "g": 0.048, "premium": 1.0953}, "relative": {"pe": {"own": 5.31, "median": 6.53, "premium": -0.1881}, "pb": {"own": 0.47, "median": 6.53, "premium": -0.9283}}, "ta": {"n": 241, "ma50": 11.47, "ma200": 11.14, "support": 10.45, "resistance": 11.92, "ret_1y": -0.0062, "vol_trend": -0.2349, "spy_1y": 0.1655, "rs": -0.1717}, "holders": [], "inst_pct": 0.15032, "analyst": {"target": 13.54412, "n": 17, "rec": 1.90476, "low": 11.5, "high": 15.7}, "earnings_date": null, "profile": {"biz": "Ping An Bank Co., Ltd. provides commercial banking products and services for individual and corporate customers, government agencies, institutions, and other small businesses in China and internationally. The company operates through three segments: Wholesale Financial Services, Retail Financial Services, and Other Businesses. It offers deposit products, including demand, time, call, negotiated, agreement, and margin deposits; foreign currency, corporate, and structured deposits. The company also provides loans, such as working capital, fixed asset, corporate fixed deposit certificate pledge, commercial property mortgage, syndicated, cross-border syndicated, real estate development, government platform, and cross-border working capital loans, as well as corporate client account overdraft, online banking revolving loans for small and medium-sized enterprises, offshore foreign exchange deposits, and offshore cross-border financing loans. In addition, it offers settlement, offshore, corporate finance, cash management, trade finance, custody, corporate e-banking, corporate intermediary, interbank, and wealth management services, as well as bank cards. The company was founded in 1987 and is headquartered in Shenzhen, China.", "industry": "Banks - Regional", "website": "https://bank.pingan.com", "country": "China"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

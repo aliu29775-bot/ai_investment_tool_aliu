@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贝莱德 — AIShan+ 個股分析</title>
+<meta name="description" content="贝莱德 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "贝莱德", "ticker": "BLK", "sector": "金融", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 1086.31, "currency": "USD", "change_pct": 1.2, "asof": "2026-09-28", "name": "BlackRock, Inc.", "closes": [1090.27, 1066.66, 1060.89, 1073.45, 1086.31]}, "finance": {"margins": 0.24089001, "op_margins": 0.35079, "roe": 0.122779995, "rev_growth": 0.306, "earn_growth": 0.196, "fcf": 7578124800, "debt_equity": 23.192, "cash": 13843000320, "debt": 14968000512, "revenue": 27299000320, "ebitda": 11116000256, "eps": 41.71}, "multiples": {"pe": 26.044353871973147, "fwd_pe": 16.8979, "pb": 2.9225137, "ps": null, "evebitda": 15.859, "peg": 0.91, "dy": 0.0211, "beta": 1.429, "mktcap": null, "shares": 154869259}, "dcf": {"g": 0.196, "r": 0.085, "fcf": 7578124800, "shares": 154869259, "gs": [0.166, 0.196, 0.226], "value": 1691.2435832260378, "matrix": [{"r": 0.075, "cells": [1820.18, 2050.65, 2304.58]}, {"r": 0.085, "cells": [1503.38, 1691.24, 1898.1]}, {"r": 0.095, "cells": [1277.52, 1435.09, 1608.48]}], "pessimistic": 1277.52, "neutral": 1691.24, "optimistic": 2304.58, "premium": 0.5569}, "ddm": null, "relative": {"pe": {"own": 26.04, "median": 6.53, "premium": 2.986}, "pb": {"own": 2.92, "median": 6.53, "premium": -0.5527}, "evebitda": {"own": 15.86, "median": 6.53, "premium": 1.4272}}, "ta": {"n": 251, "ma50": 1108.38, "ma200": 1061.39, "support": 990.34, "resistance": 1182.84, "52w_low": 922.9, "52w_high": 1202.59, "ret_1y": -0.0607, "vol_trend": -0.2186, "spy_1y": 0.1655, "rs": -0.2262}, "holders": [{"org": "Blackrock Inc.", "pct": 6.55, "value": 11012516016}, {"org": "Vanguard Capital Management LLC", "pct": 5.99, "value": 10081536347}, {"org": "State Street Corporation", "pct": 4.14, "value": 6968334665}, {"org": "Temasek Holdings (Private) Ltd", "pct": 3.35, "value": 5643559995}, {"org": "Bank of America Corporation", "pct": 2.96, "value": 4981118345}], "inst_pct": 0.84619004, "analyst": {"target": 1322.75, "n": 16, "rec": 1.47059, "low": 1190.0, "high": 1479.0}, "earnings_date": "2026-10-14", "profile": {"biz": "BlackRock, Inc. is a publicly owned investment manager. The firm primarily provides its services to institutional, intermediary, and individual investors including corporate, public, union, and industry pension plans, insurance companies, third-party mutual funds, endowments, public institutions, governments, foundations, charities, sovereign wealth funds, corporations, official institutions, and banks. It also provides global risk management and advisory services. The firm manages separate client-focused equity, fixed income, and balanced portfolios. It also launches and manages open-end and closed-end mutual funds, offshore funds, unit trusts, and alternative investment vehicles including structured funds. The firm launches equity, fixed income, balanced, and real estate mutual funds. It also launches equity, fixed income, balanced, currency, commodity, and multi-asset exchange traded funds. The firm also launches and manages hedge funds. It invests in the public equity, fixed income, real estate, currency, commodity, and alternative markets across the globe. The firm primarily invests in growth and value stocks of small-cap, mid-cap, SMID-cap, large-cap, and multi-cap companies. It also invests in dividend-paying equity securities. The firm invests in investment grade municipal securities, government securities including securities issued or guaranteed by a government or a government agency or instrumentality, corporate bonds, and asset-backed and mortgage-backed securities. It employs fundamental and quantitative analysis with a focus on bottom-up and top-down approach to make its investments. The firm employs liquidity, asset allocation, balanced, real estate, and alternative strategies to make its investments. In real estate sector, it seeks to invest in Poland and Germany. The firm benchmarks the performance of its portfolios against various S&P, Russell, Barclays, MSCI, Citigroup, and Merrill Lynch indices. BlackRock, Inc. was founded in 1988 and is based in New York, New York with additional offices in Atlanta, Georgia; Boston, Massachusetts; Chicago, Illinois; Dallas, Texas; Denver, Colorado; Greenwich, Connecticut; Houston, Texas; Miami, Florida; Newport Beach, California; Palo Alto, California; Philadelphia, Pennsylvania; Princeton, New Jersey; San Francisco, California; Santa Monica, California; Seattle, Washington; Washington, DC; West Palm Beach, Florida; Wilmington, Delaware; Mexico; Canada; South Africa; Netherlands; Greece; Serbia; Belgium; Hungary; Denmark; Ireland; Scotland; Germany; Switzerland; England; Luxembourg; Spain; Italy; France; Sweden; Austria; India; China; Australia; Hong Kong; South Korea; Singapore; Taiwan; Japan; Colombia; Argentina; Peru; Chile; Brazil; UAE; Saudi Arabia; Israel.", "industry": "Asset Management", "website": "https://www.blackrock.com", "country": "Australia"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

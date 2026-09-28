@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IEF — AIShan+ 個股分析</title>
+<meta name="description" content="IEF 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "IEF", "ticker": "IEF", "sector": "債券", "region": "", "score": {"stars": 4, "value": 3.8, "text": "綜合评分：★★★★☆（3.8/5"}, "verdict": "❓灰色地带", "verdict_class": "neutral", "summary": "中等久期+约4.7%票息是当前利率环境下债券配置的甜点区——分批建仓，不追高。", "reports": [{"title": "IEF（IEF）研究报告", "date": "2026-09-26", "type": "研究", "path": "IEF/IEF研究报告-2026-09-26.html"}], "hot": false, "in_combo": false, "quote": {"price": 90.0, "currency": "USD", "change_pct": 0.35, "asof": "2026-09-28", "name": "iShares 7-10 Year Treasury Bond", "closes": [91.15, 91.16, 90.19, 89.69, 90.0]}, "finance": {"margins": null, "op_margins": null, "roe": null, "rev_growth": null, "earn_growth": null, "fcf": null, "debt_equity": null, "cash": null, "debt": null, "revenue": null, "ebitda": null, "eps": null}, "multiples": {"pe": null, "fwd_pe": null, "pb": null, "ps": null, "evebitda": null, "peg": null, "dy": null, "beta": null, "mktcap": null, "shares": null}, "dcf": {"g": 0.05, "r": 0.085, "fcf": null, "shares": null, "gs": [0.020000000000000004, 0.05, 0.08], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {}, "ta": {"n": 251, "ma50": 92.43, "ma200": 94.65, "support": 89.69, "resistance": 94.18, "52w_low": 89.69, "52w_high": 97.99, "ret_1y": -0.0646, "vol_trend": 0.5647, "spy_1y": 0.1655, "rs": -0.2301}, "holders": [], "inst_pct": null, "analyst": {"target": null, "n": null, "rec": null, "low": null, "high": null}, "earnings_date": null, "profile": {"biz": "The underlying index consists of publicly-issued U.S. Treasury securities that have a remaining maturity of greater than or equal to seven years and less than ten years and have $300 million or more of outstanding face value, excluding amounts held by the Federal Reserve System (the “Fed”). The fund will invest at least 80% of its assets in the component securities of the underlying index, and the fund will invest at least 90% of its assets in U.S. Treasury securities that BFA believes will help the fund track the underlying index.", "industry": "", "website": "", "country": ""}, "rel_peers_n": 24}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

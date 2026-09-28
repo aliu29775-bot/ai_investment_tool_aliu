@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>霍尼韦尔 — AIShan+ 個股分析</title>
+<meta name="description" content="霍尼韦尔 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "霍尼韦尔", "ticker": "HON", "sector": "工業", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 212.55, "currency": "USD", "change_pct": 0.36, "asof": "2026-09-28", "name": "Honeywell International Inc.", "closes": [206.48, 211.85, 212.57, 211.79, 212.55]}, "finance": {"margins": 0.21581, "op_margins": 0.20249, "roe": 0.46577, "rev_growth": 0.043, "earn_growth": 2.639, "fcf": 2610374912, "debt_equity": 185.369, "cash": 9196000256, "debt": 34955001856, "revenue": 38057000960, "ebitda": 8512000000, "eps": 26.02}, "multiples": {"pe": 8.168716372021523, "fwd_pe": 21.490232, "pb": 3.634141, "ps": null, "evebitda": 10.978, "peg": 3.47, "dy": 0.013200001, "beta": 0.901, "mktcap": null, "shares": 316940010}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 2610374912, "shares": 316940010, "gs": [0.22, 0.25, 0.28], "value": 349.8011562041056, "matrix": [{"r": 0.075, "cells": [379.02, 425.14, 475.75]}, {"r": 0.085, "cells": [312.25, 349.8, 390.99]}, {"r": 0.095, "cells": [264.68, 296.13, 330.62]}], "pessimistic": 264.68, "neutral": 349.8, "optimistic": 475.75, "premium": 0.6457}, "ddm": null, "relative": {"pe": {"own": 8.17, "median": 17.05, "premium": -0.5209}, "pb": {"own": 3.63, "median": 17.05, "premium": -0.7869}, "evebitda": {"own": 10.98, "median": 17.05, "premium": -0.3561}}, "ta": {"n": 251, "ma50": 223.53, "ma200": 230.21, "support": 201.38, "resistance": 248.79, "52w_low": 197.32, "52w_high": 260.14, "ret_1y": 0.0329, "vol_trend": -0.0296, "spy_1y": 0.1655, "rs": -0.1326}, "holders": [{"org": "Blackrock Inc.", "pct": 7.19, "value": 4841527096}, {"org": "Vanguard Capital Management LLC", "pct": 6.53, "value": 4398357577}, {"org": "State Street Corporation", "pct": 5.91, "value": 3982840600}, {"org": "Newport Trust Company, LLC", "pct": 4.06, "value": 2734497661}, {"org": "Invesco Ltd.", "pct": 3.55, "value": 2391039812}], "inst_pct": 0.84477997, "analyst": {"target": 261.73914, "n": 23, "rec": 2.0, "low": 186.0, "high": 303.0}, "earnings_date": "2026-10-22", "profile": {"biz": "Honeywell International Inc. engages in the industrial automation, building automation, and energy and sustainability solutions businesses in the United States, Europe, and internationally. The Industrial Automation segment provides automation control and instrumentation products and services; smart energy products; sensing technologies, including custom-engineered sensors and related services; gas detection technologies and personal protective equipment; and system design automation equipment, as well as software and analytics for manufacturing, distribution, and fulfillment operations. The Building Automation segment provides software applications for building control and optimization; sensors, switches, control systems, and instruments for energy management; access control; video surveillance; fire products; and installation, maintenance, and system upgrade services. The Energy and Sustainability Solutions segment, through its UOP business, delivers licensed process technology, equipment, engineering, catalysts, adsorbents, and services for refining, petrochemicals, low-carbon energy, gas and LNG, and industrial solutions, as well as connectivity, data integration, and software solutions. The company was formerly known as AlliedSignal, Inc. Honeywell International Inc. was founded in 1885 and is headquartered in Charlotte, North Carolina.", "industry": "Conglomerates", "website": "https://www.honeywell.com", "country": "United States"}, "rel_peers_n": 72}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>艾伯维 — AIShan+ 個股分析</title>
+<meta name="description" content="艾伯维 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "艾伯维", "ticker": "ABBV", "sector": "醫藥", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 264.34, "currency": "USD", "change_pct": -0.29, "asof": "2026-09-28", "name": "AbbVie Inc.", "closes": [264.48, 265.21, 265.08, 265.12, 264.34]}, "finance": {"margins": 0.098000005, "op_margins": 0.40035, "roe": null, "rev_growth": 0.102, "earn_growth": 2.904, "fcf": 16870250496, "debt_equity": null, "cash": 6568999936, "debt": 70884999168, "revenue": 64385998848, "ebitda": 30762999808, "eps": 3.55}, "multiples": {"pe": 74.46197183098592, "fwd_pe": 16.231987, "pb": null, "ps": null, "evebitda": 17.277, "peg": 0.54, "dy": 0.026199998, "beta": 0.281, "mktcap": null, "shares": 1767117285}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 16870250496, "shares": 1767117285, "gs": [0.22, 0.25, 0.28], "value": 405.46332486538824, "matrix": [{"r": 0.075, "cells": [439.33, 492.79, 551.46]}, {"r": 0.085, "cells": [361.94, 405.46, 453.21]}, {"r": 0.095, "cells": [306.79, 343.25, 383.23]}], "pessimistic": 306.79, "neutral": 405.46, "optimistic": 551.46, "premium": 0.5339}, "ddm": null, "relative": {"pe": {"own": 74.46, "median": 14.28, "premium": 4.2163}, "evebitda": {"own": 17.28, "median": 14.28, "premium": 0.2103}}, "ta": {"n": 251, "ma50": 257.05, "ma200": 230.56, "support": 243.8, "resistance": 265.97, "52w_low": 197.38, "52w_high": 265.97, "ret_1y": 0.1982, "vol_trend": -0.3783, "spy_1y": 0.1655, "rs": 0.0327}, "holders": [{"org": "Blackrock Inc.", "pct": 8.46, "value": 39515766280}, {"org": "Vanguard Capital Management LLC", "pct": 6.53, "value": 30503804122}, {"org": "State Street Corporation", "pct": 4.67, "value": 21833624063}, {"org": "Vanguard Portfolio Management LLC", "pct": 2.74, "value": 12814673285}, {"org": "JPMORGAN CHASE & CO", "pct": 2.71, "value": 12652051319}], "inst_pct": 0.77365, "analyst": {"target": 278.55557, "n": 27, "rec": 1.7, "low": 200.0, "high": 328.0}, "earnings_date": "2026-10-29", "profile": {"biz": "AbbVie Inc., a research-based biopharmaceutical company, engages in the research and development, manufacturing, commercializing, and sale of medicines and therapies worldwide. The company offers Skyrizi to treat autoimmune diseases; Rinvoq to treat inflammatory diseases; Imbruvica for the treatment of adult patients with blood cancers; Venclexta to treat blood cancers; Elahere to treat various cancer; and Epkinly to treat lymphoma; and Emrelis for the treatment of lung cancer. It also provides facial injectables, plastics and regenerative medicine, body contouring, and skincare products; botox Cosmetic for the treatment of glabellar lines, crow's feet, forehead lines, and platysma bands; Juvederm Collection to treat volume loss in the temples, undereye, cheeks, chin, lips and lower face; Vraylar to treat schizophrenia, bipolar disorder, and depressive disorder; Duodopa to treat Parkinson's disease; Ubrelvy to treat migraine; Qulipta for episodic and chronic migraine; and Vyalev for the treatment of motor fluctuations, as well as Botox Therapeutic to treat chronic migraine, overactive bladder, spasticity, cervical dystonia, and other conditions. In addition, the company offers Ozurdex for visual impairment; Lumigan/Ganfort and Alphagan/Combigan for the reduction of elevated intraocular pressure in patients with open angle glaucoma or ocular hypertension; and other eye care products, including Refresh/Optive, Xen, Durysta, and Restasis. Further, it provides Mavyret to treat chronic hepatitis C virus genotype 1-6 infection; Creon, a pancreatic enzyme therapy; and Linzess/Constella to treat irritable bowel syndrome with constipation and chronic idiopathic constipation. The company was incorporated in 2012 and is headquartered in North Chicago, Illinois.", "industry": "Drug Manufacturers - General", "website": "https://www.abbvie.com", "country": "United States"}, "rel_peers_n": 108}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

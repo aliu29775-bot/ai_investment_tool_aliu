@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小米 — AIShan+ 個股分析</title>
+<meta name="description" content="小米 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "小米", "ticker": "1810.HK", "sector": "科技", "region": "", "score": {"stars": 4, "value": 4.0, "text": "四维评分表抽取：生意质量4.5,护城河4.5,管理层4.5,最大风险1.5,估值5.0"}, "verdict": "❌ 不通过", "verdict_class": "negative", "summary": "小米是一家由优秀企业家领导的\"效率型硬件+生态\"公司，四大业务中仅IoT具备真正的宽护城河，手机缺乏定价权、汽车盈利未稳固、互联网变现效率偏低。当前22.80港元已反映大量悲观预期（PE 13.8x、较高点腰斩63%），但DCF法下安全边际不足——值得关注但尚未到\"必须买入\"的价格。", "reports": [{"title": "小米集团（1810.HK）商业模式、护城河与用户价值分析", "date": "2026-06-23", "type": "研究", "path": "小米/01-商业模式分析-段永平视角.html"}, {"title": "小米集团（1810.HK）财务估值分析", "date": "2026-06-23", "type": "估值仓位", "path": "小米/02-财务估值分析-巴菲特视角.html"}, {"title": "小米集团行业格局与竞争态势分析", "date": "2026-06-23", "type": "研究", "path": "小米/03-行业竞争分析-芒格视角.html"}, {"title": "小米集团（1810.HK）投资风险与管理层质量评估报告", "date": "2026-06-23", "type": "组织管理", "path": "小米/04-风险管理层评估-李录视角.html"}, {"title": "小米集团（01810.HK）投资研究报告", "date": "2026-06-23", "type": "研究", "path": "小米/小米-四大师综合分析-20260623.html"}, {"title": "小米集团（1810.HK）投资研究最终报告", "date": "2026-06-23", "type": "研究", "path": "小米/最终报告.html"}], "hot": false, "in_combo": false, "quote": {"price": 25.86, "currency": "HKD", "change_pct": -0.15, "asof": "2026-09-28", "name": "XIAOMI-W", "closes": [27.2, 26.18, 26.58, 25.9, 25.86]}, "finance": {"margins": 0.07533, "op_margins": 0.040120002, "roe": 0.12627, "rev_growth": -0.061, "earn_growth": -0.199, "fcf": -8680713216, "debt_equity": 16.425, "cash": 121723551744, "debt": 44317523968, "revenue": 438100492288, "ebitda": 28217182208, "eps": 1.42}, "multiples": {"pe": 18.211267605633804, "fwd_pe": 19.527887, "pb": 2.1097083, "ps": null, "evebitda": 20.854, "peg": 2.65, "dy": null, "beta": 0.716, "mktcap": null, "shares": 21290375419}, "dcf": {"g": -0.05, "r": 0.085, "fcf": -8680713216, "shares": 21290375419, "gs": [-0.05, -0.05, -0.020000000000000004], "value": -4.97709469015514, "matrix": [{"r": 0.075, "cells": [-5.93, -5.93, -6.82]}, {"r": 0.085, "cells": [-4.98, -4.98, -5.71]}, {"r": 0.095, "cells": [-4.29, -4.29, -4.91]}], "pessimistic": -4.29, "neutral": -4.98, "optimistic": -6.82, "premium": -1.1926}, "ddm": null, "relative": {"pe": {"own": 18.21, "median": 16.37, "premium": 0.1123}, "pb": {"own": 2.11, "median": 16.37, "premium": -0.8711}, "evebitda": {"own": 20.85, "median": 16.37, "premium": 0.2738}}, "ta": {"n": 245, "ma50": 27.33, "ma200": 31.26, "support": 23.1, "resistance": 31.88, "ret_1y": -0.5171, "vol_trend": -0.4645, "spy_1y": 0.1655, "rs": -0.6826}, "holders": [{"org": "Meyer Handelman Co", "pct": 0.0, "value": 584254}, {"org": "Winch Advisory Services LLC", "pct": 0.0, "value": 22239}, {"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 10786620}], "inst_pct": 0.26995, "analyst": {"target": 36.28275, "n": 28, "rec": 1.74194, "low": 22.801327, "high": 80.232864}, "earnings_date": "2026-11-17", "profile": {"biz": "Xiaomi Corporation, an investment holding company, engages in the development and sales of smartphones in Mainland China and internationally. It operates through Smartphones, IoT and Lifestyle Products, Internet Services, and smart electric vehicles segments. The company also offers internet of things (IoT) and lifestyle products comprising smart large home appliances, smart TVs, tablets, wearables and other IoT and lifestyle products; hardware repairment services for products; installation services for certain IoT products; and sale of materials. In addition, it provides internet services, such as advertising, online game, and fintech services; and development, manufacture, and sales of smart electric vehicles. Further, the company in the wholesale and retail of smartphones and ecosystem partners' products; investment activities; sales of smart hardware; software and hardware development; procurement and sales of smartphones, ecosystem partners' products and spare parts, and raw materials; operation of retail stores; and commercial factoring and e-commerce business. Additionally, it provides intra-group capital supervision, collection, remittance, credit guarantee, and interest rate risk management; customer; software related; promotion; electronic payment technology; and technical services. Xiaomi Corporation was incorporated in 2010 and is headquartered in Beijing, the People's Republic of China.", "industry": "Consumer Electronics", "website": "https://www.mi.com", "country": "China"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

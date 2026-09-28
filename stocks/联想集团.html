@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>联想集团 — AIShan+ 個股分析</title>
+<meta name="description" content="联想集团 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "联想集团", "ticker": "0992.HK", "sector": "科技", "region": "港股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 35.5, "currency": "HKD", "change_pct": -4.47, "asof": "2026-09-28", "name": "LENOVO GROUP", "closes": [36.74, 36.92, 36.02, 37.16, 35.5]}, "finance": {"margins": 0.00875, "op_margins": 0.00071000005, "roe": 0.14668, "rev_growth": 0.431, "earn_growth": null, "fcf": -3329406720, "debt_equity": 81.616, "cash": 6117411840, "debt": 6666160128, "revenue": 91187453952, "ebitda": 3919305984, "eps": 1.09}, "multiples": {"pe": 32.56880733944954, "fwd_pe": 92.3229, "pb": 8.428374, "ps": null, "evebitda": 118.135, "peg": 0.97, "dy": 0.0114, "beta": 1.134, "mktcap": null, "shares": 12404659302}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -3329406720, "shares": 12404659302, "gs": [0.22, 0.25, 0.28], "value": -11.399280282469109, "matrix": [{"r": 0.075, "cells": [-12.35, -13.85, -15.5]}, {"r": 0.085, "cells": [-10.18, -11.4, -12.74]}, {"r": 0.095, "cells": [-8.63, -9.65, -10.77]}], "pessimistic": -8.63, "neutral": -11.4, "optimistic": -15.5, "premium": -1.3211}, "ddm": null, "relative": {"pe": {"own": 32.57, "median": 16.37, "premium": 0.9893}, "pb": {"own": 8.43, "median": 16.37, "premium": -0.4852}, "evebitda": {"own": 118.14, "median": 16.37, "premium": 6.2157}}, "ta": {"n": 245, "ma50": 30.07, "ma200": 17.53, "support": 20.88, "resistance": 37.58, "ret_1y": 2.0763, "vol_trend": -0.3621, "spy_1y": 0.1655, "rs": 1.9108}, "holders": [{"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 10020159}], "inst_pct": 0.32407, "analyst": {"target": 44.743885, "n": 19, "rec": 1.40909, "low": 11.021241, "high": 66.00978}, "earnings_date": "2026-11-18", "profile": {"biz": "Lenovo Group Limited, an investment holding company, develops, manufactures, and markets technology products and services. It operates through Intelligent Devices Group, Infrastructure Solutions Group, and Solutions and Services Group segments. The company offers commercial and consumer personal computers, servers and workstations, and smartphones, as well as laptops, desktops, tablets, monitors, and accessories and software. It also provides consulting, deployment, managed, support, and security services. In addition, the company manufactures and distributes IT products, computers, computer hardware, and peripheral equipment; and offers IT, business planning, management, global supply chain, finance and accounting, administration support, procurement agency, data management, intellectual property, and investment management services. Further, it is involved in the retail and service business for consumer electronic products and related digital services; development, ownership, licensing, and sale of communications hardware and software; and develops software and applications. It operates in China, the Asia Pacific, Europe, the Middle East, Africa, and the Americas. The company was founded in 1984 and is headquartered in Quarry Bay, Hong Kong.", "industry": "Computer Hardware", "website": "https://www.lenovo.com", "country": "Hong Kong"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

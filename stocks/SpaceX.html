@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpaceX — AIShan+ 個股分析</title>
+<meta name="description" content="SpaceX 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "SpaceX", "ticker": null, "sector": "工業", "region": "", "score": null, "verdict": "至少卖出50-70%锁定利润", "verdict_class": "negative", "summary": null, "reports": [{"title": "SpaceX (SPCX) 投资研究报告", "date": "2026-06-23", "type": "研究", "path": "SpaceX/SpaceX-research-20260623.html"}, {"title": "一个季度烧掉88亿：逐字拆解SpaceX 280页招股书", "date": "2026-05-21", "type": "研究", "path": "SpaceX/SpaceX-IPO-招股书深度拆解-20260521.html"}], "hot": false, "in_combo": false, "quote": {}, "finance": {"margins": null, "op_margins": null, "roe": null, "rev_growth": null, "earn_growth": null, "fcf": null, "debt_equity": null, "cash": null, "debt": null, "revenue": null, "ebitda": null, "eps": null}, "multiples": {"pe": null, "fwd_pe": null, "pb": null, "ps": null, "evebitda": null, "peg": null, "dy": null, "beta": null, "mktcap": null, "shares": null}, "dcf": {"g": 0.05, "r": 0.085, "fcf": null, "shares": null, "gs": [0.020000000000000004, 0.05, 0.08], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {}, "ta": {"n": 0}, "holders": [], "inst_pct": null, "analyst": {"target": null, "n": null, "rec": null, "low": null, "high": null}, "earnings_date": null, "profile": {"biz": "", "industry": "", "website": "", "country": ""}, "rel_peers_n": 72}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

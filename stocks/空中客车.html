@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>空中客车 — AIShan+ 個股分析</title>
+<meta name="description" content="空中客车 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "空中客车", "ticker": "AIR.PA", "sector": "工業", "region": "歐洲", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 194.36, "currency": "EUR", "change_pct": 1.02, "asof": "2026-09-28", "name": "AIRBUS SE", "closes": [194.6, 195.02, 194.38, 192.4, 194.36]}, "finance": {"margins": 0.07714, "op_margins": 0.113570005, "roe": 0.23193, "rev_growth": 0.277, "earn_growth": 1.258, "fcf": 3128750080, "debt_equity": 54.988, "cash": 13128999936, "debt": 14275999744, "revenue": 76985999360, "ebitda": 9004000256, "eps": 7.5}, "multiples": {"pe": 25.91466666666667, "fwd_pe": 22.318922, "pb": 5.947814, "ps": null, "evebitda": 17.05, "peg": 1.4, "dy": 0.0166, "beta": 0.878, "mktcap": null, "shares": 791480489}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 3128750080, "shares": 791480489, "gs": [0.22, 0.25, 0.28], "value": 167.89048410181294, "matrix": [{"r": 0.075, "cells": [181.92, 204.05, 228.34]}, {"r": 0.085, "cells": [149.87, 167.89, 187.66]}, {"r": 0.095, "cells": [127.03, 142.13, 158.68]}], "pessimistic": 127.03, "neutral": 167.89, "optimistic": 228.34, "premium": -0.1362}, "ddm": null, "relative": {"pe": {"own": 25.91, "median": 17.05, "premium": 0.5199}, "pb": {"own": 5.95, "median": 17.05, "premium": -0.6512}, "evebitda": {"own": 17.05, "median": 17.05, "premium": 0.0}}, "ta": {"n": 255, "ma50": 203.21, "ma200": 189.7, "support": 191.78, "resistance": 215.4, "52w_low": 159.18, "52w_high": 220.2, "ret_1y": -0.0068, "vol_trend": 0.2258, "spy_1y": 0.1655, "rs": -0.1723}, "holders": [], "inst_pct": 0.3717, "analyst": {"target": 230.95651, "n": 23, "rec": 1.79167, "low": 183.0, "high": 260.0}, "earnings_date": "2026-10-28", "profile": {"biz": "Airbus SE, together with its subsidiaries, engages in the design, manufacture, and delivery of aeronautics and aerospace products, services, and solutions worldwide. It operates through three segments: Airbus, Airbus Helicopters, and Airbus Defence and Space. The Airbus segment develops, manufactures, markets, and sells commercial jet passenger aircraft, freighter aircraft, regional turboprop aircraft, and aircraft components, as well as provides aircraft conversion and related services. The Airbus Helicopters segment develops, manufactures, markets, and sells civil and military helicopters; and provides uncrewed aerial systems and their related services. The Airbus Defence and Space segment designs, develops, delivers, and supports crewed and uncrewed military air systems and related services. This segment also offers civil and defence space systems for telecommunications, earth observations, navigation, and science and orbital systems; and services around data processing from platforms, secure communication, and cyber security. The company was formerly known as Airbus Group SE and changed its name to Airbus SE in April 2017. The company was incorporated in 1998 and is headquartered in Leiden, the Netherlands.", "industry": "Aerospace & Defense", "website": "https://www.airbus.com", "country": "Netherlands"}, "rel_peers_n": 72}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

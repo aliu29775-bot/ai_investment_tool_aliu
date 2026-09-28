@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>菲利普莫里斯 — AIShan+ 個股分析</title>
+<meta name="description" content="菲利普莫里斯 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "菲利普莫里斯", "ticker": "PM", "sector": "消費", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 190.48, "currency": "USD", "change_pct": -0.53, "asof": "2026-09-28", "name": "Philip Morris International Inc", "closes": [187.48, 190.23, 190.84, 191.5, 190.48]}, "finance": {"margins": 0.25559, "op_margins": 0.40002, "roe": null, "rev_growth": 0.104, "earn_growth": -0.075, "fcf": 9714374656, "debt_equity": null, "cash": 6002999808, "debt": 49138999296, "revenue": 42545000448, "ebitda": 18015000576, "eps": 7.28}, "multiples": {"pe": 26.164835164835164, "fwd_pe": 20.725119, "pb": null, "ps": null, "evebitda": 18.981, "peg": 2.29, "dy": 0.0336, "beta": 0.395, "mktcap": null, "shares": 1558613439}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 9714374656, "shares": 1558613439, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 76.08170674260856, "matrix": [{"r": 0.075, "cells": [90.7, 90.7, 104.26]}, {"r": 0.085, "cells": [76.08, 76.08, 87.21]}, {"r": 0.095, "cells": [65.62, 65.62, 75.02]}], "pessimistic": 65.62, "neutral": 76.08, "optimistic": 104.26, "premium": -0.6006}, "ddm": {"value": 48.64, "dps": 6.4, "g": -0.05, "premium": -0.7446}, "relative": {"pe": {"own": 26.16, "median": 11.42, "premium": 1.2902}, "evebitda": {"own": 18.98, "median": 11.42, "premium": 0.6614}}, "ta": {"n": 251, "ma50": 190.08, "ma200": 176.95, "support": 175.95, "resistance": 200.17, "52w_low": 144.33, "52w_high": 200.17, "ret_1y": 0.1552, "vol_trend": -0.013, "spy_1y": 0.1655, "rs": -0.0103}, "holders": [{"org": "Capital World Investors", "pct": 8.54, "value": 25362866868}, {"org": "Blackrock Inc.", "pct": 6.93, "value": 20579367688}, {"org": "Vanguard Capital Management LLC", "pct": 6.53, "value": 19388112462}, {"org": "Capital Research Global Investors", "pct": 5.41, "value": 16048637368}, {"org": "Capital International Investors", "pct": 4.64, "value": 13762610366}], "inst_pct": 0.84420997, "analyst": {"target": 208.13333, "n": 15, "rec": 1.6875, "low": 175.0, "high": 230.0}, "earnings_date": "2026-10-21", "profile": {"biz": "Philip Morris International Inc. operates as a tobacco company. The company offers cigarettes and smoke-free products, including heat-not-burn, e-vapor, and oral nicotine products under the IQOS, VEEV, and ZYN brands; and consumer accessories, such as lighters and matches. It also offers wellness products. The company was incorporated in 1987 and is headquartered in Stamford, Connecticut.", "industry": "Tobacco", "website": "https://www.pmi.com", "country": "United States"}, "rel_peers_n": 144}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

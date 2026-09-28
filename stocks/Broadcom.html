@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Broadcom — AIShan+ 個股分析</title>
+<meta name="description" content="Broadcom 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Broadcom", "ticker": "AVGO", "sector": "科技", "region": "", "score": {"stars": 4, "value": 3.9, "text": "綜合评分：★★★★☆（3.9/5"}, "verdict": "❓灰色地带", "verdict_class": "neutral", "summary": "AI定制芯片+软件现金牛的双引擎仍在，但高杠杆与客户集中让它在周期逆转时更脆弱。", "reports": [{"title": "Broadcom（AVGO）研究报告", "date": "2026-09-26", "type": "研究", "path": "Broadcom/Broadcom研究报告-2026-09-26.html"}], "hot": true, "in_combo": false, "quote": {"price": 352.81, "currency": "USD", "change_pct": 0.7, "asof": "2026-09-28", "name": "Broadcom Inc.", "closes": [362.66, 364.54, 354.99, 350.36, 352.81]}, "finance": {"margins": 0.42944, "op_margins": 0.54307, "roe": 0.44245, "rev_growth": 0.855, "earn_growth": 2.153, "fcf": 30596499456, "debt_equity": 59.604, "cash": 23975000064, "debt": 59419000832, "revenue": 89103998976, "ebitda": 52259999744, "eps": 7.83}, "multiples": {"pe": 45.05874840357599, "fwd_pe": 18.203583, "pb": 16.895412, "ps": null, "evebitda": 32.905, "peg": 0.35, "dy": 0.0074, "beta": 1.457, "mktcap": null, "shares": 4773629865}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 30596499456, "shares": 4773629865, "gs": [0.22, 0.25, 0.28], "value": 272.2189916135867, "matrix": [{"r": 0.075, "cells": [294.96, 330.85, 370.24]}, {"r": 0.085, "cells": [243.0, 272.22, 304.27]}, {"r": 0.095, "cells": [205.97, 230.45, 257.29]}], "pessimistic": 205.97, "neutral": 272.22, "optimistic": 370.24, "premium": -0.2284}, "ddm": null, "relative": {"pe": {"own": 45.06, "median": 16.37, "premium": 1.7522}, "pb": {"own": 16.9, "median": 16.37, "premium": 0.032}, "evebitda": {"own": 32.91, "median": 16.37, "premium": 1.0098}}, "ta": {"n": 251, "ma50": 376.63, "ma200": 368.35, "support": 339.27, "resistance": 427.76, "52w_low": 293.41, "52w_high": 481.57, "ret_1y": 0.0546, "vol_trend": 0.0914, "spy_1y": 0.1655, "rs": -0.1109}, "holders": [{"org": "Blackrock Inc.", "pct": 8.34, "value": 140493818978}, {"org": "Vanguard Capital Management LLC", "pct": 6.48, "value": 109077766660}, {"org": "State Street Corporation", "pct": 4.12, "value": 69468479389}, {"org": "FMR, LLC", "pct": 3.02, "value": 50931359473}, {"org": "Vanguard Portfolio Management LLC", "pct": 2.66, "value": 44807403491}], "inst_pct": 0.79813004, "analyst": {"target": 531.8468, "n": 47, "rec": 1.26, "low": 215.88, "high": 715.0}, "earnings_date": "2026-12-09", "profile": {"biz": "Broadcom Inc. designs, develops, and supplies various semiconductor devices and infrastructure software solutions internationally. The company operates in two segments: Semiconductor Solutions and Infrastructure Software. The company offers networking connectivity, such as custom silicon solutions, ethernet switching & routing, ethernet NIC controllers, physical layer devices, and fiber optic components; wireless device connectivity, including RF semiconductor devices, connectivity solutions, custom touch controllers, and inductive charging ASICS; servers and storage system solutions, such as PCIE switches, SAS & raid products, fibre channel products, and HDD & SSD solutions; broadband solutions, includes set-top box, and broadband access; and industrial. The company also offers a private cloud software portfolio, including the VMware Cloud Foundation, Edge, vSphere foundation, telco cloud platform, private AI, live recovery, application networking and security, application development and data services; mainframe software, such as AIOPS & automation, database & data management, DEVX & DEVOPS, cybersecurity & compliance management, beyond code programs, foundational & open mainframe solutions; cybersecurity, such as endpoint, network, information, application security, and identity & access management; enterprise software; and fc san management. Its products are used in various applications in enterprise and data center networking, including artificial intelligence networking and connectivity, home connectivity, set-top boxes, broadband access, telecommunication equipment, wireless device and base stations, data center servers and storage systems, factory automation, power generation and alternative energy systems, and electronic displays. Broadcom Inc. was founded in 1961 and is headquartered in Palo Alto, California.", "industry": "Semiconductors", "website": "https://www.broadcom.com", "country": "United States"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

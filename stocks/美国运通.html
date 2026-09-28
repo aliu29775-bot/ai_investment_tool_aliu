@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美国运通 — AIShan+ 個股分析</title>
+<meta name="description" content="美国运通 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "美国运通", "ticker": "AXP", "sector": "金融", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 308.89, "currency": "USD", "change_pct": 1.06, "asof": "2026-09-28", "name": "American Express Company", "closes": [313.59, 305.07, 301.96, 305.66, 308.89]}, "finance": {"margins": 0.16141, "op_margins": 0.2032, "roe": 0.34377, "rev_growth": 0.128, "earn_growth": 0.11, "fcf": null, "debt_equity": 172.38, "cash": 45752000512, "debt": 59092000768, "revenue": 70912999424, "ebitda": null, "eps": 16.49}, "multiples": {"pe": 18.7319587628866, "fwd_pe": 15.308569, "pb": 6.0823083, "ps": null, "evebitda": null, "peg": 1.24, "dy": 0.0123000005, "beta": 1.048, "mktcap": null, "shares": 675309833}, "dcf": {"g": 0.11, "r": 0.085, "fcf": null, "shares": 675309833, "gs": [0.08, 0.11, 0.14], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {"pe": {"own": 18.73, "median": 6.53, "premium": 1.8669}, "pb": {"own": 6.08, "median": 6.53, "premium": -0.0691}}, "ta": {"n": 251, "ma50": 331.99, "ma200": 334.08, "support": 301.96, "resistance": 361.57, "52w_low": 292.27, "52w_high": 384.89, "ret_1y": -0.096, "vol_trend": 0.3291, "spy_1y": 0.1655, "rs": -0.2615}, "holders": [{"org": "Berkshire Hathaway, Inc", "pct": 22.45, "value": 46831031343}, {"org": "Blackrock Inc.", "pct": 6.22, "value": 12975355040}, {"org": "Vanguard Capital Management LLC", "pct": 5.21, "value": 10877722797}, {"org": "State Street Corporation", "pct": 4.31, "value": 8987403014}, {"org": "JPMORGAN CHASE & CO", "pct": 3.03, "value": 6319871475}], "inst_pct": 0.64652, "analyst": {"target": 378.53708, "n": 24, "rec": 2.17241, "low": 329.0, "high": 450.0}, "earnings_date": "2026-10-23", "profile": {"biz": "American Express Company, together with its subsidiaries, operates as an integrated payments company in the United States, Europe, the Middle East and Africa, the Asia Pacific, Australia, New Zealand, Latin America, Canada, the Caribbean, and internationally. It operates through four segments: U.S. Consumer Services, Commercial Services, International Card Services, and Global Merchant and Network Services. The company offers credit and charge cards and complementary products and services, including travel, dining, and lifestyle and expense management products and services; and banking and other payment and financing products and services, including deposits and non-card lending. It also provides merchant acquisition and processing, servicing and settlement, fraud prevention, and point-of-sale marketing and information products and services, as well as network services. The company offers its products and services to consumers, small businesses, mid-sized companies, and large corporations through mobile and online applications, affiliate marketing, customer referral programs, third-party service providers and business partners, in-house sales teams, direct mail, telephone, and direct response advertising. American Express Company was founded in 1850 and is headquartered in New York, New York.", "industry": "Credit Services", "website": "https://www.americanexpress.com", "country": "United States"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

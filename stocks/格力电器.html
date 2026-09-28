@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>格力电器 — AIShan+ 個股分析</title>
+<meta name="description" content="格力电器 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "格力电器", "ticker": "000651.SZ", "sector": "消費", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 38.4, "currency": "CNY", "change_pct": -0.26, "asof": "2026-09-28", "name": "GREE", "closes": [38.0, 38.18, 38.36, 38.5, 38.4]}, "finance": {"margins": 0.17148, "op_margins": 0.16518, "roe": 0.18958999, "rev_growth": -0.168, "earn_growth": -0.156, "fcf": 20752064512, "debt_equity": 54.908, "cash": 195252207616, "debt": 83636822016, "revenue": 162519662592, "ebitda": 34103224320, "eps": 4.98}, "multiples": {"pe": 7.710843373493975, "fwd_pe": 7.645473, "pb": 1.4422536, "ps": null, "evebitda": 3.136, "peg": 20.1, "dy": 0.1299, "beta": 0.296, "mktcap": null, "shares": 5601405741}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 20752064512, "shares": 5601405741, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 45.22390819671579, "matrix": [{"r": 0.075, "cells": [53.92, 53.92, 61.97]}, {"r": 0.085, "cells": [45.22, 45.22, 51.84]}, {"r": 0.095, "cells": [39.01, 39.01, 44.59]}], "pessimistic": 39.01, "neutral": 45.22, "optimistic": 61.97, "premium": 0.1776}, "ddm": {"value": 38.0, "dps": 5.0, "g": -0.05, "premium": -0.0104}, "relative": {"pe": {"own": 7.71, "median": 11.42, "premium": -0.3251}, "pb": {"own": 1.44, "median": 11.42, "premium": -0.8738}, "evebitda": {"own": 3.14, "median": 11.42, "premium": -0.7255}}, "ta": {"n": 241, "ma50": 39.83, "ma200": 39.11, "support": 37.98, "resistance": 42.47, "ret_1y": -0.0386, "vol_trend": -0.4017, "spy_1y": 0.1655, "rs": -0.2041}, "holders": [], "inst_pct": 0.27339, "analyst": {"target": 44.37778, "n": 18, "rec": 2.09524, "low": 24.0, "high": 58.0}, "earnings_date": null, "profile": {"biz": "Gree Electric Appliances, Inc. of Zhuhai, together with its subsidiaries, engages in the production and sale of consumer electrical appliances and accessories in China and internationally. It operates through four segments: Consumer Electronics; Industrial Products and Green Energy; Smart Equipment; and Other Businesses. The company offers residential air conditioners; home appliances, including air purifiers, humidifiers, air coolers, electric heaters, fans, kitchen appliances, personal care equipment, refrigerators, and washing machines; and optical storage air conditioning system. It also provides industrial products, such as screw, scroll, and centrifugal chillers, as well as multi-VRF, light commercial equipment, terminals, and packaged units. In addition, the company is involved in finance; information technology research and development; transportation; wholesale and retail trade; medical devices; agriculture; real estate; electrical machinery and equipment manufacturing; and technology promotion and application services. It exports its products. The company was formerly known as Haili Air-conditioning Engineering Co., Ltd. of Zhuhai and changed its name to Gree Electric Appliances, Inc. of Zhuhai in January 1994. Gree Electric Appliances, Inc. of Zhuhai was founded in 1989 and is headquartered in Zhuhai, China.", "industry": "Furnishings, Fixtures & Appliances", "website": "https://www.gree.com.cn", "country": "China"}, "rel_peers_n": 144}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

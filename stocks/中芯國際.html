@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中芯國際 — AIShan+ 個股分析</title>
+<meta name="description" content="中芯國際 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "中芯國際", "ticker": "0981.HK", "sector": "科技", "region": "", "score": {"stars": 3, "value": 3.0, "text": "綜合评分：★★★☆☆（3.0/5"}, "verdict": "❌不通过", "verdict_class": "negative", "summary": "国产替代是叙事不是利润——资本开支黑洞+折旧压制+技术代差，不通过。", "reports": [{"title": "中芯國際（0981.HK）研究报告", "date": "2026-09-26", "type": "研究", "path": "中芯國際/中芯國際研究报告-2026-09-26.html"}], "hot": false, "in_combo": false, "quote": {"price": 61.05, "currency": "HKD", "change_pct": -3.63, "asof": "2026-09-28", "name": "SMIC", "closes": [64.3, 63.8, 63.8, 63.35, 61.05]}, "finance": {"margins": 0.1003, "op_margins": 0.17099, "roe": 0.04201, "rev_growth": 0.361, "earn_growth": 2.587, "fcf": -4107088896, "debt_equity": 37.031, "cash": 12790717440, "debt": 14018957312, "revenue": 10381606912, "ebitda": 5281818112, "eps": 1.02}, "multiples": {"pe": 59.85294117647059, "fwd_pe": 267.07205, "pb": 2.649254, "ps": null, "evebitda": 105.317, "peg": 1.15, "dy": null, "beta": 0.359, "mktcap": null, "shares": 6014488603}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -4107088896, "shares": 6014488603, "gs": [0.22, 0.25, 0.28], "value": -29.002191634549852, "matrix": [{"r": 0.075, "cells": [-31.42, -35.25, -39.44]}, {"r": 0.085, "cells": [-25.89, -29.0, -32.42]}, {"r": 0.095, "cells": [-21.94, -24.55, -27.41]}], "pessimistic": -21.94, "neutral": -29.0, "optimistic": -39.44, "premium": -1.475}, "ddm": null, "relative": {"pe": {"own": 59.85, "median": 16.37, "premium": 2.6558}, "pb": {"own": 2.65, "median": 16.37, "premium": -0.8382}, "evebitda": {"own": 105.32, "median": 16.37, "premium": 5.4328}}, "ta": {"n": 245, "ma50": 67.31, "ma200": 69.54, "support": 60.75, "resistance": 83.55, "ret_1y": -0.202, "vol_trend": -0.617, "spy_1y": 0.1655, "rs": -0.3675}, "holders": [], "inst_pct": 0.19239001, "analyst": {"target": 94.40011, "n": 22, "rec": null, "low": 34.985577, "high": 152.9403}, "earnings_date": "2026-11-12", "profile": {"biz": "Semiconductor Manufacturing International Corporation, an investment holding company, engages in the manufacture, testing, and sale of integrated circuits wafer and various compound semiconductors in the United States, China, and Eurasia. The company is also involved in the manufacturing, sale, and trading of semiconductor products; and research and development activities. In addition, it offers semiconductor foundry and technology services; supporting services comprising design and IP support, photomask manufacturing, etc.; development, design, and technical services related to integrated circuits; marketing related services; and private education services. Further, the company tests and sells self-produced products, and other services. Semiconductor Manufacturing International Corporation was incorporated in 2000 and is headquartered in Shanghai, China.", "industry": "Semiconductors", "website": "https://www.smics.com", "country": "China"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

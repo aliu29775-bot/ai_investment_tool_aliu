@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>建設銀行 — AIShan+ 個股分析</title>
+<meta name="description" content="建設銀行 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "建設銀行", "ticker": "0939.HK", "sector": "金融", "region": "", "score": {"stars": 4, "value": 3.9, "text": "綜合评分：★★★★☆（3.9/5"}, "verdict": "❓灰色地带", "verdict_class": "neutral", "summary": "便宜+高息的银行股，但地产敞口要求更多安全边际——等回调再出手。", "reports": [{"title": "建設銀行（0939.HK）研究报告", "date": "2026-09-26", "type": "研究", "path": "建設銀行/建設銀行研究报告-2026-09-26.html"}], "hot": false, "in_combo": false, "quote": {"price": 9.68, "currency": "HKD", "change_pct": 1.47, "asof": "2026-09-28", "name": "CCB", "closes": [9.74, 9.66, 9.68, 9.53, 9.68]}, "finance": {"margins": 0.55369, "op_margins": 0.65954, "roe": 0.09404001, "rev_growth": 0.079, "earn_growth": -0.005, "fcf": null, "debt_equity": null, "cash": 1350736019456, "debt": 6312447967232, "revenue": 625606000640, "ebitda": null, "eps": 1.52}, "multiples": {"pe": 6.368421052631579, "fwd_pe": 6.968353, "pb": 0.60509926, "ps": null, "evebitda": null, "peg": 1.05, "dy": 0.046, "beta": 0.245, "mktcap": null, "shares": 240417319880}, "dcf": {"g": -0.005, "r": 0.085, "fcf": null, "shares": 240417319880, "gs": [-0.034999999999999996, -0.005, 0.024999999999999998], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": {"value": 5.47, "dps": 0.44, "g": -0.005, "premium": -0.4347}, "relative": {"pe": {"own": 6.37, "median": 6.53, "premium": -0.0253}, "pb": {"own": 0.61, "median": 6.53, "premium": -0.9074}}, "ta": {"n": 245, "ma50": 9.26, "ma200": 8.46, "support": 7.83, "resistance": 9.89, "ret_1y": 0.2934, "vol_trend": -0.3621, "spy_1y": 0.1655, "rs": 0.1279}, "holders": [], "inst_pct": 0.15116, "analyst": {"target": 10.980554, "n": 18, "rec": 1.33333, "low": 9.745625, "high": 12.61171}, "earnings_date": "2026-10-29", "profile": {"biz": "China Construction Bank Corporation engages in the provision of various banking and related financial services to individuals and corporate customers in the People's Republic of China and internationally. It operates through Corporate Finance Business, Personal Finance Business, Treasury and Asset Management Business, and Others segments. The company offers corporate and personal loans; trade financing; deposit taking and wealth management, agency, financial consulting and advisory, cash management, remittance and settlement, guarantee, and investment banking services to individuals, corporations, government agencies, and financial institutions. It is also involved in inter-bank deposit and placement transactions, repurchase and resale transactions, and invests in debt securities; trades in derivatives and foreign currencies; precious metal trading; and custody services. In addition, the company provides finance leasing, transfer and purchase of finance lease assets, and fixed-income investment; motor vehicle, business and household property, construction and engineering, liability insurance, hull and cargo, and short-term health and accidental injury insurance, as well as reinsurance; and cost consulting, whole-process engineering consulting, project management, investment consulting, and bidding agency services; and debt-to-equity swaps and relevant supporting businesses. Further, it engages in private equity investment and management of development funds and other private equity funds; investment banking related services, such as sponsoring and underwriting of public offerings, corporate merger and acquisition and restructuring, direct investment, asset management, and securities brokerage and market research; house rental business; raising and selling of funds; management of annuity and pension funds; and pension advisory service. China Construction Bank Corporation was founded in 1954 and is headquartered in Beijing, the People's Republic of China.", "industry": "Banks - Diversified", "website": "https://www.ccb.com", "country": "China"}, "rel_peers_n": 172}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

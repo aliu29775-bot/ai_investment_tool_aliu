@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>淡水河谷 — AIShan+ 個股分析</title>
+<meta name="description" content="淡水河谷 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "淡水河谷", "ticker": "VALE", "sector": "材料", "region": "新興市場", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 13.61, "currency": "USD", "change_pct": 0.37, "asof": "2026-09-28", "name": "VALE S.A.", "closes": [14.15, 14.19, 13.82, 13.56, 13.61]}, "finance": {"margins": 0.04755, "op_margins": 0.21955, "roe": 0.041149996, "rev_growth": 0.064, "earn_growth": -0.435, "fcf": 13308999680, "debt_equity": 54.603, "cash": 29841999872, "debt": 110007001088, "revenue": 218068992000, "ebitda": 77332996096, "eps": 0.5}, "multiples": {"pe": 27.22, "fwd_pe": 7.003731, "pb": 1.5575966, "ps": null, "evebitda": 1.848, "peg": 0.29, "dy": 0.0875, "beta": 0.748, "mktcap": null, "shares": 4255762795}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 13308999680, "shares": 4255762795, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 38.174364439884116, "matrix": [{"r": 0.075, "cells": [45.51, 45.51, 52.31]}, {"r": 0.085, "cells": [38.17, 38.17, 43.76]}, {"r": 0.095, "cells": [32.93, 32.93, 37.64]}], "pessimistic": 32.93, "neutral": 38.17, "optimistic": 52.31, "premium": 1.8046}, "ddm": {"value": 9.04, "dps": 1.19, "g": -0.05, "premium": -0.3355}, "relative": {"pe": {"own": 27.22, "median": 10.35, "premium": 1.6307}, "pb": {"own": 1.56, "median": 10.35, "premium": -0.8495}, "evebitda": {"own": 1.85, "median": 10.35, "premium": -0.8214}}, "ta": {"n": 251, "ma50": 14.63, "ma200": 15.31, "support": 13.56, "resistance": 15.73, "52w_low": 10.75, "52w_high": 17.82, "ret_1y": 0.272, "vol_trend": 0.0634, "spy_1y": 0.1655, "rs": 0.1065}, "holders": [{"org": "Capital World Investors", "pct": 2.96, "value": 1789824338}, {"org": "Blackrock Inc.", "pct": 1.44, "value": 868705373}, {"org": "FMR, LLC", "pct": 1.25, "value": 753254304}, {"org": "Arrowstreet Capital, Limited Partnership", "pct": 0.72, "value": 434834793}, {"org": "Robeco Institutional Asset Management B.", "pct": 0.68, "value": 411243478}], "inst_pct": 0.20759001, "analyst": {"target": 16.716, "n": 25, "rec": 2.4, "low": 12.0, "high": 21.0}, "earnings_date": "2026-10-29", "profile": {"biz": "Vale S.A., together with its subsidiaries, produces iron ore and nickel in Brazil, Asia, the Middle East, North Africa, Europe, the Americas, and Oceania. The company operates in two segments, Iron Ore Solutions and Vale Base Metals. It extracts, produces, and distributes iron ore, iron ore pellets, briquettes, nickel, copper, other ferrous products, and by-products, including gold, silver, cobalt, platinum-group metals, and other base metals, as well as low-carbon critical minerals. The company also operates logistics systems and distribution centers, such as mining complexes, railways, and maritime terminals, ports, and ships; generates energy from hydroelectric, solar, and wind sources; and engages in greenfield mineral exploration. In addition, it is involved in research; and trading activities. The company was formerly known as Companhia Vale do Rio Doce and changed its name to Vale S.A. in May 2009. Vale S.A. was founded in 1942 and is headquartered in Rio De Janeiro, Brazil.", "industry": "Other Industrial Metals & Mining", "website": "https://vale.com", "country": "Brazil"}, "rel_peers_n": 92}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

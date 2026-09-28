@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>携程 — AIShan+ 個股分析</title>
+<meta name="description" content="携程 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "携程", "ticker": "TCOM", "sector": "互聯網", "region": "中概股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 39.43, "currency": "USD", "change_pct": -1.52, "asof": "2026-09-28", "name": "Trip.com Group Limited", "closes": [40.65, 40.85, 40.63, 40.04, 39.43]}, "finance": {"margins": 0.36905, "op_margins": -0.093339995, "roe": 0.15645, "rev_growth": 0.055, "earn_growth": null, "fcf": null, "debt_equity": 16.768, "cash": 79515000832, "debt": 26964000768, "revenue": 65607000064, "ebitda": 11428500480, "eps": 5.17}, "multiples": {"pe": 7.626692456479691, "fwd_pe": 1.4324659, "pb": 1.0512077, "ps": null, "evebitda": -2.275, "peg": 1.91, "dy": null, "beta": -0.053, "mktcap": null, "shares": 629705222}, "dcf": {"g": 0.055, "r": 0.085, "fcf": null, "shares": 629705222, "gs": [0.025, 0.055, 0.08499999999999999], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {"pe": {"own": 7.63, "median": 8.77, "premium": -0.1304}, "pb": {"own": 1.05, "median": 8.77, "premium": -0.8801}, "evebitda": {"own": -2.27, "median": 8.77, "premium": -1.2594}}, "ta": {"n": 251, "ma50": 43.59, "ma200": 52.09, "support": 38.7, "resistance": 47.3, "52w_low": 38.7, "52w_high": 78.96, "ret_1y": -0.4806, "vol_trend": 0.4557, "spy_1y": 0.1655, "rs": -0.6461}, "holders": [{"org": "Capital World Investors", "pct": 5.76, "value": 1429251159}, {"org": "Morgan Stanley", "pct": 2.04, "value": 507674896}, {"org": "Sanders Capital, LLC", "pct": 1.68, "value": 416403041}, {"org": "Davis Selected Advisers", "pct": 1.39, "value": 345460861}, {"org": "ARGA Investment Management, LP", "pct": 1.04, "value": 257367655}], "inst_pct": 0.26009, "analyst": {"target": 58.345146, "n": 29, "rec": 1.41379, "low": 42.044483, "high": 68.16032}, "earnings_date": "2026-09-15", "profile": {"biz": "Trip.com Group Limited, through its subsidiaries, operates as a travel service provider for accommodation reservation, transportation ticketing, packaged tours, in-destination, corporate travel management, and other travel-related services in China and internationally. It acts as an agent for hotel-related transactions and selling air tickets, as well as provides train, long-distance bus, and ferry tickets; travel insurance products, such as flight delay, air accident, and baggage loss coverage; and air-ticket delivery, online check-in and seat selection, express security screening, real-time flight status tracker, and airport VIP lounge services. The company also provides travelers bundled packaged-tour products, such as group, semi-group, and customized and packaged tours with various transportation arrangements, including air, cruise, bus, and car rental services. In addition, it offers integrated transportation and accommodation services; ticket, activity, insurance, visa, and tour guide services; and user support, supplier management, and customer relationship management services; and in-destination products and services. Further, the company provides Trip.Biz, a digital first, full-service, corporate travel management business which provides technology-enabled solutions for organizations managing business travel. Additionally, it offers online advertising and financial services, such as marketing planning and travel media services; Omni-Channel Touchpoints for Users; and Open Platform for Ecosystem Partners. It operates under the Ctrip, Qunar, Trip.com, Travix, Travelfusion, and Skyscanner brand names. The company was formerly known as Ctrip.com International, Ltd. and changed its name to Trip.com Group Limited in October 2019. Trip.com Group Limited was founded in 1999 and is based in Singapore.", "industry": "Travel Services", "website": "https://group.trip.com", "country": "Singapore"}, "rel_peers_n": 104}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

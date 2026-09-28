@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prosus — AIShan+ 個股分析</title>
+<meta name="description" content="Prosus 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "Prosus", "ticker": "PRX.AS", "sector": "互聯網", "region": "", "score": null, "verdict": "是\"建仓上限不超过组合 5%\"\"这是套利不是投资\"", "verdict_class": "positive", "summary": "> 五年累计（FY22–FY26），非腾讯资产在核心主营利润口径上累计亏损 US$36.1 亿。 直到 FY2025 才首次转正（+$107m），FY2026 为 +$223m。", "reports": [{"title": "Prosus N.V.（AMS:PRX）投资研究报告", "date": "2026-08-17", "type": "研究", "path": "Prosus/Prosus-investment-research-20260817.html"}, {"title": "Prosus N.V.（AMS:PRX）—— 红队多头论证", "date": "2026-08-17", "type": "研究", "path": "Prosus/Prosus-多头论证-20260817.html"}], "hot": false, "in_combo": false, "quote": {"price": 36.26, "currency": "EUR", "change_pct": 0.47, "asof": "2026-09-28", "name": "PROSUS", "closes": [37.56, 35.76, 35.44, 36.09, 36.26]}, "finance": {"margins": 1.19918, "op_margins": 0.01447, "roe": 0.22213, "rev_growth": null, "earn_growth": null, "fcf": 846875008, "debt_equity": 32.874, "cash": 15736999936, "debt": 17707999232, "revenue": 9704999936, "ebitda": 626000000, "eps": 4.57}, "multiples": {"pe": 7.9343544857768045, "fwd_pe": 8.391203, "pb": 1.6901908, "ps": null, "evebitda": 292.482, "peg": 1.63, "dy": 0.0078, "beta": 0.783, "mktcap": null, "shares": 2090903620}, "dcf": {"g": 0.05, "r": 0.085, "fcf": 846875008, "shares": 2090903620, "gs": [0.020000000000000004, 0.05, 0.08], "value": 7.7103299038306155, "matrix": [{"r": 0.075, "cells": [8.12, 9.27, 10.55]}, {"r": 0.085, "cells": [6.77, 7.71, 8.76]}, {"r": 0.095, "cells": [5.8, 6.6, 7.48]}], "pessimistic": 5.8, "neutral": 7.71, "optimistic": 10.55, "premium": -0.7874}, "ddm": {"value": 11.76, "dps": 0.28, "g": 0.05, "premium": -0.6757}, "relative": {"pe": {"own": 7.93, "median": 8.77, "premium": -0.0954}, "pb": {"own": 1.69, "median": 8.77, "premium": -0.8073}, "evebitda": {"own": 292.48, "median": 8.77, "premium": 32.3473}}, "ta": {"n": 255, "ma50": 37.82, "ma200": 42.17, "support": 35.29, "resistance": 42.48, "52w_low": 35.29, "52w_high": 62.39, "ret_1y": -0.3928, "vol_trend": 0.1392, "spy_1y": 0.1655, "rs": -0.5583}, "holders": [{"org": "Generali Investments Cee, Investicni Spo", "pct": 0.0, "value": 1035082}, {"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 594572}], "inst_pct": 0.69405, "analyst": {"target": 61.05028, "n": 18, "rec": 1.61111, "low": 39.0, "high": 79.995}, "earnings_date": "2026-11-25", "profile": {"biz": "Prosus N.V. engages in the e-commerce and internet businesses in Asia, Europe, Latin America, North America, and internationally. It operates internet platforms, such as classifieds, payments and fintech, etail, food delivery, education technology, Etail, ventures, tencent, and other platforms. It also provides online food delivery service. The company was formerly known as Myriad International Holdings N.V. and changed its name to Prosus N.V. Prosus N.V. was incorporated in 1994 and is headquartered in Amsterdam, the Netherlands.", "industry": "Internet Retail", "website": "https://www.prosus.com", "country": "Netherlands"}, "rel_peers_n": 104}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+/* AIShan+ 個股獨立分析頁樣式 */
+
+.s-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.s-card h2 { font-size: 18px; margin: 0 0 12px; }
+.s-h3 { font-size: 14px; margin: 18px 0 8px; color: var(--muted, #6b7280); font-weight: 600; }
+
+.s-head { padding: 6px 2px 4px; }
+.s-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.s-title-row h1 { font-size: 30px; margin: 0; }
+.s-ticker { color: var(--muted, #6b7280); font-family: ui-monospace, monospace; font-size: 15px; }
+.s-badges { margin: 8px 0; display: flex; gap: 6px; flex-wrap: wrap; }
+.s-badge {
+  font-size: 12px; padding: 3px 9px; border-radius: 999px;
+  background: var(--chip, #eef1f5); color: var(--text, #1f2937);
+}
+.s-badge.hot { background: #fff3cd; color: #8a6d00; }
+.s-badge.combo { background: #d4edda; color: #1e7e34; }
+
+.s-quote { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.s-price { font-size: 32px; font-weight: 700; }
+.s-price small { font-size: 13px; color: var(--muted, #6b7280); font-weight: 400; }
+.s-asof { font-size: 12px; color: var(--muted, #6b7280); }
+
+.s-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.s-stars { color: #d9a514; font-weight: 600; }
+.s-stars-dim { color: var(--line, #e5e7eb); }
+.s-verdict { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--chip, #eef1f5); }
+.s-verdict.positive { background: #d4edda; color: #1e7e34; }
+.s-verdict.negative { background: #f8d7da; color: #b02a37; }
+.s-verdict.neutral { background: #fff3cd; color: #8a6d00; }
+
+.s-summary { font-size: 15px; line-height: 1.7; margin: 4px 0; }
+.s-biz { font-size: 14px; line-height: 1.8; color: var(--text, #1f2937); }
+
+.s-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 24px; }
+.s-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 24px; }
+.s-kv { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; flex-wrap: wrap; }
+.s-k { font-size: 13px; color: var(--muted, #6b7280); min-width: 92px; }
+.s-v { font-size: 14px; font-weight: 600; }
+.s-n { font-size: 12px; color: var(--muted, #6b7280); }
+.s-note { font-size: 12px; color: var(--muted, #6b7280); margin-top: 8px; }
+
+.s-chip { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.s-chip.up { color: var(--good, #15803d); background: rgba(21, 128, 61, .1); }
+.s-chip.down { color: var(--crit, #b91c1c); background: rgba(185, 28, 28, .1); }
+.s-chip.mid { color: var(--muted, #6b7280); background: var(--chip, #eef1f5); }
+
+.s-prem { font-size: 14px; margin: 10px 0; font-weight: 600; }
+
+.s-table, .s-matrix { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+.s-table th, .s-table td, .s-matrix th, .s-matrix td {
+  border-bottom: 1px solid var(--line, #e5e7eb); padding: 7px 10px; text-align: left;
+}
+.s-table thead th, .s-matrix thead th { color: var(--muted, #6b7280); font-weight: 600; }
+.s-matrix td { text-align: right; font-variant-numeric: tabular-nums; }
+.s-matrix .m-good { color: var(--good, #15803d); }
+.s-matrix .m-bad { color: var(--crit, #b91c1c); }
+
+.s-bullbear { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 720px) { .s-bullbear { grid-template-columns: 1fr; } }
+.s-bull, .s-bear { padding: 12px 16px; border-radius: 10px; font-size: 13px; }
+.s-bull { background: rgba(21, 128, 61, .07); }
+.s-bear { background: rgba(185, 28, 28, .07); }
+.s-bull h3, .s-bear h3 { font-size: 14px; margin: 0 0 8px; }
+.s-bull ul, .s-bear ul { margin: 0; padding-left: 18px; }
+.s-bull li, .s-bear li { margin: 5px 0; line-height: 1.6; }
+.s-combo { font-size: 14px; margin-top: 12px; font-weight: 600; }
+
+.s-reports { margin: 0; padding-left: 18px; font-size: 14px; }
+.s-reports li { margin: 6px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+.s-rep-date { color: var(--muted, #6b7280); font-size: 12px; }
+
+@media (max-width: 600px) {
+  .s-card { padding: 14px 14px; }
+  .s-price { font-size: 26px; }
+  .s-title-row h1 { font-size: 24px; }
+}

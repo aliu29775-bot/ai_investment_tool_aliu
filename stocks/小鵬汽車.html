@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小鵬汽車 — AIShan+ 個股分析</title>
+<meta name="description" content="小鵬汽車 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "小鵬汽車", "ticker": "XPEV", "sector": "汽車", "region": "中概股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 10.12, "currency": "USD", "change_pct": -1.27, "asof": "2026-09-28", "name": "XPeng Inc.", "closes": [10.47, 10.48, 10.29, 10.25, 10.12]}, "finance": {"margins": -0.041360002, "op_margins": -0.06028, "roe": -0.10877, "rev_growth": 0.08, "earn_growth": null, "fcf": null, "debt_equity": 99.445, "cash": 28042694656, "debt": 26858964992, "revenue": 75412086784, "ebitda": -1329122560, "eps": -0.49}, "multiples": {"pe": -20.653061224489793, "fwd_pe": 8.194332, "pb": 2.405826, "ps": null, "evebitda": -6.394, "peg": null, "dy": null, "beta": 1.101, "mktcap": null, "shares": 783622601}, "dcf": {"g": 0.08, "r": 0.085, "fcf": null, "shares": 783622601, "gs": [0.05, 0.08, 0.11], "value": null, "matrix": [{"r": 0.075, "cells": [null, null, null]}, {"r": 0.085, "cells": [null, null, null]}, {"r": 0.095, "cells": [null, null, null]}], "pessimistic": null, "neutral": null, "optimistic": null}, "ddm": null, "relative": {"pe": {"own": -20.65, "median": 2.52, "premium": -9.2025}, "pb": {"own": 2.41, "median": 2.52, "premium": -0.0445}, "evebitda": {"own": -6.39, "median": 2.52, "premium": -3.5394}}, "ta": {"n": 251, "ma50": 11.62, "ma200": 15.78, "support": 10.12, "resistance": 14.04, "52w_low": 10.12, "52w_high": 28.07, "ret_1y": -0.5559, "vol_trend": -0.1351, "spy_1y": 0.1655, "rs": -0.7214}, "holders": [{"org": "Alibaba Group Holding Ltd", "pct": 4.28, "value": 339396784}, {"org": "Primecap Management Company", "pct": 1.6, "value": 126659459}, {"org": "TMT General Partner Ltd", "pct": 1.31, "value": 104092669}, {"org": "Morgan Stanley", "pct": 1.22, "value": 97015611}, {"org": "Ghisallo Capital Management, LLC", "pct": 0.96, "value": 75899999}], "inst_pct": 0.12392, "analyst": {"target": 19.101976, "n": 26, "rec": 1.73077, "low": 12.021793, "high": 25.262033}, "earnings_date": "2026-11-16", "profile": {"biz": "XPeng Inc. designs, develops, manufactures, and markets smart electric vehicles (EVs) in the People's Republic of China and globally. The company offers P7 and P7i, a four-door sports sedan; G9, a smart EV and a mid- to large-sized sport utility vehicle (SUV); G7 for families and individual consumers seeking advanced technology and comfort; G6, a smart EV and a coupe SUV; X9, Smart EV and a large seven-seater multi-purpose vehicle (MPV); MONA M03, an all-electric hatchback coupe; Next P7, an all-new coupe sports sedan; and P7+, smart EV of XPeng series. It also provides XOS Tianji, smart in-car operating system; Powertrain; and SEPA 2.0, a smart electric platform architecture. In addition, the company offers various services, including services embedded in a sales contract, supercharging, maintenance, technical support, technical research and development, and second-hand vehicle sales services; and insurance technology support, and automotive loan referral and auto financing services. XPeng Inc. was founded in 2015 and is headquartered in Guangzhou, the People's Republic of China.", "industry": "Auto Manufacturers", "website": "https://www.xpeng.com", "country": "China"}, "rel_peers_n": 40}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

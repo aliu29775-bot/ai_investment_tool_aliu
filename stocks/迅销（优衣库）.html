@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>迅销（优衣库） — AIShan+ 個股分析</title>
+<meta name="description" content="迅销（优衣库） 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "迅销（优衣库）", "ticker": "9983.T", "sector": "消費", "region": "日本", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 67850.0, "currency": "JPY", "change_pct": -1.12, "asof": "2026-09-28", "name": "FAST RETAILING CO LTD", "closes": [67700.0, 67680.0, 67920.0, 68620.0, 67850.0]}, "finance": {"margins": 0.1351, "op_margins": 0.20999001, "roe": 0.22481, "rev_growth": 0.222, "earn_growth": 0.391, "fcf": 350587125760, "debt_equity": 28.419, "cash": 2094199996416, "debt": 798425022464, "revenue": 3849012903936, "ebitda": 774857031680, "eps": 1557.67}, "multiples": {"pe": 43.558648494225345, "fwd_pe": null, "pb": 7.630673, "ps": null, "evebitda": 25.606, "peg": 2.5, "dy": 0.0093, "beta": 0.451, "mktcap": null, "shares": 306851024}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 350587125760, "shares": 306851024, "gs": [0.22, 0.25, 0.28], "value": 48524.80603280246, "matrix": [{"r": 0.075, "cells": [52578.37, 58975.61, 65997.0]}, {"r": 0.085, "cells": [43316.06, 48524.81, 54238.45]}, {"r": 0.095, "cells": [36716.04, 41079.87, 45863.94]}], "pessimistic": 36716.04, "neutral": 48524.81, "optimistic": 65997.0, "premium": -0.2848}, "ddm": null, "relative": {"pe": {"own": 43.56, "median": 11.42, "premium": 2.8128}, "pb": {"own": 7.63, "median": 11.42, "premium": -0.3321}, "evebitda": {"own": 25.61, "median": 11.42, "premium": 1.2413}}, "ta": {"n": 242, "ma50": 73886.6, "ma200": 69967.65, "support": 66480.0, "resistance": 87900.0, "ret_1y": 0.4948, "vol_trend": -0.0296, "spy_1y": 0.1655, "rs": 0.3293}, "holders": [{"org": "Aristotle Capital Management, LLC", "pct": 0.05, "value": 11648895100}, {"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 110052700}], "inst_pct": 0.36786, "analyst": {"target": 85717.65, "n": 17, "rec": 1.76471, "low": 66200.0, "high": 100000.0}, "earnings_date": "2026-10-08", "profile": {"biz": "Fast Retailing Co., Ltd. operates as an apparel designer and retailer in Japan and internationally. The company operates through UNIQLO Japan, UNIQLO International, GU, and Global Brands segments. It manufactures and retails clothing for men, women, children, and babies. The company operates stores and franchises under the UNIQLO, GU, PLST, Theory, COMPTOIR DES COTONNIERS, J Brand, and PRINCESSE TAM.TAM brand names. It sells its products through online; and provides real estate leasing services. The company was formerly known as Ogori Shoji Co., Ltd. and changed its name to Fast Retailing Co., Ltd. in September 1991. The company was founded in 1949 and is headquartered in Yamaguchi, Japan.", "industry": "Apparel Retail", "website": "https://www.fastretailing.com", "country": "Japan"}, "rel_peers_n": 144}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

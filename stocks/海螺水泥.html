@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海螺水泥 — AIShan+ 個股分析</title>
+<meta name="description" content="海螺水泥 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "海螺水泥", "ticker": "600585.SS", "sector": "材料", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 16.77, "currency": "CNY", "change_pct": -0.95, "asof": "2026-09-28", "name": "ANHUI CONCH CEMENT", "closes": [17.25, 17.12, 17.3, 16.93, 16.77]}, "finance": {"margins": 0.07979, "op_margins": 0.04168, "roe": 0.02917, "rev_growth": -0.113, "earn_growth": -0.6, "fcf": 2695242752, "debt_equity": 13.69, "cash": 65674366976, "debt": 27645018112, "revenue": 78022180864, "ebitda": 14167777280, "eps": 1.18}, "multiples": {"pe": 14.211864406779661, "fwd_pe": 11.66195, "pb": 0.5760709, "ps": null, "evebitda": 7.471, "peg": 34.18, "dy": 0.0437, "beta": 0.452, "mktcap": null, "shares": 3999702579}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 2695242752, "shares": 3999702579, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 8.225721528977864, "matrix": [{"r": 0.075, "cells": [9.81, 9.81, 11.27]}, {"r": 0.085, "cells": [8.23, 8.23, 9.43]}, {"r": 0.095, "cells": [7.09, 7.09, 8.11]}], "pessimistic": 7.09, "neutral": 8.23, "optimistic": 11.27, "premium": -0.5092}, "ddm": {"value": 5.62, "dps": 0.74, "g": -0.05, "premium": -0.6646}, "relative": {"pe": {"own": 14.21, "median": 10.35, "premium": 0.3735}, "pb": {"own": 0.58, "median": 10.35, "premium": -0.9443}, "evebitda": {"own": 7.47, "median": 10.35, "premium": -0.278}}, "ta": {"n": 241, "ma50": 17.65, "ma200": 20.72, "support": 16.74, "resistance": 18.64, "ret_1y": -0.2818, "vol_trend": -0.3312, "spy_1y": 0.1655, "rs": -0.4473}, "holders": [], "inst_pct": 0.098450005, "analyst": {"target": 24.3925, "n": 12, "rec": 1.66667, "low": 18.9, "high": 30.1}, "earnings_date": null, "profile": {"biz": "Anhui Conch Cement Company Limited, together with its subsidiaries, manufactures, sells, and trades in clinker and cement products in China and internationally. The company provides construction and installation services for industrial purposes; logistic transportation agency and warehouse logistics services; financial supporting services; road freight transport; and mining and related services. It also manufactures and sells cement packaging products, concrete products, refractory materials, construction materials, nonmetallic mineral products, new materials, and chemical fibres; develops and sells profile and related products; exports clinker and cement products; processes and sells construction stones, and manufactured sand; sells aggregates; and constructs industrial and civil buildings, and highways. In addition, it is involved in investment and trading; machinery installation and maintenance; product testing and environmental inspection; technical services, development, and consulting; industrial product design; industrial waste storage and disposal; photovoltaic and wind power generation, and energy storage system development; renewable resources sales and renewable resource processing; research, development, and manufacture of automation machinery; and research and experimental development. Anhui Conch Cement Company Limited was incorporated in 1997 and is based in Wuhu, the People's Republic of China.", "industry": "Building Materials", "website": "https://www.conch.cn", "country": "China"}, "rel_peers_n": 92}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>保利发展 — AIShan+ 個股分析</title>
+<meta name="description" content="保利发展 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "保利发展", "ticker": "600048.SS", "sector": "房地產", "region": "A股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 5.61, "currency": "CNY", "change_pct": 0.9, "asof": "2026-09-28", "name": "POLY DEVELOPMENTS AND HOLDINGS ", "closes": [5.68, 5.68, 5.64, 5.56, 5.61]}, "finance": {"margins": -0.0010800001, "op_margins": 0.06765, "roe": 0.00311, "rev_growth": -0.087, "earn_growth": -0.199, "fcf": 43223883776, "debt_equity": 102.03, "cash": 135261765632, "debt": 335415738368, "revenue": 294147784704, "ebitda": 12318370816, "eps": -0.03}, "multiples": {"pe": -187.00000000000003, "fwd_pe": 19.142185, "pb": 0.3421149, "ps": null, "evebitda": 32.496, "peg": 0.72, "dy": 0.0063, "beta": 0.408, "mktcap": null, "shares": 11970443418}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 43223883776, "shares": 11970443418, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 44.07754147844192, "matrix": [{"r": 0.075, "cells": [52.55, 52.55, 60.4]}, {"r": 0.085, "cells": [44.08, 44.08, 50.52]}, {"r": 0.095, "cells": [38.02, 38.02, 43.46]}], "pessimistic": 38.02, "neutral": 44.08, "optimistic": 60.4, "premium": 6.8574}, "ddm": {"value": 0.3, "dps": 0.04, "g": -0.05, "premium": -0.9458}, "relative": {"pe": {"own": -187.0, "median": 2.31, "premium": -81.8366}, "pb": {"own": 0.34, "median": 2.31, "premium": -0.8521}, "evebitda": {"own": 32.5, "median": 2.31, "premium": 13.0474}}, "ta": {"n": 241, "ma50": 5.21, "ma200": 5.81, "support": 4.58, "resistance": 5.68, "ret_1y": -0.2733, "vol_trend": 0.3789, "spy_1y": 0.1655, "rs": -0.4388}, "holders": [], "inst_pct": 0.09056, "analyst": {"target": 6.28714, "n": 7, "rec": 2.0, "low": 5.0, "high": 8.0}, "earnings_date": null, "profile": {"biz": "Poly Developments and Holdings Group Co., Ltd. engages in the investment, development, and management of real estate properties in China and internationally. It is also involved new home sales agency, digital marketing, existing home brokerage, and channel distribution; architectural design; operation of convention and exhibitions; private equity fund management; investment in healthcare; and silk business. In addition . the company operates and manages shopping malls, hotels, tourist spots, and diversified urban services, as well as golf courses, theme parks, natural ecological landscape resorts, cultural tourism destinations, and tourism real estate properties. Further, it provides property services, as well as long-term and short-term rental apartments. Poly Developments and Holdings Group Co., Ltd. was founded in 1992 and is headquartered in Guangzhou, China.", "industry": "Real Estate - Development", "website": "https://www.polycn.com", "country": "China"}, "rel_peers_n": 28}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

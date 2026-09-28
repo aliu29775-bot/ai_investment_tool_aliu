@@ -992,3 +992,12 @@ body[data-page="home"] .co-actions { display: none; }
   border-top: 1px solid var(--line);
   margin: 8px 16px 0; padding: 10px 0 2px;
 }
+
+/* 公司卡片 → 個股分析頁入口 */
+.co-stock-link {
+  display: block; margin-top: 10px; padding: 6px 0;
+  color: var(--brand); font-weight: 600; text-decoration: none;
+  background: var(--brand-tint, #e8f3ee); border: 1px solid var(--brand);
+  border-radius: 8px; text-align: center;
+}
+.co-stock-link:hover { background: var(--brand); color: #fff; }

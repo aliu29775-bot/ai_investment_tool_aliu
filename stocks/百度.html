@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>百度 — AIShan+ 個股分析</title>
+<meta name="description" content="百度 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "百度", "ticker": "BIDU", "sector": "互聯網", "region": "", "score": {"stars": 2, "value": 2.25, "text": "综合评分：2.25 / 5"}, "verdict": "观望等待FCF转正和AI收入占比超50%两个明确信号", "verdict_class": "neutral", "summary": "百度是一家以$330亿净现金为安全垫、以全栈AI技术为期权、以快速萎缩的搜索广告为拖累的\"转型期权股\"。Non-GAAP PE 16x表面便宜，但负自由现金流、管理层执行力不确定、核心业务不可逆衰退，使得当前估值缺乏安全边际。激进型投资者可小仓位作为AI期权持有，稳健型/保守型建议观望等待FCF转正和AI收入占比超50%两个明确信号。", "reports": [{"title": "《看懂百度》系列说明", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/00-系列说明.html"}, {"title": "搜索巨头的 AI 转型赌注", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/01-开篇-搜索巨头的AI转型赌注.html"}, {"title": "搜索广告：正在熄火的旧引擎", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/02-核心业务-正在熄火的旧引擎.html"}, {"title": "AI 三条赛道：大模型、自动驾驶、AI 云", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/03-AI三条赛道-大模型-自动驾驶-AI云.html"}, {"title": "竞争与风险：四面楚歌与管理层执行力", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/04-竞争与风险-四面楚歌与管理层执行力.html"}, {"title": "估值判断：期权还是陷阱？", "date": "2026-05-22", "type": "深度系列", "path": "百度-deepseek分析/《看懂百度》/05-估值判断-期权还是陷阱（终章）.html"}, {"title": "百度（BIDU/9888.HK）投资研究报告", "date": "2026-04-28", "type": "研究", "path": "百度-deepseek分析/百度-research-20260428.html"}], "hot": false, "in_combo": false, "quote": {"price": 87.33, "currency": "USD", "change_pct": -0.85, "asof": "2026-09-28", "name": "Baidu, Inc.", "closes": [92.21, 92.43, 89.78, 88.08, 87.33]}, "finance": {"margins": -0.02895, "op_margins": 0.096540004, "roe": -0.0139, "rev_growth": -0.042, "earn_growth": -0.738, "fcf": -2095374976, "debt_equity": 38.258, "cash": 166251003904, "debt": 112896999424, "revenue": 127314001920, "ebitda": 23396999168, "eps": -2.34}, "multiples": {"pe": -37.320512820512825, "fwd_pe": 1.6823822, "pb": 0.7326736, "ps": null, "evebitda": -0.007, "peg": 0.77, "dy": null, "beta": 0.569, "mktcap": null, "shares": 275141072}, "dcf": {"g": -0.05, "r": 0.085, "fcf": -2095374976, "shares": 275141072, "gs": [-0.05, -0.05, -0.020000000000000004], "value": -92.96300253653507, "matrix": [{"r": 0.075, "cells": [-110.83, -110.83, -127.4]}, {"r": 0.085, "cells": [-92.96, -92.96, -106.56]}, {"r": 0.095, "cells": [-80.18, -80.18, -91.67]}], "pessimistic": -80.18, "neutral": -92.96, "optimistic": -127.4, "premium": -2.0645}, "ddm": null, "relative": {"pe": {"own": -37.32, "median": 8.77, "premium": -5.2551}, "pb": {"own": 0.73, "median": 8.77, "premium": -0.9165}, "evebitda": {"own": -0.01, "median": 8.77, "premium": -1.0008}}, "ta": {"n": 251, "ma50": 99.13, "ma200": 120.78, "support": 87.33, "resistance": 117.62, "52w_low": 87.33, "52w_high": 162.52, "ret_1y": -0.3351, "vol_trend": -0.1274, "spy_1y": 0.1655, "rs": -0.5006}, "holders": [{"org": "Primecap Management Company", "pct": 3.99, "value": 961512053}, {"org": "Morgan Stanley", "pct": 2.35, "value": 567858533}, {"org": "UBS Group AG", "pct": 1.1, "value": 265661533}, {"org": "Robeco Institutional Asset Management B.", "pct": 0.54, "value": 129542617}, {"org": "Bank of America Corporation", "pct": 0.52, "value": 126046884}], "inst_pct": 0.23305, "analyst": {"target": 145.95146, "n": 31, "rec": 1.625, "low": 80.385704, "high": 206.95842}, "earnings_date": "2026-11-18", "profile": {"biz": "Baidu, Inc. provides internet content, value-added telecommunication-based, internet map, and online audio and video services in the People's Republic of China. It operates in two segments, Baidu General Business and iQIYI. The Baidu General Business segment offers products and services for mobile ecosystem, AI cloud, and intelligent driving. This segment operates Baidu App that enables users to access search, feed, content, and other services through mobile devices; and Haokan, which offers a range of various user generated and professionally produced short videos. It also provides a portfolio of knowledge and information products, including Baidu Wiki, which features columns and videos, such as encyclopedia of intangible cultural heritage, digital museum and recorder of history; Baidu Knows, an online community where users can pose questions to other users, such as individuals, professionals, and enterprises; Baidu Experience, an online platform where users share daily knowledge and experience; ERNIE Bot, new AI-native product that serves as a multi-round conversational AI assistant on both PC and mobile; and Baidu Post, a social media that allows users to post text, image, audio and video content, and reply to original curation forming valuable discussion groups, as well as livestreaming services, including live streaming and AI-powered digital human livestreaming. In addition, the company offers DuerOS smart assistant for the Chinese language; Apollo Go autonomous ride-hailing service; online marketing services; Baidu Maps, a voice-enabled mobile app providing users with travel-related services; and AI chips. The iQIYI segment produces and distributes professionally produced content. This segment offers online entertainment video services, including online videos, experience services, online games, comics, and others. The company was incorporated in 2000 and is headquartered in Beijing, the People's Republic of China.", "industry": "Internet Content & Information", "website": "https://ir.baidu.com", "country": "China"}, "rel_peers_n": 104}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

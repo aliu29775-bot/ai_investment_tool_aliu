@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>威瑞森 — AIShan+ 個股分析</title>
+<meta name="description" content="威瑞森 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "威瑞森", "ticker": "VZ", "sector": "電信", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 47.08, "currency": "USD", "change_pct": -0.51, "asof": "2026-09-28", "name": "Verizon Communications Inc.", "closes": [47.68, 46.45, 46.52, 47.32, 47.08]}, "finance": {"margins": 0.11643, "op_margins": 0.22999, "roe": 0.15842, "rev_growth": -0.007, "earn_growth": -0.22, "fcf": 17466624000, "debt_equity": 184.081, "cash": 1796000000, "debt": 193646002176, "revenue": 138894999552, "ebitda": 51081998336, "eps": 3.84}, "multiples": {"pe": 12.260416666666666, "fwd_pe": 8.915891, "pb": 1.8822967, "ps": null, "evebitda": 7.61, "peg": 0.84, "dy": 0.060100004, "beta": 0.24, "mktcap": null, "shares": 4154775202}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 17466624000, "shares": 4154775202, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 51.31747208340987, "matrix": [{"r": 0.075, "cells": [61.18, 61.18, 70.32]}, {"r": 0.085, "cells": [51.32, 51.32, 58.82]}, {"r": 0.095, "cells": [44.26, 44.26, 50.6]}], "pessimistic": 44.26, "neutral": 51.32, "optimistic": 70.32, "premium": 0.0901}, "ddm": {"value": 21.51, "dps": 2.83, "g": -0.05, "premium": -0.5432}, "relative": {"pe": {"own": 12.26, "median": 7.57, "premium": 0.62}, "pb": {"own": 1.88, "median": 7.57, "premium": -0.7513}, "evebitda": {"own": 7.61, "median": 7.57, "premium": 0.0055}}, "ta": {"n": 251, "ma50": 48.09, "ma200": 46.27, "support": 42.07, "resistance": 51.45, "52w_low": 38.4, "52w_high": 51.45, "ret_1y": 0.0796, "vol_trend": -0.0691, "spy_1y": 0.1655, "rs": -0.0859}, "holders": [{"org": "Blackrock Inc.", "pct": 9.58, "value": 18748017447}, {"org": "Vanguard Capital Management LLC", "pct": 6.23, "value": 12193537144}, {"org": "State Street Corporation", "pct": 5.05, "value": 9871559363}, {"org": "Charles Schwab Investment Management, In", "pct": 3.08, "value": 6015638853}, {"org": "Geode Capital Management, LLC", "pct": 2.57, "value": 5029086643}], "inst_pct": 0.71182996, "analyst": {"target": 51.55652, "n": 23, "rec": 2.26923, "low": 44.0, "high": 71.0}, "earnings_date": "2026-10-20", "profile": {"biz": "Verizon Communications Inc., through its subsidiaries, engages in the provision of communications, technology, information, and streaming products and services to consumers, businesses, and governmental entities worldwide. It operates in two segments, Verizon Consumer Group (Consumer) and Verizon Business Group (Business). The Consumer segment provides wireless services across the wireless networks in the United States under the Verizon and TracFone brands and through wholesale and other arrangements; and fixed wireless access (FWA) broadband through its wireless networks, as well as related equipment and devices, such as smartphones, tablets, smartwatches, and other wireless-enabled connected devices. The segment also offers wireline services in the Mid-Atlantic and Northeastern United States, as well as Washington D.C. through its fiber-optic network, Verizon Fios product portfolio, and a copper-based network. The Business segment provides wireless and wireline communications services and products, including FWA and wireline broadband, advanced communication services, corporate networking, security and managed network, local and long-distance voice, and network access services to deliver various IoT services and products to businesses, government customers, and wireless and wireline carriers in the United States and internationally. The company distributes its products and services through direct channels, company-operated stores, digital and omnichannel platforms, indirect agents, business solution resellers, and national retailers. The company was formerly known as Bell Atlantic Corporation and changed its name to Verizon Communications Inc. in June 2000. Verizon Communications Inc. was incorporated in 1983 and is headquartered in New York, New York.", "industry": "Telecom Services", "website": "https://www.verizon.com", "country": "United States"}, "rel_peers_n": 20}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

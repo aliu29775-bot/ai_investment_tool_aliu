@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>西门子 — AIShan+ 個股分析</title>
+<meta name="description" content="西门子 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "西门子", "ticker": "SIE.DE", "sector": "工業", "region": "歐洲", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 277.15, "currency": "EUR", "change_pct": -0.41, "asof": "2026-09-28", "name": "SIEMENS AG                    N", "closes": [273.85, 273.95, 274.8, 278.3, 277.15]}, "finance": {"margins": 0.097959995, "op_margins": 0.14903, "roe": 0.12465999, "rev_growth": 0.073, "earn_growth": 0.128, "fcf": 6503750144, "debt_equity": 66.425, "cash": 10929999872, "debt": 49924001792, "revenue": 81113997312, "ebitda": 12517999616, "eps": 10.02}, "multiples": {"pe": 27.659680638722556, "fwd_pe": 21.269087, "pb": 3.1433563, "ps": null, "evebitda": 20.875, "peg": 2.38, "dy": 0.019199999, "beta": 1.283, "mktcap": null, "shares": 780264198}, "dcf": {"g": 0.128, "r": 0.085, "fcf": 6503750144, "shares": 780264198, "gs": [0.098, 0.128, 0.158], "value": 219.8398907994323, "matrix": [{"r": 0.075, "cells": [234.38, 265.62, 300.23]}, {"r": 0.085, "cells": [194.33, 219.84, 248.07]}, {"r": 0.095, "cells": [165.75, 187.19, 210.89]}], "pessimistic": 165.75, "neutral": 219.84, "optimistic": 300.23, "premium": -0.2068}, "ddm": null, "relative": {"pe": {"own": 27.66, "median": 17.05, "premium": 0.6223}, "pb": {"own": 3.14, "median": 17.05, "premium": -0.8156}, "evebitda": {"own": 20.88, "median": 17.05, "premium": 0.2243}}, "ta": {"n": 253, "ma50": 275.53, "ma200": 256.58, "support": 258.1, "resistance": 289.85, "52w_low": 203.75, "52w_high": 289.85, "ret_1y": 0.2255, "vol_trend": 0.1359, "spy_1y": 0.1655, "rs": 0.06}, "holders": [{"org": "Generali Investments Cee, Investicni Spo", "pct": 0.01, "value": 14818281}, {"org": "Gamma Investing LLC", "pct": 0.0, "value": 154954}, {"org": "Strategic Investment Solutions, Inc. /il", "pct": 0.0, "value": 3049}, {"org": "Main Street Group, Ltd                  ", "pct": 0.0, "value": 4435}, {"org": "Asset Planning,inc                      ", "pct": 0.0, "value": 183506}], "inst_pct": 0.45836, "analyst": {"target": 305.00955, "n": 22, "rec": 1.79167, "low": 235.0, "high": 355.0}, "earnings_date": "2026-11-12", "profile": {"biz": "Siemens Aktiengesellschaft, a technology company, focuses in the areas of automation and digitalization across the world. It operates through Digital Industries, Smart Infrastructure, Mobility, Siemens Healthineers, and Siemens Financial Services (SFS) segments. The Digital Industries segment provides automation systems and software for factories, numerical control systems, servo motors, drives and inverters, and integrated automation systems for machine tools and production machines; process control systems, machine-to-machine communication products, sensors and radio frequency identification systems; production and product lifecycle management software, and simulation and testing of mechatronic system. The Smart Infrastructure segment offers products, systems, solutions, services, and software to support sustainable transition from fossil and renewable energy sources; sustainable buildings and communities; and buildings, electrification, and electrical products. The Mobility segment provides rail passenger and freight transportation, such as metro systems, trams and light rail, and commuter trains, as well as trains and passenger coaches; locomotives and solutions for automated transportation and leasing; products and solutions for rail automation and electrification; maintenance and digital services; and digital and cloud-based solutions, and related services. The Siemens Healthineers segment develops, manufactures, and sells various diagnostic and therapeutic products and services; and provides clinical consulting and training services. Its financial services segment offers debt and equity investments; leasing, lending, and working capital; structured, equipment, and project financing; and financial advisory services. It has a strategic collaboration with IFS to improve product lifecycle with industrial AI. The company was founded in 1847 and is headquartered in Munich, Germany.", "industry": "Specialty Industrial Machinery", "website": "https://www.siemens.com", "country": "Germany"}, "rel_peers_n": 72}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

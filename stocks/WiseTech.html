@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WiseTech — AIShan+ 個股分析</title>
+<meta name="description" content="WiseTech 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "WiseTech", "ticker": "WTC.AX", "sector": "科技", "region": "", "score": null, "verdict": "✅ 通过", "verdict_class": "positive", "summary": "看空方的地基是对的，但它用这块地基盖错了楼。", "reports": [{"title": "WiseTech Global（ASX:WTC）投资研究报告", "date": "2026-08-17", "type": "研究", "path": "WiseTech/WiseTech-investment-research-20260817.html"}, {"title": "WiseTech Global（ASX:WTC）红队报告：对看空结论的压力测试", "date": "2026-08-17", "type": "研究", "path": "WiseTech/WiseTech-多头论证-20260817.html"}], "hot": false, "in_combo": false, "quote": {"price": 31.85, "currency": "AUD", "change_pct": 1.66, "asof": "2026-09-28", "name": "WISETECH FPO [WTC]", "closes": [32.68, 32.34, 32.05, 31.33, 31.85]}, "finance": {"margins": 0.12802, "op_margins": 0.33389, "roe": 0.09802, "rev_growth": 0.82, "earn_growth": 0.166, "fcf": 414137504, "debt_equity": 115.29, "cash": 344600000, "debt": 2239399936, "revenue": 1395900032, "ebitda": 565200000, "eps": 0.76}, "multiples": {"pe": 41.90789473684211, "fwd_pe": 24.445093, "pb": 3.914741, "ps": null, "evebitda": 21.827, "peg": null, "dy": 0.0069999998, "beta": 1.106, "mktcap": null, "shares": 336303046}, "dcf": {"g": 0.166, "r": 0.085, "fcf": 414137504, "shares": 336303046, "gs": [0.136, 0.166, 0.196], "value": 37.834369360895415, "matrix": [{"r": 0.075, "cells": [40.56, 45.81, 51.61]}, {"r": 0.085, "cells": [33.55, 37.83, 42.56]}, {"r": 0.095, "cells": [28.55, 32.15, 36.12]}], "pessimistic": 28.55, "neutral": 37.83, "optimistic": 51.61, "premium": 0.1878}, "ddm": null, "relative": {"pe": {"own": 41.91, "median": 16.37, "premium": 1.5597}, "pb": {"own": 3.91, "median": 16.37, "premium": -0.7609}, "evebitda": {"own": 21.83, "median": 16.37, "premium": 0.3332}}, "ta": {"n": 254, "ma50": 36.94, "ma200": 44.11, "support": 30.02, "resistance": 45.47, "52w_low": 28.76, "52w_high": 90.26, "ret_1y": -0.6575, "vol_trend": -0.1301, "spy_1y": 0.1655, "rs": -0.823}, "holders": [{"org": "Pacer Advisors, Inc.", "pct": 0.0, "value": 56852}], "inst_pct": 0.27479, "analyst": {"target": 60.002804, "n": 16, "rec": 1.75, "low": 36.37531, "high": 102.17849}, "earnings_date": "2026-08-26", "profile": {"biz": "WiseTech Global Limited operates as a developer and provider of software solutions for logistics, global trade, and supply chain industries in the Americas, the Asia Pacific, Europe, the Middle East, and Africa. It operates in two segments, WTG ex. e2open and e2open. The company offers various software solutions for forwarding and customs, landside logistics, digital documents, TMS, specialist WMS, carrier and rates, and enterprise. Its software enables logistics service providers to execute logistics transactions and manage operations on one database across multiple users, functions, offices, corporations, currencies, countries, and languages. WiseTech Global Limited was incorporated in 1994 and is based in Alexandria, Australia.", "industry": "Software - Application", "website": "https://www.wisetechglobal.com", "country": "Australia"}, "rel_peers_n": 304}</script>
+<script src="js/data.js"></script>
+<script src="js/stock.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
