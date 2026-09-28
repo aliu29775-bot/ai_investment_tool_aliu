@@ -1201,6 +1201,143 @@
     });
   }
 
+  /* ---------- 美聯儲追蹤器 ---------- */
+  function fedLineSVG(series, color) {
+    if (!series || series.length < 2) return "";
+    var W = 640, H = 150, P = 10;
+    var vals = series.map(function (p) { return p[1]; });
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    var rng = (mx - mn) || 1;
+    var pts = vals.map(function (v, i) {
+      var x = P + i * (W - 2 * P) / (vals.length - 1);
+      var y = H - P - (v - mn) / rng * (H - 2 * P);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    return '<svg viewBox="0 0 ' + W + " " + H + '" style="width:100%;height:auto;" aria-hidden="true">' +
+      '<polyline points="' + pts.join(" ") + '" fill="none" stroke="' + color +
+      '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+  }
+
+  function renderFed() {
+    var F = D.allocation && D.allocation.fed;
+    var host = document.querySelector("main.container");
+    if (!host) return;
+    if (!F) {
+      host.insertAdjacentHTML("afterbegin",
+        '<div class="card" style="padding:16px;margin-top:16px;">' +
+        "⚠️ 美聯儲追蹤資料暫不可用（建站時 FRED 宏觀數據抓取失敗）。</div>");
+      return;
+    }
+    var i;
+    var asofEls = document.querySelectorAll("#fed-asof");
+    for (i = 0; i < asofEls.length; i++) asofEls[i].textContent = "⏱ 更新於 " + F.asof;
+
+    /* 政策利率 */
+    var el = document.getElementById("fed-rate");
+    if (el && F.eff != null) {
+      var tgt = F.target_upper != null && F.target_lower != null
+        ? F.target_upper.toFixed(2) + "% – " + F.target_lower.toFixed(2) + "%" : "—";
+      var next = null;
+      (F.fomc || []).forEach(function (m) { if (m.status === "next") next = m; });
+      el.innerHTML =
+        '<div class="fed-big">' + F.eff.toFixed(2) + '<span>%</span></div>' +
+        '<div class="fed-sub">聯邦基金有效利率 · 目標區間 ' + tgt + "</div>" +
+        (next ? '<div class="fed-next">🔜 下次 FOMC：' + esc(next.dates) + "（2026）</div>" : "");
+    }
+
+    /* 利率走勢（1 年：有效利率 + 目標上限） */
+    var ch = document.getElementById("fed-rate-chart");
+    if (ch) {
+      var effSvg = fedLineSVG(F.eff_hist, "#3b89e3");
+      var tgtSvg = fedLineSVG(F.target_hist, "#c2543a");
+      if (effSvg) {
+        ch.innerHTML = (tgtSvg ? '<p class="fed-legend">' +
+          '<span style="color:#c2543a;">▬ 目標上限</span>' +
+          '<span style="color:#3b89e3;margin-left:14px;">▬ 有效利率</span></p>' : "") +
+          tgtSvg + effSvg +
+          '<p class="s-note" style="margin-top:6px;">近 1 年日頻（FRED）。</p>';
+      } else {
+        ch.innerHTML = "<p>利率走勢數據暫缺。</p>";
+      }
+    }
+
+    /* 通脹追蹤 */
+    var inf = document.getElementById("fed-inflation");
+    if (inf) {
+      var rows = [["CPI 同比", F.cpi_yoy], ["核心 CPI 同比", F.core_cpi_yoy],
+        ["PCE 同比", F.pce_yoy], ["核心 PCE 同比", F.core_pce_yoy]];
+      inf.innerHTML = rows.map(function (r) {
+        var v = r[1];
+        if (v == null) return "";
+        var gap = v - 0.02;
+        var cls = v > 0.025 ? "down" : "up";
+        return '<div class="card macro-card">' +
+          '<div class="macro-head"><span class="macro-label">' + r[0] + "</span></div>" +
+          '<div class="macro-score">' + (v * 100).toFixed(1) +
+          '<span class="macro-unit">%</span></div>' +
+          '<div class="macro-note">距 2% 目標 ' + (gap >= 0 ? "+" : "") +
+          (gap * 100).toFixed(1) + " 個百分點</div></div>";
+      }).join("") + (F.unrate != null
+        ? '<div class="card macro-card"><div class="macro-head"><span class="macro-label">失業率</span></div>' +
+          '<div class="macro-score">' + F.unrate.toFixed(1) +
+          '<span class="macro-unit">%</span></div><div class="macro-note">勞動市場冷熱參考</div></div>'
+        : "");
+    }
+
+    /* 資產負債表 */
+    var bs = document.getElementById("fed-bs");
+    if (bs && F.walcl != null) {
+      var y1 = F.walcl_1y != null && F.walcl_1y
+        ? (F.walcl / F.walcl_1y - 1) * 100 : null;
+      bs.innerHTML = '<div class="s-grid2">' +
+        '<div class="s-kv"><span class="s-k">資產負債表規模</span><span class="s-v">' +
+        (F.walcl / 1000).toFixed(2) + " 兆美元</span></div>" +
+        (y1 != null ? '<div class="s-kv"><span class="s-k">近 1 年變化</span><span class="s-v ' +
+          (y1 > 0 ? "up" : "down") + '">' + (y1 > 0 ? "▲" : "▼") + " " +
+          Math.abs(y1).toFixed(1) + "%</span></div>" : "") +
+        "</div>" +
+        (fedLineSVG(F.walcl_hist, "#8a6fd1") || "<p>資產負債表走勢暫缺。</p>") +
+        '<p class="s-note">近 60 週（FRED WALCL，單位：十億美元）。</p>';
+    }
+
+    /* FOMC 日曆 */
+    var fc = document.getElementById("fed-fomc");
+    if (fc && (F.fomc || []).length) {
+      var statLabel = { past: "已召開", next: "🔜 下次會議", future: "待召開" };
+      fc.innerHTML = '<table class="s-table"><thead><tr><th>會議</th><th>狀態</th>' +
+        "<th>會後目標區間</th></tr></thead><tbody>" +
+        F.fomc.map(function (m) {
+          var tgt2 = m.upper != null && m.lower != null
+            ? m.lower.toFixed(2) + "% – " + m.upper.toFixed(2) + "%" : "—";
+          return "<tr" + (m.status === "next" ? ' style="background:var(--brand-tint);"' : "") + ">" +
+            "<td>" + esc(m.dates) + "</td><td>" + (statLabel[m.status] || m.status) + "</td>" +
+            "<td>" + tgt2 + "</td></tr>";
+        }).join("") + "</tbody></table>" +
+        '<p class="s-note">目標區間由 FRED 目標上限/下限序列按決議日取值；日程為聯儲官網預先公佈。</p>';
+    }
+
+    /* 收益率曲線 */
+    var yc = document.getElementById("fed-yc");
+    if (yc) {
+      var B = D.allocation.bonds || {};
+      var yvals = [["2 年期", B.dgs2], ["10 年期", B.dgs10], ["30 年期", B.dgs30]];
+      yc.innerHTML = '<div class="s-grid2">' +
+        yvals.map(function (r) {
+          return r[1] != null ? '<div class="s-kv"><span class="s-k">' + r[0] +
+            "</span><span class='s-v'>" + r[1].toFixed(2) + "%</span></div>" : "";
+        }).join("") +
+        (B.spread != null ? '<div class="s-kv"><span class="s-k">10Y−2Y 利差</span><span class="s-v ' +
+          (B.spread > 0 ? "up" : "down") + '">' + (B.spread > 0 ? "+" : "") +
+          B.spread.toFixed(2) + "%</span></div>" : "") +
+        (B.real10 != null ? '<div class="s-kv"><span class="s-k">10Y 實際利率</span><span class="s-v">' +
+          B.real10.toFixed(2) + "%</span></div>" : "") +
+        (B.hy_oas != null ? '<div class="s-kv"><span class="s-k">高收益利差</span><span class="s-v">' +
+          B.hy_oas.toFixed(2) + "%</span></div>" : "") +
+        "</div>" +
+        '<p class="s-note">利差為負（倒掛）時市場預期衰退；數據源 FRED。</p>';
+    }
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -1211,6 +1348,7 @@
     if (page === "reports") initReports();
     if (page === "trackrecord") renderTrackRecord();
     if (page === "allocation") { renderAllocation(); renderFunds(); }
+    if (page === "fed") renderFed();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

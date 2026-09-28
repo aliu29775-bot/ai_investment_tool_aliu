@@ -25,7 +25,7 @@ import subprocess
 import sys
 import time
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timedelta
 import urllib.request
 from collections import Counter, defaultdict
 
@@ -465,7 +465,14 @@ def fetch_quotes(symbols, verbose=True):
 
 FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
                "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
-               "DFII10", "GDPC1", "PAYEMS", "T10Y2Y"]
+               "DFII10", "GDPC1", "PAYEMS", "T10Y2Y",
+               "DFEDTARU", "DFEDTARL", "WALCL", "PCEPI", "CPILFESL"]
+
+# FOMC 2026 會議日程（聯儲官網預先公佈；end=決議日）
+FOMC_2026 = [("2026-01-28", "1月27–28日"), ("2026-03-18", "3月17–18日"),
+             ("2026-04-29", "4月28–29日"), ("2026-06-17", "6月16–17日"),
+             ("2026-07-29", "7月28–29日"), ("2026-09-16", "9月15–16日"),
+             ("2026-10-28", "10月27–28日"), ("2026-12-09", "12月8–9日")]
 
 ASSET_PROXIES = {"股票": "SPY", "國債": "IEF", "長期國債": "TLT",
                  "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
@@ -743,6 +750,43 @@ def compute_allocation(fred, quotes, asset_perf):
                 "closes": q.get("closes") or p.get("closes"),
             })
 
+    # 美聯儲追蹤器數據（目標區間/資產負債表/通脹/FOMC 日曆）
+    def _fed_at(sid, dt):
+        vals = fred.get(sid) or []
+        for d, v in vals:
+            if d > dt:  # 取決議日之後的首個值 = 會後區間
+                return v
+        return None
+
+    today = datetime.now().date().isoformat()
+    next_end = next((d for d, _ in FOMC_2026 if d >= today), None)
+    fomc = []
+    for end, label in FOMC_2026:
+        fomc.append({
+            "dates": label, "end": end,
+            "status": "past" if end < today else ("next" if end == next_end else "future"),
+            "upper": round(_fed_at("DFEDTARU", end), 2) if _fed_at("DFEDTARU", end) is not None else None,
+            "lower": round(_fed_at("DFEDTARL", end), 2) if _fed_at("DFEDTARL", end) is not None else None,
+        })
+    walcl = fred.get("WALCL") or []
+    walcl_1y = _fed_at("WALCL", (datetime.now().date() -
+                                 timedelta(days=365)).isoformat())
+    fed = {
+        "target_upper": round(_yv(fred, "DFEDTARU"), 2) if _yv(fred, "DFEDTARU") is not None else None,
+        "target_lower": round(_yv(fred, "DFEDTARL"), 2) if _yv(fred, "DFEDTARL") is not None else None,
+        "eff": round(_yv(fred, "DFF"), 2) if _yv(fred, "DFF") is not None else None,
+        "eff_hist": (fred.get("DFF") or [])[-250:],
+        "target_hist": (fred.get("DFEDTARU") or [])[-250:],
+        "walcl": round(_yv(fred, "WALCL"), 0) if _yv(fred, "WALCL") is not None else None,
+        "walcl_1y": walcl_1y,
+        "walcl_hist": walcl[-60:],
+        "cpi_yoy": _yoy_at(fred, "CPIAUCSL"), "core_cpi_yoy": _yoy_at(fred, "CPILFESL"),
+        "pce_yoy": _yoy_at(fred, "PCEPI"), "core_pce_yoy": _yoy_at(fred, "PCEPILFE"),
+        "unrate": _yv(fred, "UNRATE"),
+        "fomc": fomc,
+        "asof": (fred.get("DFF") or [["—"]])[-1][0],
+    }
+
     return {
         "asof": max((q.get("asof", "") for q in quotes.values()), default=""),
         "macro": macro,
@@ -750,6 +794,7 @@ def compute_allocation(fred, quotes, asset_perf):
         "judgment": judgment,
         "rules": rules,
         "bonds": bonds,
+        "fed": fed,
         "commodities": commodities,
         "assets": assets,
         "portfolio": compute_portfolio(asset_perf, targets),
