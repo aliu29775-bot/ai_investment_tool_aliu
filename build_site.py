@@ -466,8 +466,8 @@ def fetch_quotes(symbols, verbose=True):
 # 3.5 宏觀數據與資產配置（FRED + Yahoo 資產行情）
 # ---------------------------------------------------------------------------
 
-FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
-               "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
+FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS5", "DGS10", "DGS30",
+               "DGS3MO", "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
                "DFII10", "GDPC1", "PAYEMS", "T10Y2Y", "T10Y3M", "ICSA", "VIXCLS",
                "BAA10Y",
                "GEPUCURRENT", "USREC", "CSUSHPINSA",
@@ -710,15 +710,21 @@ def _chg_at(v, back=0):
 
 
 def build_treasury_desk(fred, targets):
-    """美聯儲頁「國債交易台視角」：用 FRED 真實序列生成短端定價、
-    曲線形狀、長端 term premium、通脹盈虧平衡與買賣建議（規則式、數據驅動）。
-    分析框架參考 CME 期貨日報 2025-09-04（通脹粘性+債務 → 長端難下）。"""
-    dgs2, dgs10, dgs30 = fred.get("DGS2") or [], fred.get("DGS10") or [], fred.get("DGS30") or []
+    """美聯儲頁「國債交易台視角」v2：形態／驅動因素／交易策略三層框架。
+    全部數值由 FRED 序列規則式生成；框架參考 CME 期貨日報 2025-09-04
+    與四形態／牛熊×陡平／利差交易方法論。"""
+    def f1(x):
+        return "—" if x is None else f"{x:.1f}"
+
+    dgs2, dgs5 = fred.get("DGS2") or [], fred.get("DGS5") or []
+    dgs10, dgs30 = fred.get("DGS10") or [], fred.get("DGS30") or []
+    dgs3m = fred.get("DGS3MO") or []
     ffr = _yv(fred, "DFF")
     real10 = _yv(fred, "DFII10")
-    spread = _yv(fred, "T10Y2Y")
     spread3m = _yv(fred, "T10Y3M")
     baa = _yv(fred, "BAA10Y")
+    hy = _yv(fred, "BAMLH0A0HYM2")
+    ig = _yv(fred, "BAMLC0A0CM")
     cpi = _yoy_at(fred, "CPIAUCSL")
     pce = _yoy_at(fred, "PCEPILFE")
     unrate = _yv(fred, "UNRATE")
@@ -727,111 +733,249 @@ def build_treasury_desk(fred, targets):
     if not dgs2 or not dgs10 or not dgs30:
         return None
 
-    # 過去 1 月／3 月／1 年變動（bp）：DGS2/DGS10/DGS30 日頻
+    r = {"ffr": ffr, "dgs3m": dgs3m[-1][1] if dgs3m else None,
+         "dgs2": dgs2[-1][1], "dgs5": dgs5[-1][1] if dgs5 else None,
+         "dgs10": dgs10[-1][1], "dgs30": dgs30[-1][1],
+         "real10": real10, "baa10y": baa, "hy_oas": hy, "ig_oas": ig,
+         "cpi": cpi, "pce": pce, "unrate": unrate, "gdp": gdp}
+
+    # 期限利差（bp，整數）
+    s2s10 = round((r["dgs10"] - r["dgs2"]) * 100)
+    s5s30 = round((r["dgs30"] - r["dgs5"]) * 100) if r["dgs5"] is not None else None
+    s3m10 = round(spread3m * 100) if spread3m is not None else None
+    gap2y = round((r["dgs2"] - ffr) * 100) if ffr is not None else None
+    gap3m = round((r["dgs3m"] - ffr) * 100) if (r["dgs3m"] is not None and ffr is not None) else None
+    be = round((r["dgs10"] - real10) * 100) if real10 is not None else None  # bp
+    r["spread2s10s_bp"] = s2s10
+    r["spread5s30s_bp"] = s5s30
+    r["spread3m10y_bp"] = s3m10
+    r["gap2y_bp"] = gap2y
+    r["gap3m_bp"] = gap3m
+    r["breakeven_bp"] = be
+
+    # 過去 1 月／3 月／1 年變動（bp）：DGS2/DGS5/DGS10/DGS30 日頻
     ch = {}
-    for sid, v in (("2Y", dgs2), ("10Y", dgs10), ("30Y", dgs30)):
-        ch[sid] = {"m1": _chg_at(v, 21), "m3": _chg_at(v, 63), "y1": _chg_at(v, 252)}
+    for sid, v in (("2Y", dgs2), ("5Y", dgs5), ("10Y", dgs10), ("30Y", dgs30)):
+        if v:
+            ch[sid] = {"m1": _chg_at(v, 21), "m3": _chg_at(v, 63), "y1": _chg_at(v, 252)}
 
-    # 曲線利差歷史（按日期對齊）
-    by_date = {d: v for d, v in dgs10}
-    spread_hist = [[d, v2 - (dict(dgs2).get(d, 0) or 0)] for d, v2 in dgs10
-                   if d in dict(dgs2)][-504:]
-    spread_now = round((dgs10[-1][1] - dgs2[-1][1]) * 100, 0)  # bp
+    # 曲線利差歷史（按日期對齊，近 504 交易日）
+    by2, by5, by10, by30 = (dict(v) for v in (dgs2, dgs5, dgs10, dgs30))
+    spread_hist = [[d, round((by10[d] - by2[d]) * 100)] for d, _ in dgs10 if d in by2][-504:]
+    spread5_hist = [[d, round((by30[d] - by5[d]) * 100)] for d, _ in dgs30 if d in by5][-504:]
 
-    # ---- 規則式解讀 ----
-    gap2y = round((dgs2[-1][1] - ffr) * 100, 0) if ffr is not None else None
+    # ================= 第一層：形態 =================
+    if s2s10 < 0:
+        shape_now = "倒掛"
+        shape_txt = (f"2s10s 利差 {s2s10}bp——短期利率比長期還高，曲線<b>倒掛</b>。"
+                     "這是經典的衰退警報：2000、2006–07、2022–23 三次倒掛後美國都陷入衰退，"
+                     "平均領先 6–18 個月。")
+    elif s2s10 > 50:
+        shape_now = "陡峭"
+        shape_txt = (f"2s10s 利差 +{s2s10}bp——曲線<b>陡峭</b>：買 10 年債比 2 年債每年多賺 "
+                     f"{s2s10 / 100:.2f}%，市場預期經濟向好、未來利率會走高。")
+    else:
+        shape_now = "正斜偏平坦"
+        shape_txt = (f"2s10s 利差只有 +{s2s10}bp——曲線<b>正斜率但偏平坦</b>："
+                     f"買 10 年債只比 2 年債每年多賺 {s2s10 / 100:.2f}%，"
+                     "鎖 10 年的期限補償不算多"
+                     + (f"（5s30s +{s5s30}bp 也偏平）" if s5s30 is not None else "") + "。")
+    hump_txt = ""
+    if r["dgs5"] is not None and r["dgs5"] > r["dgs10"]:
+        hump_txt = (f"另外 5 年期 {r['dgs5']:.2f}% 比 10 年期 {r['dgs10']:.2f}% 還高——"
+                    "中段凸起（<b>駝峰</b>），通常是政策方向不明或中段債券發行太多的信號。")
+
+    # 近一年趨勢（牛陡/熊陡/牛平/熊平）
+    y2, y10 = ch.get("2Y", {}).get("y1"), ch.get("10Y", {}).get("y1")
+    y30, m2 = ch.get("30Y", {}).get("y1"), ch.get("2Y", {}).get("m1")
+    trend, trend_txt = "—", ""
+    if y2 is not None and y10 is not None:
+        if y2 >= 0 and y10 >= 0:
+            trend = "熊陡" if y10 > y2 else "熊平"
+        elif y2 < 0 and y10 < 0:
+            trend = "牛陡" if y2 < y10 else "牛平"
+        else:
+            trend = "震盪"
+        if trend == "熊平":
+            trend_txt = (f"過去一年，2 年期收益率漲了 {y2:+.0f}bp，比 10 年期（{y10:+.0f}bp）和 "
+                         f"30 年期（{y30:+.0f}bp）漲得都多——<b>熊平</b>：短端被加息預期推著走、"
+                         "長端相對淡定，利差反而收窄。")
+        elif trend == "熊陡":
+            trend_txt = (f"過去一年，10 年期漲了 {y10:+.0f}bp、比 2 年期（{y2:+.0f}bp）多——"
+                         f"<b>熊陡</b>：通脹／財政擔憂推高長端，整體利率上行、曲線走闊。")
+        elif trend == "牛陡":
+            trend_txt = (f"過去一年，2 年期跌了 {abs(y2):.0f}bp、比 10 年期（{y10:+.0f}bp）多——"
+                         f"<b>牛陡</b>：降息預期壓低短端，曲線走闊。")
+        elif trend == "牛平":
+            trend_txt = (f"過去一年，10 年期跌了 {abs(y10):.0f}bp、比 2 年期（{y2:+.0f}bp）多——"
+                         f"<b>牛平</b>：避險資金湧入長端。")
+        else:
+            trend_txt = f"過去一年 2Y {y2:+.0f}bp、10Y {y10:+.0f}bp 方向分化——曲線方向待定。"
+        if m2 is not None:
+            trend_txt += f"最近一個月 2 年期又變動 {m2:+.0f}bp。"
+
+    # 牛陡/熊陡/牛平/熊平速查表（含當前標記）
+    trend_table = [
+        {"name": "牛陡", "def": "降息初期：短端跌得比長端快", "spread": "利差走闊",
+         "trade": "買 2 年期、賣 10 年期", "now": trend == "牛陡"},
+        {"name": "熊陡", "def": "通脹／財政擔憂：長端漲得比短端快", "spread": "利差走闊",
+         "trade": "賣長端、買短端", "now": trend == "熊陡"},
+        {"name": "牛平", "def": "避險資金湧入：長端跌得比短端快", "spread": "利差收窄",
+         "trade": "買長端、賣短端", "now": trend == "牛平"},
+        {"name": "熊平", "def": "加息後期：短端漲得比長端快", "spread": "利差收窄",
+         "trade": "賣短端、買長端", "now": trend == "熊平"},
+    ]
+
+    # 四種基本形態速查卡
+    shape_cards = [
+        {"name": "陡峭化", "kind": "steep",
+         "desc": "長端利率漲得比短端多，利差走闊。復甦初期、通脹抬頭時常見。",
+         "trade": "做陡：買短賣長"},
+        {"name": "平坦化", "kind": "flat",
+         "desc": "利差收窄：熊平是短端漲得多，牛平是長端跌得多。加息後期常見。",
+         "trade": "做平：買長賣短"},
+        {"name": "倒掛", "kind": "invert",
+         "desc": "短期利率比長期還高。2000、2006–07、2022–23 三次倒掛後美國均衰退，平均領先 6–18 個月。",
+         "trade": "減股票倉、長債避險"},
+        {"name": "駝峰", "kind": "hump",
+         "desc": "中段（3–7 年）收益率比兩頭都高。政策不明、中段發行多時出現。",
+         "trade": "蝶式：賣中段、買兩端"},
+    ]
+
+    # ================= 第二層：驅動因素 =================
+    drivers = []
     if gap2y is not None:
         if gap2y > 50:
-            short = (f"2 年期 {dgs2[-1][1]:.2f}% 比聯邦基金有效利率 {ffr:.2f}% 高 {gap2y}bp"
-                     f"——短端在定價<b>升息預期／通脹溢價</b>，而非降息。")
+            d_short = (f"2 年期 {r['dgs2']:.2f}% 比聯儲基準利率 {ffr:.2f}% 高出 {gap2y}bp"
+                       + (f"、3 個月國庫券 {r['dgs3m']:.2f}% 高出 {gap3m}bp" if r["dgs3m"] is not None else "")
+                       + f"——市場在定價<b>加息而非降息</b>：失業率 {f1(unrate)}%、"
+                         f"核心通脹 {f1(pce)}% 還沒回到 2% 目標，聯儲不敢轉向。")
         elif gap2y < -50:
-            short = (f"2 年期 {dgs2[-1][1]:.2f}% 比聯邦基金有效利率 {ffr:.2f}% 低 {abs(gap2y)}bp"
-                     f"——短端在定價<b>降息預期</b>。")
+            d_short = (f"2 年期 {r['dgs2']:.2f}% 比聯儲基準利率 {ffr:.2f}% 低 {abs(gap2y)}bp"
+                       "——市場在定價<b>降息預期</b>。")
         else:
-            short = (f"2 年期 {dgs2[-1][1]:.2f}% 與聯邦基金有效利率 {ffr:.2f}% 大致持平"
-                     f"（差 {gap2y}bp）——市場認為政策利率短期不變。")
-    else:
-        short = ""
-    if spread_now > 50:
-        curve_txt = (f"2s10s 利差 +{spread_now}bp，曲線<b>陡峭</b>；10Y−3M +{spread3m:.0f}bp "
-                     "無倒掛——期限溢價（term premium）回歸定價。")
-    elif spread_now < 0:
-        curve_txt = (f"2s10s 利差 {spread_now}bp，曲線<b>倒掛</b>"
-                     "——經典衰退警報；本站衰退概率模型與之交叉驗證。")
-    else:
-        curve_txt = (f"2s10s 利差 +{spread_now}bp，<b>正斜率但偏平</b>；"
-                     f"10Y−3M +{spread3m:.0f}bp 無倒掛——曲線已正常化，但平坦的斜率"
-                     "意味著期限溢價對長端的補償有限。")
+            d_short = (f"2 年期 {r['dgs2']:.2f}% 與聯儲基準利率 {ffr:.2f}% 大致持平"
+                       f"（差 {gap2y}bp）——市場認為政策利率短期不變。")
+        drivers.append({"title": "短端：政策利率預期", "txt": d_short})
     if real10 is not None:
-        be = round((dgs10[-1][1] - real10) * 100, 0)
-        long_txt = (f"10 年期 {dgs10[-1][1]:.2f}%、30 年期 {dgs30[-1][1]:.2f}%——名義收益率絕對水平高，"
-                    f"但 10Y 實質利率 {real10:.2f}% 遠高於歷史中性（≈0.5–1.5%）：長債的"
-                    f"<b>實質回報有吸引力</b>，同時市場隱含 10 年通脹 {be / 100:.2f}%"
-                    f"（CPI 同比 {cpi:.1f}%、核心 PCE {pce:.1f}%）——盈虧平衡低於現行通脹，"
-                    "TIPS 相對名義債有配置價值。")
-    else:
-        long_txt = ""
-    # 過去一年變動敘述
-    if ch["2Y"]["y1"] is not None:
-        move = (f"過去一年：2Y {ch['2Y']['y1']:+.0f}bp、10Y {ch['10Y']['y1']:+.0f}bp、"
-                f"30Y {ch['30Y']['y1']:+.0f}bp——"
-                f"{'熊陡（短端跌得比長端多）' if ch['2Y']['y1'] > ch['30Y']['y1'] else '熊平'}"
-                "；近一個月 2Y " + f"{ch['2Y']['m1']:+.0f}bp、10Y {ch['10Y']['m1']:+.0f}bp"
-                f"（{'拋售加速' if (ch['2Y']['m1'] or 0) > 20 else '壓力緩和'}）。")
-    else:
-        move = ""
-    # 配置含義（引用本站目標配置）
-    t_國債 = next((t['pct'] for t in targets if t['cls'] == '國債'), '—')
-    t_現金 = next((t['pct'] for t in targets if t['cls'] == '現金'), '—')
-    alloc_txt = (f"對本站配置的含義：流動性評分由聯邦基金利率、曲線與信用利差決定"
-                 f"（信用利差 BAA−10Y {baa:.2f}% 仍低）——曲線正斜率加分、利率高位減分，"
-                 f"國債目標權重維持 {t_國債}%、現金 {t_現金}%。"
-                 f"若通脹回落使短端定價反轉，流動性評分上行將觸發「股票增配」；"
-                 "在此之前，短債吃 carry、長債僅作配置型久期。")
+        d_long = (f"10 年期實際利率（扣除通脹後）{real10:.2f}%，遠高於歷史中性 0.5–1.5%；"
+                  f"市場隱含未來 10 年平均通脹只有 {be / 100:.2f}%，比現在的 CPI {f1(cpi)}% 低一截"
+                  "——市場賭通脹會大幅回落。如果通脹比預期粘（財政赤字、關稅），"
+                  "長端還有上行風險。")
+        drivers.append({"title": "長端：通脹與財政", "txt": d_long})
+    if hy is not None:
+        d_crd = (f"高收益債利差 {hy:.2f}%、投資級 {ig:.2f}%、BAA−10Y {baa:.2f}%——都在歷史低位："
+                 "市場很樂觀、企業借錢很便宜，這是股市的支撐；"
+                 "但利差已經低到沒多少收窄空間，一旦風險情緒轉差，走闊空間比收窄空間大得多。")
+        drivers.append({"title": "信用：利差極窄", "txt": d_crd})
+    if s3m10 is not None:
+        drivers.append({"title": "衰退警報交叉驗證",
+                        "txt": (f"10Y−3M 利差 +{s3m10}bp，還是正的——這條利差轉負才是歷史上的"
+                                "衰退警報，現在還沒響（見本站風險頁的衰退概率模型）。")})
 
-    # ---- 買賣建議（規則式，全部基於上述數值） ----
-    trades = [
-        f"【短端 carry】買 2–5 年期：2Y {dgs2[-1][1]:.2f}% 在歷史高位、久期僅 2–4 年"
-        "——carry 為正、對升息衝擊的久期損失可控，是當前賠率最好的「收入倉」。",
-    ]
-    if spread_now > 0 and (ch["2Y"]["y1"] or 0) > (ch["30Y"]["y1"] or 0):
-        trades.append(
-            "【曲線】過去一年熊陡之後，若通脹數據轉弱，最大戰術機會是<b>牛平</b>"
-            "（久期中立地買長賣短）；在通脹確認回落前，不做大規模曲線方向押注，"
-            "僅保留 2s10s 區間交易倉。")
+    # ================= 第三層：交易策略（具體場景） =================
+    strategies = []
+    if gap2y is not None and gap2y > 50:
+        strategies.append({
+            "name": "吃 carry：直接買 2–5 年期國債",
+            "setup": f"2 年期 {r['dgs2']:.2f}%，比基準利率高 {gap2y}bp",
+            "scenario": (f"買 2 年期國債持有 12 個月：票息 {r['dgs2']:.2f}%。就算聯儲真加息兩次"
+                         f"（+50bp），價格損失約 1%，一年還能賺 {r['dgs2'] - 1:.2f}% 左右；"
+                         "要虧錢需要加息超過 250bp。當前賠率最好的收入倉。"),
+        })
+    strategies.append({
+        "name": "做平：押注利差繼續收窄",
+        "setup": f"2s10s 現在 +{s2s10}bp，過去一年短端漲得多",
+        "scenario": (f"如果你覺得加息預期還會推高短端、長端因衰退擔憂漲不動，"
+                     f"2s10s 會從 +{s2s10}bp 繼續收窄：賣出 2 年期、買入 10 年期（久期中性）。"
+                     f"利差每收窄 10bp 約賺 0.8 點；從 +{s2s10}bp 收到 0 約賺 2.5 點，"
+                     "如果收到倒掛（−20bp）能賺 4 點左右。"),
+    })
+    strategies.append({
+        "name": "牛陡條件單：等數據反轉再動手",
+        "setup": "觸發條件：CPI 回落到 3% 以下＋失業率升破 4.5%",
+        "scenario": (f"如果數據確認聯儲轉向降息，短端現在定價的加息溢價（2Y−基準利率 +{gap2y}bp）"
+                     "會快速消失，2 年期可能跌 80–120bp——到時做陡：買 2 年期、賣 10 年期。"
+                     f"2s10s 從 +{s2s10}bp 回到歷史平均 +80~100bp 區間，每走闊 10bp 約賺 0.7 點。"
+                     "現在不用進場，設好觸發條件等數據。"),
+    })
+    if r["dgs5"] is not None:
+        mid = r["dgs2"] + (r["dgs10"] - r["dgs2"]) * 3 / 8
+        rich = round((r["dgs5"] - mid) * 100)
+        strategies.append({
+            "name": "蝶式：只押中段貴賤",
+            "setup": f"5 年期 {r['dgs5']:.2f}% 比 2 年/10 年連線的中間值 {mid:.2f}% {'貴' if rich > 0 else '便宜'} {abs(rich)}bp",
+            "scenario": ("賣 5 年期、同時買 2 年期和 10 年期（倉位大致對半）。"
+                         "只押中段相對兩頭偏貴還是偏便宜，不押整條曲線漲跌——"
+                         "適合數據空窗期，中段回到連線水平就獲利。"),
+        })
     else:
-        trades.append(
-            "【曲線】曲線平坦／倒掛區：陡峭化交易（買短賣長）在數據反轉時啟動；"
-            "當前以持有短端為主。")
-    trades.append(
-        f"【長端】10Y {dgs10[-1][1]:.2f}%、實質利率 {real10:.2f}% 的長債屬「配置型」"
-        "而非「交易型」：分 3–4 批建倉 10–30Y（每跌 10–15bp 加一批），"
-        "用 30Y 期貨（ZB/UB）或 TLT 分批介入，避免一次承受 term premium 擴張風險。")
-    trades.append(
-        f"【通脹保護】盈虧平衡 {be / 100:.2f}% 低於現行 CPI {cpi:.1f}%——"
-        "TIPS（TIP ETF）優於名義長債；若通脹粘性延續（服務業通脹為重點，"
-        "參見 CME 期貨日報 2025-09-04），TIPS 跑贏名義債。")
-    trades.append(
-        "【執行工具】調整久期用國債期貨而非實券：ZN（10Y）／ZB（30Y）DV01 大、"
-        "保證金效率高、免資金全額佔用；1 手 ZN≈DV01 $80、ZB≈$150（近似值，隨價格變化）。")
+        strategies.append({
+            "name": "蝶式：只押中段貴賤",
+            "setup": "中段（5 年期）相對兩端的偏離交易",
+            "scenario": ("賣 5 年期、同時買 2 年期和 10 年期：只押中段貴賤，"
+                         "不押曲線方向——適合數據空窗期。"),
+        })
+    if be is not None and cpi is not None:
+        strategies.append({
+            "name": "TIPS：通脹保值債相對便宜",
+            "setup": f"市場隱含通脹 {be / 100:.2f}% vs 現在 CPI {cpi:.1f}%",
+            "scenario": (f"市場賭未來 10 年平均通脹只有 {be / 100:.2f}%，比現在的 CPI {cpi:.1f}% 低——"
+                         "只要通脹回落得比預期慢，TIPS 就跑贏普通國債。"
+                         "用 TIP ETF 分批買；如果 10 年期實際利率從 "
+                         f"{real10:.2f}% 回落到 2.5% 以下再加碼。"),
+        })
+    if hy is not None:
+        strategies.append({
+            "name": "高收益債：留出子彈",
+            "setup": f"高收益利差 {hy:.2f}%，近三年低位",
+            "scenario": (f"高收益債利差 {hy:.2f}% 已經很低，繼續收窄的空間很小；2022 年衰退擔憂時"
+                         "利差一度衝破 5%。可以減掉一部分高收益債、換成短端國債，"
+                         "等利差回到 4% 以上再買回來。"),
+        })
+    strategies.append({
+        "name": "長債分批建倉",
+        "setup": f"10 年期 {r['dgs10']:.2f}%、實際利率 {r['real10']:.2f}%",
+        "scenario": (f"實際利率 {r['real10']:.2f}% 已高於中性，長債適合「配置」而不是「交易」："
+                     "每漲 10–15bp 加一批 10–30 年期（TLT/EDV 或國債期貨），分 3–4 批建完；"
+                     "如果以後曲線倒掛，長債就是最好的避險資產。"),
+    })
+
+    # ---- 利差總表 ----
+    spreads = [
+        {"name": "2s10s 期限利差", "val": f"{s2s10:+d}bp",
+         "note": "正斜偏平坦" if 0 <= s2s10 <= 50 else ("陡峭" if s2s10 > 50 else "倒掛")},
+        {"name": "5s30s 期限利差", "val": f"{s5s30:+d}bp" if s5s30 is not None else "—",
+         "note": "長端陡峭度"},
+        {"name": "10Y−3M 利差", "val": f"{s3m10:+d}bp" if s3m10 is not None else "—",
+         "note": "歷史上的衰退警報線（見風險頁）"},
+        {"name": "投資級信用利差 IG OAS", "val": f"{ig:.2f}%" if ig is not None else "—",
+         "note": "歷史低位 → 風險補償薄"},
+        {"name": "高收益信用利差 HY OAS", "val": f"{hy:.2f}%" if hy is not None else "—",
+         "note": "近三年極窄，2022 年曾 >5%"},
+        {"name": "BAA−10Y 利差", "val": f"{baa:.2f}%" if baa is not None else "—",
+         "note": "信用周期寬鬆"},
+        {"name": "10Y 盈虧平衡通脹", "val": f"{be / 100:.2f}%" if be is not None else "—",
+         "note": f"< CPI {cpi:.1f}% → TIPS 有價值" if cpi is not None else "市場隱含通脹"},
+    ]
 
     return {
         "asof": asof,
-        "rates": {"ffr": ffr, "dgs2": dgs2[-1][1], "dgs10": dgs10[-1][1],
-                  "dgs30": dgs30[-1][1], "spread_bp": spread_now,
-                  "spread3m_bp": round(spread3m * 100, 0) if spread3m is not None else None,
-                  "real10": real10, "baa10y": baa, "cpi": cpi, "pce": pce,
-                  "unrate": unrate, "gdp": gdp, "gap2y_bp": gap2y},
-        "hist": {"dgs2": dgs2[-504:], "dgs10": dgs10[-504:], "dgs30": dgs30[-504:],
-                 "spread": spread_hist},
+        "rates": r,
+        "curve": [["FFR", 0, ffr], ["3M", 0.25, r["dgs3m"]], ["2Y", 2, r["dgs2"]],
+                  ["5Y", 5, r["dgs5"]], ["10Y", 10, r["dgs10"]], ["30Y", 30, r["dgs30"]]],
+        "hist": {"dgs2": dgs2[-504:], "dgs5": dgs5[-504:] if dgs5 else [],
+                 "dgs10": dgs10[-504:], "dgs30": dgs30[-504:],
+                 "spread2s10s": spread_hist, "spread5s30s": spread5_hist},
         "changes": ch,
-        "view": {"short": short, "curve": curve_txt, "long": long_txt, "move": move,
-                 "alloc": alloc_txt},
-        "trades": trades,
-        "ref": ("分析框架回顧自 CME 期貨日報《美債收益率為何「長短不一」？"
-                "一文看懂通脹與債務的交織影響》（2025-09-04）：降息預期壓低短端、"
-                "通脹粘性與財政擔憂支撐長端——一年後的今天，該框架依然適用於解釋"
-                "長端的堅挺。"),
+        "shape": {"name": shape_now, "text": shape_txt, "hump": hump_txt,
+                  "trend": trend, "trend_text": trend_txt, "trend_table": trend_table,
+                  "cards": shape_cards},
+        "spreads": spreads,
+        "drivers": drivers,
+        "strategies": strategies,
+        "ref": ("分析框架參考 CME 期貨日報《美債收益率為何「長短不一」？》（2025-09-04）；"
+                "全部數值來自 FRED，形態與策略由規則自動生成，非人工觀點。"),
     }
 
 

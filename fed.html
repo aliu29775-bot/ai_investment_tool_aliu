@@ -96,7 +96,7 @@
   <section class="section">
     <div class="section-head"><h2>💼 國債交易台視角（Treasury Desk）</h2></div>
     <p class="section-desc" style="margin:6px 0 10px;">
-      以交易員視角拆解利率曲線與經濟狀況：短端定價、曲線形態、長端實質利率與配置含義，並給出可執行的買賣方向與國債期貨/ETF 工具。分析框架參考
+      像國債交易員一樣看市場，分三步：先看<b>曲線長什麼樣</b>（陡峭／平坦／倒掛／駝峰，牛陡、熊陡、牛平、熊平），再看<b>為什麼</b>（加息預期、通脹、信用利差），最後看<b>怎麼做</b>（做陡、做平、蝶式、吃 carry），每個策略都用具體數字舉例。分析框架參考
       <a href="https://www.cmegroup.com/cn-s/education/futures-daily/2025-09-04.html" target="_blank" rel="noopener">CME 期貨日報《美債收益率為何「長短不一」？》</a>。
     </p>
     <div class="card" id="fed-treasury">
@@ -111,7 +111,7 @@
         利率與通脹數據：FRED（fredgraph.csv），每次建站自動抓取；有效利率為每日聯邦基金有效利率（DFF），目標區間為聯儲公佈的目標上限/下限（DFEDTARU/L），資產負債表為 WALCL 週頻序列。
         FOMC 日程為聯儲官網預先公佈的 2026 年會議安排，會後目標區間按決議日自 FRED 序列取值。
         通脹追蹤：CPI（CPIAUCSL）、核心 CPI（CPILFESL）、PCE（PCEPI）、核心 PCE（PCEPILFE）同比。
-        國債交易台：2Y/10Y/30Y 殖利率（DGS2/DGS10/DGS30）、10Y-2Y 與 10Y-3M 利差（T10Y2Y/T10Y3M）、10Y 實質利率（DFII10）、信用利差（BAA10Y）與 GDP/失業率，全為 FRED 序列；買賣建議由上述數值的規則式判斷生成（規則見卡片內說明），非人工觀點。
+        國債交易台：FFR/3M/2Y/5Y/10Y/30Y 殖利率（DFF/DGS3MO/DGS2/DGS5/DGS10/DGS30）、2s10s/5s30s 與 10Y-3M 利差（T10Y2Y/T10Y3M 及序列差值）、10Y 實質利率（DFII10）、信用利差（BAA10Y、HY/IG OAS）與 GDP/失業率，全為 FRED 序列；形態判斷與策略場景由上述數值的規則式判斷生成（規則見卡片內說明），非人工觀點。
         本頁為研究框架展示，不構成任何投資建議。
       </p>
     </div>

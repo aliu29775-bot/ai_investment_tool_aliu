@@ -1014,6 +1014,33 @@ body[data-page="fed"] .fed-big span { font-size: 16px; }
   background: var(--brand-tint, #e8f3ee); color: var(--brand); font-weight: 600; font-size: 14px; }
 .fed-legend { font-size: 12px; color: var(--muted); margin: 0 0 6px; }
 
+/* ---------- 共享元件類（app.js 動態渲染，全站頁面通用；stock.css 同名規則與此一致） ---------- */
+.s-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 24px; }
+.s-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 24px; }
+.s-kv { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; flex-wrap: wrap; }
+.s-k { font-size: 13px; color: var(--muted); min-width: 92px; }
+.s-v { font-size: 14px; font-weight: 600; }
+.s-n { font-size: 12px; color: var(--muted); }
+.s-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+.s-chip { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.s-chip.up { color: var(--good); background: rgba(21, 128, 61, .1); }
+.s-chip.down { color: var(--crit); background: rgba(185, 28, 28, .1); }
+.s-chip.mid, .s-chip.off { color: var(--muted); background: var(--chip, #eef1f5); }
+.s-chip.on { color: var(--brand-ink); background: var(--brand-tint); }
+.s-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+.s-table th, .s-table td {
+  border-bottom: 1px solid var(--line); padding: 7px 10px; text-align: left;
+}
+.s-table thead th { color: var(--muted); font-weight: 600; }
+.s-bullbear { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 720px) { .s-bullbear { grid-template-columns: 1fr; } }
+.s-bull, .s-bear { padding: 12px 16px; border-radius: 10px; font-size: 13px; }
+.s-bull { background: rgba(21, 128, 61, .07); }
+.s-bear { background: rgba(185, 28, 28, .07); }
+.s-bull h3, .s-bear h3 { font-size: 14px; margin: 0 0 8px; }
+.s-bull ul, .s-bear ul { margin: 0; padding-left: 18px; }
+.s-bull li, .s-bear li { margin: 5px 0; line-height: 1.6; }
+
 /* ---------- 模組 32：行動端優化 ---------- */
 @media (max-width: 760px) {
   .site-nav .container { flex-wrap: wrap; }
@@ -1029,6 +1056,7 @@ body[data-page="fed"] .fed-big span { font-size: 16px; }
   body[data-page="fed"] .fed-big { font-size: 26px; }
   .hero h1 { font-size: 26px; }
   .s-grid2 { grid-template-columns: 1fr; }
+  .s-chip { white-space: normal; }
 }
 @media (max-width: 480px) {
   .quick-grid { grid-template-columns: 1fr; }

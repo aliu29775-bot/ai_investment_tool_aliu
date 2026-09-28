@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AZZ — AIShan+ 個股分析</title>
+<meta name="description" content="AZZ 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="../index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="../index.html">首頁</a>
+      <a href="../companies.html">公司</a>
+      <a href="../reports.html">報告</a>
+      <a href="../trackrecord.html">組合</a>
+      <a href="../allocation.html">配置</a>
+      <a href="../fed.html">美聯儲</a>
+      <a href="../valuation.html">估值</a>
+      <a href="../events.html">事件</a>
+      <a href="../funds.html">基金</a>
+      <a href="../politician.html">政要</a>
+      <a href="../china.html">中國</a>
+      <a href="../scenarios.html">回測</a>
+      <a href="../risk.html">風險</a>
+      <a href="../market.html">市場</a>
+      <a href="../tools.html">工具</a>
+      <a href="../glossary.html">術語</a>
+      <a href="../sources.html">來源</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "AZZ", "ticker": "AZZ", "sector": "工業", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 135.13, "currency": "USD", "change_pct": -1.49, "asof": "2026-09-28", "name": "AZZ Inc.", "closes": [136.84, 137.8, 137.98, 137.17, 135.13]}, "finance": {"margins": 0.118310004, "op_margins": 0.17175, "roe": 0.15314999, "rev_growth": 0.063, "earn_growth": -0.696, "fcf": 104912376, "debt_equity": 39.448, "cash": 1059000, "debt": 542817024, "revenue": 1676647936, "ebitda": 366033984, "eps": 6.56}, "multiples": {"pe": 20.59908536585366, "fwd_pe": 17.231064, "pb": 2.9342086, "ps": null, "evebitda": 12.742, "peg": 1.2, "dy": 0.0069999998, "beta": 1.106, "mktcap": null, "shares": 30051501}, "dcf": {"g": -0.05, "r": 0.085, "fcf": 104912376, "shares": 30051501, "gs": [-0.05, -0.05, -0.020000000000000004], "value": 42.615184021293416, "matrix": [{"r": 0.075, "cells": [50.81, 50.81, 58.4]}, {"r": 0.085, "cells": [42.62, 42.62, 48.85]}, {"r": 0.095, "cells": [36.76, 36.76, 42.02]}], "pessimistic": 36.76, "neutral": 42.62, "optimistic": 58.4, "premium": -0.6846}, "ddm": {"value": 7.3, "dps": 0.96, "g": -0.05, "premium": -0.946}, "relative": {"pe": {"own": 20.6, "median": 17.05, "premium": 0.2082}, "pb": {"own": 2.93, "median": 17.05, "premium": -0.8279}, "evebitda": {"own": 12.74, "median": 17.05, "premium": -0.2527}}, "ta": {"n": 251, "ma50": 142.66, "ma200": 135.28, "support": 132.66, "resistance": 153.24, "52w_low": 97.64, "52w_high": 160.17, "ret_1y": 0.233, "vol_trend": -0.0129, "spy_1y": 0.1525, "rs": 0.0805}, "holders": [{"org": "Blackrock Inc.", "pct": 15.45, "value": 624511342}, {"org": "Vanguard Portfolio Management LLC", "pct": 5.93, "value": 239666545}, {"org": "FMR, LLC", "pct": 4.83, "value": 195079710}, {"org": "T. Rowe Price Investment Management, Inc", "pct": 4.61, "value": 186425875}, {"org": "Capital International Investors", "pct": 4.58, "value": 185053201}], "inst_pct": 0.96963, "analyst": {"target": 164.0, "n": 9, "rec": null, "low": 144.0, "high": 200.0}, "earnings_date": "2026-10-13", "profile": {"biz": "AZZ Inc. provides hot-dip galvanizing and coil coating solutions in North America. It operates through the AZZ Metal Coatings; and the AZZ Precoat Metals segments. The company offers metal coating solutions for corrosion protection, including hot-dip galvanizing, spin galvanizing, powder coating, anodizing, and plating to the steel fabrication and other industries. It also provides aesthetic and corrosion protective coatings and related value-added services for steel and aluminum coil primarily serving the construction; appliance; heating, ventilation, and air conditioning; container; transportation; and other end markets. AZZ Inc. was incorporated in 1956 and is headquartered in Fort Worth, Texas.", "industry": "Specialty Business Services", "website": "https://www.azz.com", "country": "United States"}, "officers": [], "income_hist": [{"year": "2026", "revenue": 1650080000, "gross": 0, "net_income": 317260000}, {"year": "2025", "revenue": 1577744000, "gross": 0, "net_income": 52435000}, {"year": "2024", "revenue": 1537589000, "gross": 0, "net_income": 87207000}, {"year": "2023", "revenue": 1323649000, "gross": 0, "net_income": -61214000}], "shr": {"dps": 0.96, "dy": 0.0069999998, "payout": 0.122, "ocf": 247812992, "fcf": 104912376}, "earn_trend": [{"period": "本期", "growth": 0.19}, {"period": "下季", "growth": 0.21200001}, {"period": "今年", "growth": 0.14220001}, {"period": "下一年", "growth": 0.1041}], "rel_peers_n": 112, "fund_mentions": [], "polit_mentions": []}</script>
+<script src="../js/data.js"></script>
+<script src="../js/stock.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AST SpaceMobile — AIShan+ 個股分析</title>
+<meta name="description" content="AST SpaceMobile 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="../index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="../index.html">首頁</a>
+      <a href="../companies.html">公司</a>
+      <a href="../reports.html">報告</a>
+      <a href="../trackrecord.html">組合</a>
+      <a href="../allocation.html">配置</a>
+      <a href="../fed.html">美聯儲</a>
+      <a href="../valuation.html">估值</a>
+      <a href="../events.html">事件</a>
+      <a href="../funds.html">基金</a>
+      <a href="../politician.html">政要</a>
+      <a href="../china.html">中國</a>
+      <a href="../scenarios.html">回測</a>
+      <a href="../risk.html">風險</a>
+      <a href="../market.html">市場</a>
+      <a href="../tools.html">工具</a>
+      <a href="../glossary.html">術語</a>
+      <a href="../sources.html">來源</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "AST SpaceMobile", "ticker": "ASTS", "sector": "電信", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 60.64, "currency": "USD", "change_pct": -1.89, "asof": "2026-09-28", "name": "AST SpaceMobile, Inc.", "closes": [63.69, 59.98, 61.06, 61.81, 60.64]}, "finance": {"margins": 0.0, "op_margins": -5.44626, "roe": -0.45621, "rev_growth": 26.266, "earn_growth": null, "fcf": -1799572992, "debt_equity": 124.865, "cash": 2288252928, "debt": 2993731072, "revenue": 115299000, "ebitda": -406319008, "eps": -2.15}, "multiples": {"pe": -28.2046511627907, "fwd_pe": -47.06092, "pb": 9.601203, "ps": null, "evebitda": -48.58, "peg": null, "dy": null, "beta": 2.726, "mktcap": null, "shares": 299789305}, "dcf": {"g": 0.25, "r": 0.085, "fcf": -1799572992, "shares": 299789305, "gs": [0.22, 0.25, 0.28], "value": -254.94632284525267, "matrix": [{"r": 0.075, "cells": [-276.24, -309.85, -346.74]}, {"r": 0.085, "cells": [-227.58, -254.95, -284.97]}, {"r": 0.095, "cells": [-192.9, -215.83, -240.97]}], "pessimistic": -192.9, "neutral": -254.95, "optimistic": -346.74, "premium": -5.2043}, "ddm": null, "relative": {"pe": {"own": -28.2, "median": 7.57, "premium": -4.7268}, "pb": {"own": 9.6, "median": 7.57, "premium": 0.2687}, "evebitda": {"own": -48.58, "median": 7.57, "premium": -7.4191}}, "ta": {"n": 251, "ma50": 62.85, "ma200": 81.46, "support": 53.03, "resistance": 80.64, "52w_low": 49.08, "52w_high": 133.09, "ret_1y": 0.2422, "vol_trend": -0.354, "spy_1y": 0.1525, "rs": 0.0897}, "holders": [{"org": "Rakuten Group, Inc.", "pct": 5.17, "value": 940996403}, {"org": "Blackrock Inc.", "pct": 5.09, "value": 926642064}, {"org": "Vanguard Portfolio Management LLC", "pct": 4.45, "value": 808764929}, {"org": "Vanguard Capital Management LLC", "pct": 4.17, "value": 759307050}, {"org": "Alphabet Inc.", "pct": 2.98, "value": 542601279}], "inst_pct": 0.54562, "analyst": {"target": 79.60833, "n": 12, "rec": null, "low": 42.5, "high": 108.0}, "earnings_date": "2026-11-09", "profile": {"biz": "AST SpaceMobile, Inc., together with its subsidiaries, designs and develops the constellation of BlueBird satellites in the United States. The company provides a cellular broadband network in space to be accessible directly by smartphones for commercial use and other applications, as well as for government use. Its SpaceMobile service provides cellular broadband services to end-users who are out of terrestrial cellular coverage. The company was founded in 2017 and is headquartered in Midland, Texas.", "industry": "Communication Equipment", "website": "https://ast-science.com", "country": "United States"}, "officers": [], "income_hist": [{"year": "2025", "revenue": 70918000, "gross": 0, "net_income": -341940000}, {"year": "2024", "revenue": 4418000, "gross": 0, "net_income": -300083000}, {"year": "2023", "revenue": 0, "gross": 0, "net_income": -87561000}, {"year": "2022", "revenue": 13825000, "gross": 0, "net_income": -31640000}], "shr": {"dps": null, "dy": null, "payout": 0.0, "ocf": -144704992, "fcf": -1799572992}, "earn_trend": [{"period": "本期", "growth": 0.0167}, {"period": "下季", "growth": -0.64169997}, {"period": "今年", "growth": -0.5204}, {"period": "下一年", "growth": 0.36720002}], "rel_peers_n": 28, "fund_mentions": [], "polit_mentions": []}</script>
+<script src="../js/data.js"></script>
+<script src="../js/stock.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

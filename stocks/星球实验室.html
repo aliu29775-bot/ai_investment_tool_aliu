@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>星球实验室 — AIShan+ 個股分析</title>
+<meta name="description" content="星球实验室 的個股獨立分析：基本面、DCF 估值、技術面、機構持倉與催化劑。">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/stock.css">
+</head>
+<body data-page="stock">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="../index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="../index.html">首頁</a>
+      <a href="../companies.html">公司</a>
+      <a href="../reports.html">報告</a>
+      <a href="../trackrecord.html">組合</a>
+      <a href="../allocation.html">配置</a>
+      <a href="../fed.html">美聯儲</a>
+      <a href="../valuation.html">估值</a>
+      <a href="../events.html">事件</a>
+      <a href="../funds.html">基金</a>
+      <a href="../politician.html">政要</a>
+      <a href="../china.html">中國</a>
+      <a href="../scenarios.html">回測</a>
+      <a href="../risk.html">風險</a>
+      <a href="../market.html">市場</a>
+      <a href="../tools.html">工具</a>
+      <a href="../glossary.html">術語</a>
+      <a href="../sources.html">來源</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" id="stock-root" style="padding-top:32px;">
+  <p class="section-desc">載入中…</p>
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容（包括公司評分、結論與估值模型）均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script type="application/json" id="stock-data">{"name": "星球实验室", "ticker": "PL", "sector": "工業", "region": "美股", "score": null, "verdict": null, "verdict_class": null, "summary": null, "reports": [], "hot": false, "in_combo": false, "quote": {"price": 17.08, "currency": "USD", "change_pct": -2.01, "asof": "2026-09-28", "name": "Planet Labs PBC", "closes": [16.91, 16.38, 17.62, 17.43, 17.08]}, "finance": {"margins": -0.95132005, "op_margins": -0.11995, "roe": -0.71970004, "rev_growth": 0.581, "earn_growth": null, "fcf": 51749876, "debt_equity": 88.353, "cash": 865417984, "debt": 498623008, "revenue": 378278016, "ebitda": -48402000, "eps": -1.1}, "multiples": {"pe": -15.527272727272724, "fwd_pe": -13708.001, "pb": 13.763052, "ps": null, "evebitda": -123.447, "peg": null, "dy": null, "beta": 2.108, "mktcap": null, "shares": 340354193}, "dcf": {"g": 0.25, "r": 0.085, "fcf": 51749876, "shares": 340354193, "gs": [0.22, 0.25, 0.28], "value": 6.457637010616165, "matrix": [{"r": 0.075, "cells": [7.0, 7.85, 8.78]}, {"r": 0.085, "cells": [5.76, 6.46, 7.22]}, {"r": 0.095, "cells": [4.89, 5.47, 6.1]}], "pessimistic": 4.89, "neutral": 6.46, "optimistic": 8.78, "premium": -0.6218}, "ddm": null, "relative": {"pe": {"own": -15.53, "median": 17.05, "premium": -1.9107}, "pb": {"own": 13.76, "median": 17.05, "premium": -0.1928}, "evebitda": {"own": -123.45, "median": 17.05, "premium": -8.2403}}, "ta": {"n": 251, "ma50": 20.29, "ma200": 27.34, "support": 16.02, "resistance": 30.86, "52w_low": 11.16, "52w_high": 51.4, "ret_1y": 0.3397, "vol_trend": 0.012, "spy_1y": 0.1525, "rs": 0.1872}, "holders": [{"org": "Alphabet Inc.", "pct": 10.36, "value": 603989789}, {"org": "Blackrock Inc.", "pct": 5.43, "value": 316698309}, {"org": "American Century Companies Inc", "pct": 4.23, "value": 246742324}, {"org": "Vanguard Capital Management LLC", "pct": 3.78, "value": 220524385}, {"org": "Vanguard Portfolio Management LLC", "pct": 3.51, "value": 204712378}], "inst_pct": 0.83055, "analyst": {"target": 33.4, "n": 10, "rec": 1.81818, "low": 22.0, "high": 50.0}, "earnings_date": "2026-09-03", "profile": {"biz": "Planet Labs PBC engages in the design, construction, and launch of constellations of satellites with the intent of providing high-cadence geospatial data delivered to customers through an online platform in the United States and internationally. The company offers SuperDove satellites to create an always-online scanner for the planet, with the goal of imaging the Earth every day at a ground sampling distance (GSD) resolution of up to 3.5 meters. This combines planet monitoring with other scientific-grade radiometric data from public satellite data programs; and SkySat and Pelican satellites to capture a specified location several times per day, achieving a GSD resolution of up to 50 centimeters after processing, powered by an application programming interface. It also provides Tanager, a hyperspectral imaging satellite that delivers full-spectrum imagery across the visible and shortwave infrared regions, and the Earth Observation platform, which enables customers and partners to access, analyze, and act on its proprietary data catalog by discovering image tasking capacity, relevant data layers, extracting useful information, and delivering insights through custom-built solutions or GIS workflows via APIs and browser-based applications. In addition, the company's satellite services arrangements include designing and manufacturing customer-owned satellites, mission systems engineering, launch procurement, ground station infrastructure, satellite operations, and maintenance, as well as dedicated image tasking capacity on company-owned or customer-owned satellites. It serves agriculture, mapping, energy, forestry, finance, and insurance companies, as well as government agencies. Planet Labs PBC was founded in 2010 and is headquartered in San Francisco, California.", "industry": "Aerospace & Defense", "website": "https://www.planet.com", "country": "United States"}, "officers": [], "income_hist": [{"year": "2026", "revenue": 307727000, "gross": 0, "net_income": -246860000}, {"year": "2025", "revenue": 244352000, "gross": 0, "net_income": -123196000}, {"year": "2024", "revenue": 220696000, "gross": 0, "net_income": -140509000}, {"year": "2023", "revenue": 191256000, "gross": 0, "net_income": -161966000}], "shr": {"dps": null, "dy": null, "payout": 0.0, "ocf": 117630000, "fcf": 51749876}, "earn_trend": [{"period": "本期", "growth": 0.0}, {"period": "下季", "growth": 0.0}, {"period": "今年", "growth": -0.375}, {"period": "下一年", "growth": 0.97730005}], "rel_peers_n": 112, "fund_mentions": [], "polit_mentions": []}</script>
+<script src="../js/data.js"></script>
+<script src="../js/stock.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>
