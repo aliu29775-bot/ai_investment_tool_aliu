@@ -1420,6 +1420,67 @@
     if (chp && (V.cheap || []).length) chp.innerHTML = rankTable(V.cheap);
   }
 
+  /* ---------- 政策事件日曆 ---------- */
+  function renderEvents() {
+    var EV = D.allocation && D.allocation.events;
+    var F = D.allocation && D.allocation.fed;
+    var host = document.querySelector("main.container");
+    if (!host) return;
+    if (!EV) {
+      host.insertAdjacentHTML("afterbegin",
+        '<div class="card" style="padding:16px;margin-top:16px;">' +
+        "⚠️ 事件日曆資料暫不可用（建站時數據抓取失敗）。</div>");
+      return;
+    }
+    /* 財報日曆（未來 60 天） */
+    var er = document.getElementById("ev-earnings");
+    if (er) {
+      if ((EV.earnings || []).length) {
+        var rows = EV.earnings.map(function (e) {
+          var link = e.page ? '<a href="' + esc(e.page) + '">' + esc(e.name) + "</a>" : esc(e.name);
+          return "<tr><td>" + esc(e.date) + "</td><td>" + link + "</td><td>" +
+            esc(e.ticker || "") + "</td><td>" + esc(e.sector || "") + "</td></tr>";
+        }).join("");
+        er.innerHTML = '<table class="s-table"><thead><tr><th>日期</th><th>公司</th>' +
+          "<th>代碼</th><th>行業</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+          '<p class="s-note">僅含覆蓋公司中已公佈財報日的（Yahoo calendarEvents）；財報日可能臨時調整。</p>';
+      } else {
+        er.innerHTML = "<p>未來 60 天暫無已公佈的財報日。</p>";
+      }
+    }
+    /* FOMC 日程 */
+    var fm = document.getElementById("ev-fomc");
+    if (fm && F && (F.fomc || []).length) {
+      var statLabel = { past: "已召開", next: "🔜 下次會議", future: "待召開" };
+      fm.innerHTML = '<table class="s-table"><thead><tr><th>會議</th><th>狀態</th>' +
+        "<th>會後目標區間</th></tr></thead><tbody>" +
+        F.fomc.map(function (m) {
+          var tgt = m.upper != null && m.lower != null
+            ? m.lower.toFixed(2) + "% – " + m.upper.toFixed(2) + "%" : "—";
+          return "<tr" + (m.status === "next" ? ' style="background:var(--brand-tint);"' : "") + ">" +
+            "<td>" + esc(m.dates) + "</td><td>" + (statLabel[m.status] || m.status) + "</td>" +
+            "<td>" + tgt + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    /* 固定事件 */
+    var fx = document.getElementById("ev-fixed");
+    if (fx && (EV.fixed || []).length) {
+      fx.innerHTML = '<table class="s-table"><thead><tr><th>日期</th><th>事件</th>' +
+        "<th>影響</th></tr></thead><tbody>" +
+        EV.fixed.map(function (e) {
+          return "<tr><td>" + esc(e.date) + "</td><td><b>" + esc(e.label) + "</b></td><td>" +
+            esc(e.note || "") + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    /* 每月例行 */
+    var mo = document.getElementById("ev-monthly");
+    if (mo && (EV.monthly || []).length) {
+      mo.innerHTML = "<ul class='s-reports'>" + EV.monthly.map(function (m) {
+        return "<li>" + esc(m) + "</li>";
+      }).join("") + "</ul>";
+    }
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -1432,6 +1493,7 @@
     if (page === "allocation") { renderAllocation(); renderFunds(); }
     if (page === "fed") renderFed();
     if (page === "valuation") renderValuation();
+    if (page === "events") renderEvents();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

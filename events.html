@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>政策事件日曆 — AIShan+ 投研網站</title>
+<meta name="description" content="政策事件日曆：覆蓋公司財報日（未來 60 天）、FOMC 會議日程、固定政治事件與每月例行經濟數據。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="events">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html" class="on">事件</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">政策事件日曆</h1>
+    <span class="freshness" id="ev-asof"></span>
+  </div>
+  <p class="section-desc">三類事件：覆蓋公司財報日（未來 60 天，數據驅動）、FOMC 會議日程（FRED 目標區間）、固定政治事件與每月例行經濟數據。每次建站自動刷新。</p>
+
+  <!-- 財報日曆 -->
+  <section class="section">
+    <div class="section-head"><h2>📊 財報日曆（未來 60 天）</h2></div>
+    <div class="card" id="ev-earnings">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- FOMC -->
+  <section class="section">
+    <div class="section-head"><h2>🏛 FOMC 2026 會議日程</h2></div>
+    <div class="card" id="ev-fomc">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 固定事件 -->
+  <section class="section">
+    <div class="section-head"><h2>🗳 固定政治事件</h2></div>
+    <div class="card" id="ev-fixed">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 每月例行 -->
+  <section class="section">
+    <div class="section-head"><h2>📅 每月例行經濟數據</h2></div>
+    <div class="card" id="ev-monthly">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>📐 方法論</h3>
+      <p class="section-desc" style="margin:6px 0 0;">
+        財報日取自 Yahoo Finance calendarEvents（各公司公佈的下次財報日），僅展示未來 60 天且已公佈日期的覆蓋公司；
+        FOMC 日程為聯儲官網預先公佈，會後目標區間由 FRED 目標上限/下限序列按決議日取值；
+        固定事件為憲法或法定日程。財報日可能臨時調整，以公司公告為準。本頁為研究框架展示，不構成任何投資建議。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -871,6 +871,42 @@ def compute_valuation(fred, companies, fund_data):
     return v
 
 
+def compute_events(fred, companies, fund_data):
+    """政策事件日曆：FOMC 日程 + 覆蓋公司財報日（未來 60 天）+ 固定政治事件。"""
+    today = datetime.now().date()
+    events = {"earnings": [], "fixed": [
+        {"date": "2026-11-03", "label": "美國中期選舉（參眾兩院改選）",
+         "note": "財政與監管政策風向標；憲法固定日期"},
+        {"date": "2026-12-09", "label": "FOMC 12 月會議（決議日）",
+         "note": "同日發佈經濟預測摘要（SEP）與點陣圖"},
+    ], "monthly": [
+        "每月第一個週五：非農就業報告（BLS）",
+        "每月中旬：CPI 通脹報告（BLS）",
+        "每月下旬：PCE 通脹報告（BEA）",
+    ]}
+    # 財報日（Yahoo calendarEvents，僅取未來 60 天）
+    rows = []
+    for c in companies:
+        t = c.get("ticker")
+        qs = ((fund_data.get(t) or {}).get("qs") or {}) if t else {}
+        cal = qs.get("calendarEvents") or {}
+        ed = ((cal.get("earnings") or {}).get("earningsDate") or [])             if isinstance(cal.get("earnings"), dict) else []
+        for d in ed if isinstance(ed, list) else []:
+            fmt = (d or {}).get("fmt") if isinstance(d, dict) else None
+            if not fmt or len(fmt) < 10:
+                continue
+            try:
+                dt = datetime.strptime(fmt[:10], "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if 0 <= (dt - today).days <= 60:
+                rows.append({"date": fmt[:10], "name": c["name"], "ticker": t,
+                             "sector": c.get("sector", ""), "page": c.get("page", "")})
+    rows.sort(key=lambda r: (r["date"], r["name"]))
+    events["earnings"] = rows[:40]
+    return events
+
+
 def compute_portfolio(asset_perf, targets):
     """依建議配置權重，用日線序列計算組合的實時收益（買入持有、每日以目標權重再平衡），對比 SPY 基準。"""
     sym_map = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
@@ -1359,6 +1395,12 @@ def main():
                 json.dump(allocation, f, ensure_ascii=False)
         print(f"  ✓ 估值儀表板（巴菲特指標 + 行業估值中位數，"
               f"{allocation['valuation'].get('n_valued', 0)} 家有 PE）")
+    if allocation is not None and (not args.no_market or "events" not in allocation):
+        allocation["events"] = compute_events({}, companies, fund_data)
+        if not args.no_market:
+            with open(alloc_cache, "w", encoding="utf-8") as f:
+                json.dump(allocation, f, ensure_ascii=False)
+        print(f"  ✓ 政策事件日曆（未來 60 天財報 {len(allocation['events']['earnings'])} 條）")
     elif os.path.exists(alloc_cache):
         allocation = json.load(open(alloc_cache, encoding="utf-8"))
         print("== 3.5/4 使用資產配置快取 ==")
