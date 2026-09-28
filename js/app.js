@@ -1568,6 +1568,24 @@
           setMsg("⚠ 觸發憑證無效或過期，請站長更新 PAT", "err");
         } else if (xhr.status === 404) {
           setMsg("⚠ 未找到工作流 update-data.yml", "err");
+        } else if (xhr.status === 422) {
+          // 舊版工作流沒有 mode 輸入：回退為無參數觸發（全量更新）
+          var x2 = new XMLHttpRequest();
+          x2.open("POST", "https://api.github.com/repos/" + REPO + "/actions/workflows/" + WF + "/dispatches", true);
+          x2.setRequestHeader("Accept", "application/vnd.github+json");
+          x2.setRequestHeader("Authorization", "Bearer " + TOKEN);
+          x2.onload = function () {
+            btn.disabled = false;
+            if (x2.status === 204) {
+              try { localStorage.setItem("lastUpdateTrigger", String(Date.now())); } catch (e) {}
+              setMsg("✅ 已觸發全量更新（工作流尚未支援大小更新）…", "warn");
+              setTimeout(function () { pollRun(0); }, 8000);
+            } else {
+              setMsg("⚠ 觸發失敗（HTTP " + x2.status + "），可到 GitHub Actions 頁面手動運行", "err");
+            }
+          };
+          x2.onerror = function () { btn.disabled = false; setMsg("⚠ 網絡錯誤，請稍後重試", "err"); };
+          x2.send("{}");
         } else {
           setMsg("⚠ 觸發失敗（HTTP " + xhr.status + "），請稍後重試", "err");
         }
