@@ -555,6 +555,33 @@ def fetch_asset_perf(symbols):
     return perf
 
 
+def fetch_asset_history(symbols):
+    """抓 20 年月頻收盤（供歷史情景回測：2008／2020／2022）。回傳 {sym: {dates, closes}}。"""
+    hist = {}
+    for sym in sorted(set(symbols)):
+        url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+               f"{urllib.parse.quote(sym)}?range=20y&interval=1mo")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode())
+            res = data["chart"]["result"][0]
+            pairs = [(t, c) for t, c in zip(res["timestamp"],
+                                            res["indicators"]["quote"][0]["close"])
+                     if c is not None]
+            if len(pairs) < 60:
+                continue
+            hist[sym] = {
+                "dates": [datetime.fromtimestamp(t).strftime("%Y-%m-%d") for t, _ in pairs],
+                "closes": [round(float(c), 2) for _, c in pairs],
+            }
+            print(f"  ✓ 歷史 {sym:8s} {pairs[0][0]} 起 {len(pairs)} 個月（截至 {pairs[-1][0]}）")
+        except Exception as e:
+            print(f"  ✗ 歷史 {sym:8s} {e}")
+        time.sleep(0.25)
+    return hist
+
+
 def _clamp(v, lo=0.0, hi=100.0):
     return max(lo, min(hi, v))
 
@@ -971,6 +998,246 @@ def build_13f_calendar():
     return rows
 
 
+# 政要交易追蹤（模組 7）：公開披露整理，站長手動維護，只收錄有公開報導來源的記錄
+# 披露規則：國會議員 STOCK Act（交易 >1,000 美元須在知悉後 30 天內、交易後 45 天內申報）；
+# 總統／高級行政官員按 OGE 年度／季度財務申報，金額僅披露區間
+POLITICIAN_DISCLOSURES = [
+    {
+        "person": "特朗普 Donald J. Trump",
+        "role": "美國總統（資產置於可撤銷信託，第三方金融機構管理）",
+        "period": "2026 Q1（1–3 月）",
+        "disclosed": "2026-05 披露",
+        "stats": "約 3,642 筆交易 · 總額區間 2.2 億–7.5 億美元",
+        "buys": [
+            {"name": "甲骨文", "ticker": "ORCL", "range": "220–1,060 萬美元（最大買入）"},
+            {"name": "英偉達", "ticker": "NVDA", "range": "≈600 萬美元"},
+            {"name": "蘋果", "ticker": "AAPL", "range": "淨買 210–720 萬（8 買 1 賣）"},
+            {"name": "Alphabet", "ticker": "GOOGL", "range": "全為買入，150–310 萬"},
+            {"name": "博通", "ticker": "AVGO", "range": "100–500 萬建倉"},
+            {"name": "德州儀器", "ticker": "TXN", "range": "100–500 萬建倉"},
+            {"name": "新思科技", "ticker": "SNPS", "range": "100–500 萬建倉"},
+            {"name": "楷登電子", "ticker": "CDNS", "range": "100–500 萬建倉"},
+            {"name": "戴爾科技", "ticker": "DELL", "range": "2/10 建倉 100–500 萬"},
+            {"name": "英特爾", "ticker": "INTC", "range": "建倉"},
+            {"name": "ServiceNow", "ticker": "NOW", "range": "買入"},
+            {"name": "Adobe", "ticker": "ADBE", "range": "買入"},
+            {"name": "Workday", "ticker": "WDAY", "range": "買入"},
+            {"name": "特斯拉", "ticker": "TSLA", "range": "雙向、買為主"},
+            {"name": "洛克希德-馬丁", "ticker": "LMT", "range": "軍工股買入"},
+            {"name": "諾斯羅普·格魯曼", "ticker": "NOC", "range": "軍工股買入"},
+            {"name": "通用動力", "ticker": "GD", "range": "軍工股買入"},
+            {"name": "波音", "ticker": "BA", "range": "買入"},
+            {"name": "KURA 壽司美國", "ticker": "KRUS", "range": "100–500 萬"},
+            {"name": "9 隻跨境 ETF", "ticker": "", "range": "19 筆全買 500–1,310 萬（IEMG／加拿大／日本／歐洲／黃金信託）"},
+        ],
+        "sells": [
+            {"name": "微軟", "ticker": "MSFT", "range": "單筆 500–2,500 萬（最高量級）"},
+            {"name": "亞馬遜", "ticker": "AMZN", "range": "單筆 500–2,500 萬（最高量級）"},
+            {"name": "Meta", "ticker": "META", "range": "單筆 500–2,500 萬（最高量級）"},
+            {"name": "特斯拉", "ticker": "TSLA", "range": "賣出量超過買入"},
+        ],
+        "note": "「七巨頭」共 94 筆（64 買 30 賣，總值 5,000–7,000 萬美元）；廣持 VOO／SPY 等市場型 ETF。爭議時點：2/10 買入英偉達一周後英偉達宣佈與 Meta 合作；買入戴爾早於 5 月公開背書。監督組織批評「總統不應淪為日內交易者」；特朗普集團回應稱投資組合由第三方管理，特朗普本人及家人不參與具體決策。",
+        "source": "OGE 披露整理（光明網 2026-05-21、財聯社、星島頭條等）",
+    },
+    {
+        "person": "特朗普 Donald J. Trump",
+        "role": "美國總統",
+        "period": "2026 年 7 月",
+        "disclosed": "2026-09 披露",
+        "stats": "1,156 筆交易 · 總額區間 7,900 萬–2.7 億美元",
+        "buys": [
+            {"name": "英偉達", "ticker": "NVDA", "range": "增持"},
+            {"name": "SpaceX", "ticker": "", "range": "6/12 史上最大 IPO（≈750 億美元）後買入"},
+            {"name": "Intuit", "ticker": "INTU", "range": "買入"},
+            {"name": "Salesforce", "ticker": "CRM", "range": "買入"},
+            {"name": "特斯拉", "ticker": "TSLA", "range": "持續雙向交易"},
+            {"name": "市政債券", "ticker": "", "range": "邁阿密戴德縣航空收入債券等"},
+        ],
+        "sells": [
+            {"name": "微軟", "ticker": "MSFT", "range": "大手減持（單筆 500–2,500 萬）"},
+            {"name": "亞馬遜", "ticker": "AMZN", "range": "大手減持（單筆 500–2,500 萬）"},
+            {"name": "甲骨文", "ticker": "ORCL", "range": "同日賣出"},
+        ],
+        "note": "與多隻 ETF 及市政債券交易並行；延續「大賣小買」模式。",
+        "source": "香港商報 2026-09-24 等公開報導",
+    },
+]
+
+POLITICIAN_CONGRESS = {
+    "spacex": {
+        "title": "SpaceX IPO 後國會議員六日內買入",
+        "note": "2026-06-12 SpaceX 以 ≈750 億美元創史上最大 IPO；6 名眾議員或其直系家屬在上市後 6 天內買入約 8.3 萬–24.5 萬美元，其中 5 人任職於監管 SpaceX 相關行業的委員會（國防、衛星、AI、證券）。交易本身合法，無內幕交易證據，但引發利益衝突質疑。",
+        "source": "CNBC 2026-07-28、Digital Today 等",
+        "rows": [
+            {"name": "William Timmons", "party": "R-SC", "range": "8.3 萬–24.5 萬美元區間內"},
+            {"name": "John McGuire", "party": "R-VA", "range": "同上區間"},
+            {"name": "Dan Meuser", "party": "R-PA", "range": "同上區間"},
+            {"name": "Gil Cisneros", "party": "D-CA", "range": "同上區間"},
+            {"name": "John James", "party": "R-MI", "range": "同上區間"},
+            {"name": "Jared Moskowitz", "party": "D-FL", "range": "同上區間"},
+        ],
+    },
+    "violations": {
+        "title": "2026 年 STOCK Act 逾期申報事件",
+        "note": "STOCK Act 規定：超過 1,000 美元的證券交易須在知悉後 30 天內、且不晚於交易後 45 天申報；逾期申報標準罰款 200 美元。2026 年多起重大逾期被曝光：",
+        "rows": [
+            {"name": "Sen. Alan Armstrong", "party": "R-OK", "detail": "700 筆交易（324 萬–1,605 萬美元）逾期逾兩個月；辯稱第三方顧問「直接指數化策略」。已不尋求連任"},
+            {"name": "Rep. Michael Rulli", "party": "R-OH", "detail": "32 筆中 22 筆逾期，最早溯及 2024-11（近兩年），最高 48 萬美元，含「七巨頭」中六隻"},
+            {"name": "Rep. Julie Johnson", "party": "D-TX", "detail": "2026-08 補披露 2025-05 起交易共計最高 110 萬美元，此前曾承諾清倉"},
+            {"name": "其他被點名者", "party": "—", "detail": "Crenshaw、Laurel Lee、Linda Sánchez、Letlow、Jim Jordan、McClain（眾院）；Britt、Collins、Hickenlooper、Rounds、Fetterman（參院）等亦被指逾期申報"},
+        ],
+        "source": "Benzinga／TradingView、NewsOn6、Public Radio Tulsa 2026 年報導",
+    },
+    "overlap": {
+        "title": "委員會職權與持倉重疊（CNN 2026-02 分析）",
+        "note": "至少 10 名參議員在與其委員會監管行業相關的公司有交易記錄，例如 Moody（健康委員會）買入禮來（Eli Lilly）、Moran 在出席 AI 聽證會當天買入 Alphabet。",
+        "rows": [
+            {"name": "Bill Hagerty", "party": "R-TN", "detail": "委員會重疊交易"},
+            {"name": "Ashley Moody", "party": "R-FL", "detail": "健康委員會 · 買入禮來（LLY）"},
+            {"name": "Jerry Moran", "party": "R-KS", "detail": "出席 AI 聽證會當天買入 Alphabet（GOOGL）"},
+            {"name": "Markwayne Mullin", "party": "R-OK", "detail": "委員會重疊交易"},
+            {"name": "Tommy Tuberville", "party": "R-AL", "detail": "委員會重疊交易"},
+            {"name": "John Hickenlooper", "party": "D-CO", "detail": "委員會重疊交易"},
+            {"name": "Gary Peters", "party": "D-MI", "detail": "委員會重疊交易"},
+            {"name": "Sheldon Whitehouse", "party": "D-RI", "detail": "委員會重疊交易"},
+        ],
+        "source": "CNN 分析（Capitol Trades 2026-02-12 新聞稿）",
+    },
+    "legislation": {
+        "title": "立法改革進展（119 屆國會）",
+        "rows": [
+            {"name": "PELOSI Act（S. 1498）", "status": "出委員會", "date": "2025-07-30",
+             "detail": "唯一推進至委員會通過的措施：禁止議員、配偶與受扶養子女持有或交易涵蓋資產；罰款為一個月薪資或未剝離投資價值的 10%（取較高者）"},
+            {"name": "Stop Insider Trading Act", "status": "眾院通過", "date": "2026-07",
+             "detail": "全面禁止國會議員購買個股；眾院 232-198 通過，特朗普表態支持，參院前景未明"},
+            {"name": "其他提案", "status": "提案中", "date": "—",
+             "detail": "第 119 屆國會共提出約 25 項限制國會股票交易的法案／決議（H.R. 253、H.Res. 491 等），多數未過委員會"},
+        ],
+        "source": "CRS R48641、GovInfo 聽證記錄 2026",
+    },
+}
+
+
+def build_polit_holdings(polit, companies):
+    """政要交易反向匹配：僅用披露記錄中的明確代碼或公司名對照站內覆蓋公司，不做推斷。"""
+    by_ticker, by_name = {}, {}
+    for c in companies:
+        t = (c.get("ticker") or "").strip().upper()
+        if t:
+            by_ticker[t] = c
+        n = (c.get("name") or "").strip()
+        if len(n) >= 2:
+            by_name[n] = c
+    hold = defaultdict(list)
+    for p in polit:
+        for side in ("buys", "sells"):
+            for it in p.get(side) or []:
+                tk = (it.get("ticker") or "").strip().upper()
+                matched = None
+                if tk and tk in by_ticker:
+                    matched = tk
+                elif it.get("name") in by_name:
+                    matched = by_name[it["name"]].get("ticker") or ""
+                if matched:
+                    hold[matched].append({
+                        "person": p["person"].split(" ")[0],
+                        "side": "買入" if side == "buys" else "賣出",
+                        "period": p["period"],
+                        "item": it["name"],
+                        "range": it.get("range") or "",
+                        "disclosed": p["disclosed"],
+                    })
+    return dict(hold)
+
+
+# 中國資產專區（模組 8）：宏觀與指數為公開數據手動維護（附來源），個股行情由站內抓取
+CHINA_MACRO = {
+    "lpr_1y": 3.0, "lpr_5y": 3.5,
+    "lpr_note": "連續 16 個月不變（2026-09-20 人行授權公告）",
+    "gdp_h1": 4.7, "gdp_q1": 5.0, "gdp_q2": 4.3, "gdp_target": "全年目標 ≈4.5%",
+    "gdp_note": "上半年 GDP 69.57 萬億元；內需對增長貢獻率超 80%；Q2 名義增速 5.9%，GDP 平減指數 12 個季度以來首次轉正（+1.53%）",
+    "pmi": [{"m": "6 月", "v": 50.3}, {"m": "7 月", "v": 49.2}, {"m": "8 月", "v": 49.8}],
+    "pmi_note": "8 月連續第 2 個月處收縮區間；生產指數 50.4、新訂單 50.6 重回景氣區間",
+    "source": "人行、國家統計局公開數據（2026-09）",
+}
+
+CHINA_INDICES = [
+    {"name": "恒生指數", "ticker": "^HSI", "price": 24693.40, "chg": 183.31,
+     "ytd": -4.37, "asof": "2026-09-28", "note": "月內區間 24,510–25,275"},
+    {"name": "滬深300", "ticker": "000300.SS", "price": 4342.58, "chg": -96.56,
+     "ytd": -4.12, "asof": "2026-09-28", "note": "月內區間 4,340–4,990"},
+]
+
+CHINA_TRADE_TIMELINE = [
+    {"date": "2025-10", "title": "吉隆坡聯合安排",
+     "detail": "部分關稅與非關稅措施暫停實施至 2026-11-10（含美方 24% 對等關稅與中方反制措施）"},
+    {"date": "2026-02", "title": "美最高法院裁決 IEEPA 關稅違法",
+     "detail": "美政府依據《國際緊急經濟權力法案》加徵的關稅被裁違法；美方轉向以新 301 調查關稅替代"},
+    {"date": "2026-05-13/15", "title": "特朗普訪華 · 北京元首會晤",
+     "detail": "5/12-13 韓國磋商初步成果：原則同意各 300 億美元規模產品對等降稅框架、設貿易理事會與投資理事會"},
+    {"date": "2026-09-20/23", "title": "第八輪經貿磋商（紐約／華盛頓）",
+     "detail": "「300 億對 300 億」對等降稅達成共識（各自約 90% 產品降至最惠國稅率）；設農業工作組（年底前首次會議）；金融服務原則共識；擴大自美進口煤炭（2027／2028 每年）"},
+]
+
+
+def compute_china(companies, quotes, fund_data):
+    """中國資產專區：站內港股／A股／中概股行情與估值聚合（宏觀與指數見 CHINA_* 常量）。"""
+    cn_regions = {"港股", "A股", "中概股"}
+    rows = []
+    for c in companies:
+        t = c.get("ticker") or ""
+        is_hk = t.endswith(".HK")
+        is_a = t.endswith((".SZ", ".SS"))
+        is_uscno = c.get("region") == "中概股"
+        if not (is_hk or is_a or is_uscno) and c.get("region") not in cn_regions:
+            continue
+        q = quotes.get(t) or {}
+        ks = (((fund_data.get(t) or {}).get("qs") or {}).get("defaultKeyStatistics") or {})
+
+        def _u(v):
+            return v.get("raw") if isinstance(v, dict) else v
+
+        pe = _u(ks.get("trailingPE"))
+        price = q.get("price")
+        eps = _u(ks.get("trailingEps"))
+        if pe is None and price and eps:
+            pe = price / eps
+        rows.append({
+            "name": c["name"], "ticker": t, "sector": c.get("sector", ""),
+            "region": "中概股" if is_uscno else ("港股" if is_hk else "A股"),
+            "currency": q.get("currency") or "",
+            "price": price, "change_pct": q.get("change_pct"),
+            "pe": pe, "mktcap": _u(ks.get("marketCap")),
+            "page": c.get("page", ""),
+        })
+    with_price = [r for r in rows if r["price"] is not None]
+    with_chg = [r for r in rows if r["change_pct"] is not None]
+    gainers = sorted(with_chg, key=lambda r: -r["change_pct"])[:8]
+    losers = sorted(with_chg, key=lambda r: r["change_pct"])[:8]
+    cap_top = sorted([r for r in rows if r.get("mktcap")],
+                     key=lambda r: -r["mktcap"])[:10]
+    sectors = defaultdict(list)
+    for r in rows:
+        if r.get("pe") and r["pe"] > 0:
+            sectors[r["sector"] or "其他"].append(r["pe"])
+    sector_rows = [{"sector": s, "n": len(v), "pe_median": round(sorted(v)[len(v) // 2], 1)}
+                   for s, v in sorted(sectors.items(), key=lambda kv: -kv[1][0])
+                   if len(v) >= 2]
+    pes = [r["pe"] for r in rows if r.get("pe") and r["pe"] > 0]
+    return {
+        "stats": {
+            "n": len(rows),
+            "hk": sum(1 for r in rows if r["region"] == "港股"),
+            "a": sum(1 for r in rows if r["region"] == "A股"),
+            "uscno": sum(1 for r in rows if r["region"] == "中概股"),
+            "with_price": len(with_price),
+            "pe_median": round(sorted(pes)[len(pes) // 2], 1) if pes else None,
+        },
+        "gainers": gainers, "losers": losers, "cap_top": cap_top,
+        "sectors": sector_rows, "rows": rows,
+    }
+
+
 def compute_portfolio(asset_perf, targets):
     """依建議配置權重，用日線序列計算組合的實時收益（買入持有、每日以目標權重再平衡），對比 SPY 基準。"""
     sym_map = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
@@ -1037,6 +1304,104 @@ def compute_portfolio(asset_perf, targets):
         "bench_y1": round((bm[-1] / 100 - 1) * 100, 2) if bm[0] == 100 else ret(bm, len(bm) - 1),
         "asof": dates[-1],
     }
+
+
+HIST_SYMBOLS = ["SPY", "IEF", "DBC", "GLD", "BIL"]
+
+SCENARIO_WINDOWS = [
+    {"id": "2008", "title": "2008 金融危機", "emoji": "🏚",
+     "start": "2007-10-01", "end": "2013-06-30",
+     "desc": "雷曼倒閉引爆全球金融危機；美聯儲將利率降至零並啟動 QE。",
+     "facts": ["標普500 自高點最大回撤約 -56%（2007-10 → 2009-03）",
+               "回補前高耗時約 5 年（2013-03）", "避險資產勝出：美債、黃金大漲"]},
+    {"id": "2020", "title": "2020 疫情崩盤", "emoji": "🦠",
+     "start": "2020-01-01", "end": "2021-06-30",
+     "desc": "新冠疫情全球擴散，市場一個月急跌；央行無限 QE 與財政刺激帶來 V 型反轉。",
+     "facts": ["標普500 約 1 個月急跌 -34%", "回補前高僅約 5 個月（2020-08）",
+               "商品與黃金同漲，現金回報趨零"]},
+    {"id": "2022", "title": "2022 加息熊市", "emoji": "🏦",
+     "start": "2021-12-01", "end": "2024-06-30",
+     "desc": "通脹飆升，聯儲以四十年最快速度加息；股債雙殺。",
+     "facts": ["標普500 全年 -19%，美債百年最差年份之一", "回補前高約 2 年（2024-01）",
+               "股債同跌，傳統 60/40 失效；商品與現金跑贏"]},
+]
+
+
+def compute_scenarios(hist, targets):
+    """歷史情景回測（模組 9）：以當前建議配置權重，回放 2008／2020／2022 三場危機
+    （月頻、每月再平衡，全部用真實 ETF 月線計算，不臆造任何數字）。"""
+    sym_map = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+    weights = {}
+    for t in targets:
+        sym = sym_map.get(t["cls"])
+        if sym and sym in hist:
+            weights[sym] = t["pct"] / 100.0
+    if not weights or "SPY" not in hist:
+        return []
+
+    def metrics(vals):
+        vals = [v for v in vals if v is not None]
+        if len(vals) < 2 or not vals[0]:
+            return None
+        vals = [v / vals[0] for v in vals]  # 歸一化為期初 1.0
+        peak, maxdd, trough_i = vals[0], 0.0, 0
+        for i, v in enumerate(vals):
+            peak = max(peak, v)
+            dd = v / peak - 1
+            if dd < maxdd:
+                maxdd, trough_i = dd, i
+        rec = None
+        for i in range(trough_i + 1, len(vals)):
+            if vals[i] >= 1.0:
+                rec = i - trough_i
+                break
+        return {"ret": round((vals[-1] - 1) * 100, 2),
+                "maxdd": round(maxdd * 100, 2), "recover_months": rec}
+
+    def slim(vals, n=40):
+        vals = [v for v in vals if v is not None]
+        step = max(1, len(vals) // n)
+        return [round(v * 100, 1) for v in vals[::step]]
+
+    out = []
+    w_dates = hist["SPY"]["dates"]
+    maps = {s: dict(zip(h["dates"], h["closes"])) for s, h in hist.items()}
+    for sc in SCENARIO_WINDOWS:
+        i0 = next((i for i, d in enumerate(w_dates) if d >= sc["start"]), None)
+        if i0 is None:
+            continue
+        i1 = next((i for i, d in enumerate(w_dates) if d > sc["end"]), len(w_dates))
+        axes = w_dates[i0:i1]
+        lasts, fills = {s: None for s in maps}, []
+        for d in axes:
+            for s, m in maps.items():
+                if d in m:
+                    lasts[s] = m[d]
+            fills.append(dict(lasts))
+
+        def series_of(sym):
+            return [f.get(sym) for f in fills]
+
+        pf, base = [], None
+        for f in fills:
+            if any(f.get(s) is None for s in weights):
+                pf.append(pf[-1] if pf else None)
+                continue
+            if base is None:
+                base = {s: f[s] for s in weights}
+            pf.append(sum(weights[s] * f[s] / base[s] for s in weights))
+
+        assets = {s: metrics(series_of(s)) for s in sorted(weights)}
+        assets = {s: m for s, m in assets.items() if m}
+        out.append({
+            "id": sc["id"], "title": sc["title"], "emoji": sc["emoji"],
+            "start": axes[0], "end": axes[-1], "desc": sc["desc"], "facts": sc["facts"],
+            "weights": {s: round(w * 100, 1) for s, w in weights.items()},
+            "assets": assets, "pf": metrics(pf), "spy": metrics(series_of("SPY")),
+            "pf_series": slim(pf), "spy_series": slim(series_of("SPY")),
+            "n_months": len(axes),
+        })
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -1469,6 +1834,22 @@ def main():
         allocation = json.load(open(alloc_cache, encoding="utf-8"))
         print("== 3.5/4 使用資產配置快取 ==")
 
+    # 歷史情景回測（20 年月頻行情：網路建站抓取，快取建站讀取 js/hist_cache.json）
+    hist_cache = os.path.join(SITE_DIR, "js", "hist_cache.json")
+    hist = {}
+    if not args.no_market:
+        print("== 3.6/4 抓取 20 年歷史行情（情景回測）==")
+        hist = fetch_asset_history(HIST_SYMBOLS)
+        if hist:
+            with open(hist_cache, "w", encoding="utf-8") as f:
+                json.dump(hist, f, ensure_ascii=False)
+    if not hist and os.path.exists(hist_cache):
+        hist = json.load(open(hist_cache, encoding="utf-8"))
+        print(f"== 3.6/4 歷史行情使用快取（{len(hist)} 檔）==")
+    scenarios = compute_scenarios(hist, (allocation or {}).get("targets") or []) if hist else []
+    if scenarios:
+        print(f"  ✓ 歷史情景回測 {len(scenarios)} 個情景（2008／2020／2022）")
+
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
     print(f"   完成，輸出至 {os.path.relpath(os.path.join(SITE_DIR, 'reports'))}")
@@ -1641,10 +2022,18 @@ def main():
     fund_holdings = build_fund_holdings(HEDGE_FUNDS, companies)
     f13f = build_13f_calendar()
 
+    # 政要交易反向匹配（公司 → 涉及該股的政要披露記錄）
+    polit_holdings = build_polit_holdings(POLITICIAN_DISCLOSURES, companies)
+
+    # 中國資產專區（港股／A股／中概股聚合 + 宏觀常量）
+    china = compute_china(companies, quotes, fund_data)
+
     # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型；帶反向持倉引用）
-    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdings)
+    st_stats = render_stock_pages(companies, quotes, fund_data, in_combo_names,
+                                  fund_holdings, polit_holdings)
     print(f"   ✓ 個股分析頁 {st_stats['pages']} 頁（含基本面數據 {st_stats['with_data']} 頁，"
-          f"頂級基金持倉引用 {sum(len(v) for v in fund_holdings.values())} 條）")
+          f"頂級基金持倉引用 {sum(len(v) for v in fund_holdings.values())} 條，"
+          f"政要交易引用 {sum(len(v) for v in polit_holdings.values())} 條）")
 
     # 網站資料（報告、公司、行情、配置、基金與對沖基金公開披露）
     data = {
@@ -1660,6 +2049,17 @@ def main():
         # 13F 反向持倉映射與法定申報日曆（模組 6）
         "fund_holdings": fund_holdings,
         "f13f": f13f,
+        # 政要交易追蹤（模組 7）：披露整理 + 國會動態 + 反向匹配
+        "politician": {"disclosures": POLITICIAN_DISCLOSURES, "congress": POLITICIAN_CONGRESS},
+        "polit_holdings": polit_holdings,
+        # 中國資產專區（模組 8）
+        "china": {
+            "macro": CHINA_MACRO, "indices": CHINA_INDICES,
+            "timeline": CHINA_TRADE_TIMELINE,
+            "stocks": china,
+        },
+        # 歷史情景回測（模組 9）
+        "scenarios": scenarios,
         "companies": companies,
         "topics": topics,
         "latest_reports": [

@@ -337,6 +337,17 @@
       '<p class="s-note">來源：各基金最新 SEC 13F 披露（僅美股多頭口徑）的機械匹配，僅供參考。</p>';
   }
 
+  /* ---------- 政要交易（公開披露反向匹配） ---------- */
+  var pmBody = "";
+  if ((S.polit_mentions || []).length) {
+    pmBody = '<table class="s-table"><thead><tr><th>人物</th><th>方向</th><th>期間</th><th>金額區間</th></tr></thead><tbody>' +
+      S.polit_mentions.map(function (m) {
+        return "<tr><td>" + esc(m.person) + "</td><td>" + esc(m.side) + "</td><td>" +
+          esc(m.period) + "</td><td>" + esc(m.range) + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      '<p class="s-note">來源：OGE／STOCK Act 公開披露的機械匹配（金額為披露區間），僅供參考。</p>';
+  }
+
   /* ---------- 研報 ---------- */
   var repBody = "";
   if ((S.reports || []).length) {
@@ -358,6 +369,7 @@
     card("📈 技術面與動量", taBody) +
     card("🏦 機構持倉與分析師", instBody + '<h3 class="s-h3">🎯 分析師</h3>' + anBody) +
     (fmBody ? card("🏰 頂級基金持倉", fmBody) : "") +
+    (pmBody ? card("🏛 政要交易", pmBody) : "") +
     card("🎯 催化劑與風險", catBody) +
     card("🤖 AI 投資論點", aiBody) +
     card("📄 研究報告", repBody);

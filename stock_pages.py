@@ -526,7 +526,8 @@ def compute_stock(company, quotes, fund, sector_peers, spy_closes=None):
 # 4. 個股頁生成
 # ---------------------------------------------------------------------------
 
-def render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdings=None):
+def render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdings=None,
+                       polit_holdings=None):
     """為每家公司生成 stocks/<name>.html；回傳統計。"""
     if os.path.isdir(STOCKS_DIR):
         shutil.rmtree(STOCKS_DIR)
@@ -546,6 +547,7 @@ def render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdin
                            spy_closes)
         st["rel_peers_n"] = len(sector_peers.get(c.get("sector", ""), []))
         st["fund_mentions"] = (fund_holdings or {}).get(c.get("ticker") or "") or []
+        st["polit_mentions"] = (polit_holdings or {}).get(c.get("ticker") or "") or []
         page = slugify(st["name"]) + ".html"
         html = STOCK_TEMPLATE.format(
             name=st["name"], title=st["name"], json=json.dumps(st, ensure_ascii=False),
@@ -582,6 +584,9 @@ STOCK_TEMPLATE = """<!DOCTYPE html>
       <a href="{rel}valuation.html">估值</a>
       <a href="{rel}events.html">事件</a>
       <a href="{rel}funds.html">基金</a>
+      <a href="{rel}politician.html">政要</a>
+      <a href="{rel}china.html">中國</a>
+      <a href="{rel}scenarios.html">回測</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>

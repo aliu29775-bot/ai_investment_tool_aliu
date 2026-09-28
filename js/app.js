@@ -894,6 +894,268 @@
       (rows.length > 15 ? '<p class="s-note">… 另有 ' + (rows.length - 15) + " 家公司在各基金披露中被提及（詳見個股頁「頂級基金持倉」）。</p>" : "");
   }
 
+  /* ---------- 政要交易追蹤頁（模組 7） ---------- */
+  function renderPolitician() {
+    if (document.body.getAttribute("data-page") !== "politician") return;
+    renderPolitRules();
+    renderPolitDisclosures();
+    renderPolitCongress();
+  }
+
+  function renderPolitRules() {
+    var host = document.getElementById("pol-rules");
+    if (!host) return;
+    var dl = new Date(Date.now() + 45 * 86400000);
+    var dstr = dl.getFullYear() + "-" + String(dl.getMonth() + 1).padStart(2, "0") + "-" +
+      String(dl.getDate()).padStart(2, "0");
+    host.innerHTML = '<div class="s-grid2" style="gap:12px;">' +
+      '<div class="s-kv"><span class="s-n">國會議員（STOCK Act）</span><span class="s-v">交易後 45 天內申報</span></div>' +
+      '<div class="s-kv"><span class="s-n">申報門檻</span><span class="s-v">單筆 &gt; 1,000 美元</span></div>' +
+      '<div class="s-kv"><span class="s-n">披露精度</span><span class="s-v">僅金額區間（如 100–500 萬）</span></div>' +
+      '<div class="s-kv"><span class="s-n">逾期申報罰款</span><span class="s-v">標準 200 美元／次</span></div>' +
+      '<div class="s-kv"><span class="s-n">若今日交易</span><span class="s-v">最遲申報日：' + dstr + '</span></div>' +
+      '<div class="s-kv"><span class="s-n">總統／高官</span><span class="s-v">OGE 年度／季度申報；總統豁免利益衝突禁令</span></div>' +
+      "</div>" +
+      '<p class="s-note">STOCK Act（2012）：議員及其配偶、受扶養子女的交易須在知悉後 30 天內、且不晚於交易後 45 天申報，由眾院書記官與參院秘書對外公開。法律並不禁止議員炒股——公開披露是主要監督機制。</p>';
+  }
+
+  function renderPolitDisclosures() {
+    var host = document.getElementById("pol-disclosures");
+    var P = D.politician;
+    if (!host || !P || !P.disclosures) return;
+    host.innerHTML = P.disclosures.map(function (p) {
+      var items = function (side, icon) {
+        return (p[side] || []).map(function (it) {
+          var nm = it.ticker ? '<a href="stocks/' + encodeURIComponent(it.name) + '.html">' + esc(it.name) +
+            " (" + esc(it.ticker) + ")</a>" : esc(it.name);
+          return "<li>" + nm + (it.range ? ' <span class="s-n">' + esc(it.range) + "</span>" : "") + "</li>";
+        }).join("");
+      };
+      return '<div class="card" style="margin-top:12px;">' +
+        '<div class="fund-head"><div class="fund-title"><h3>🪑 ' + esc(p.person) + "</h3>" +
+        '<div class="fund-meta">' + esc(p.role) + " · " + esc(p.period) + " · " +
+        esc(p.disclosed) + " · " + esc(p.stats) + "</div></div></div>" +
+        '<div class="s-bullbear" style="gap:14px;margin-top:8px;">' +
+        '<div><h4 class="s-h3" style="color:var(--good);">🟢 買入／增持</h4><ul class="s-reports">' +
+        items("buys") + "</ul></div>" +
+        '<div><h4 class="s-h3" style="color:var(--crit);">🔴 賣出／減持</h4><ul class="s-reports">' +
+        items("sells") + "</ul></div></div>" +
+        (p.note ? '<div class="fund-note">' + esc(p.note) + "</div>" : "") +
+        '<div class="fund-note">來源：' + esc(p.source) + "</div></div>";
+    }).join("");
+  }
+
+  function renderPolitCongress() {
+    var host = document.getElementById("pol-congress");
+    var P = D.politician;
+    if (!host || !P || !P.congress) return;
+    var C = P.congress;
+    var table = function (rows, isDetail) {
+      return '<table class="s-table"><thead><tr><th>人物</th><th>黨派</th>' +
+        (isDetail ? "<th>內容</th>" : "<th>買入區間</th>") + "</tr></thead><tbody>" +
+        rows.map(function (r) {
+          return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.party) + "</td><td>" +
+            esc(r.detail != null ? r.detail : r.range) + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    };
+    host.innerHTML =
+      '<div class="card" style="margin-top:12px;"><h3>🚀 ' + esc(C.spacex.title) + "</h3>" +
+      '<p class="s-note" style="margin:6px 0;">' + esc(C.spacex.note) + "</p>" +
+      table(C.spacex.rows, false) +
+      '<p class="s-note">來源：' + esc(C.spacex.source) + "</p></div>" +
+      '<div class="card" style="margin-top:12px;"><h3>⚠️ ' + esc(C.violations.title) + "</h3>" +
+      '<p class="s-note" style="margin:6px 0;">' + esc(C.violations.note) + "</p>" +
+      table(C.violations.rows, true) +
+      '<p class="s-note">來源：' + esc(C.violations.source) + "</p></div>" +
+      '<div class="card" style="margin-top:12px;"><h3>🔎 ' + esc(C.overlap.title) + "</h3>" +
+      '<p class="s-note" style="margin:6px 0;">' + esc(C.overlap.note) + "</p>" +
+      table(C.overlap.rows, true) +
+      '<p class="s-note">來源：' + esc(C.overlap.source) + "</p></div>" +
+      '<div class="card" style="margin-top:12px;"><h3>📜 ' + esc(C.legislation.title) + "</h3>" +
+      '<table class="s-table"><thead><tr><th>法案</th><th>狀態</th><th>日期</th><th>內容</th></tr></thead><tbody>' +
+      C.legislation.rows.map(function (r) {
+        return "<tr><td>" + esc(r.name) + "</td><td>" + esc(r.status) + "</td><td>" +
+          esc(r.date) + "</td><td>" + esc(r.detail) + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      '<p class="s-note">來源：' + esc(C.legislation.source) + "</p></div>";
+  }
+
+  /* ---------- 中國資產專區（模組 8） ---------- */
+  function renderChina() {
+    if (document.body.getAttribute("data-page") !== "china") return;
+    renderChinaMacro();
+    renderChinaIndices();
+    renderChinaTimeline();
+    renderChinaStocks();
+  }
+
+  function renderChinaMacro() {
+    var host = document.getElementById("cn-macro");
+    var C = D.china;
+    if (!host || !C) return;
+    var M = C.macro;
+    var pmi = M.pmi.map(function (p) {
+      var up = p.v >= 50;
+      return '<span class="s-chip ' + (up ? "on" : "down") + '">' + esc(p.m) + " " +
+        p.v.toFixed(1) + "</span>";
+    }).join(" ");
+    host.innerHTML = '<div class="s-grid2" style="gap:12px;">' +
+      '<div class="s-kv"><span class="s-n">LPR 1 年期</span><span class="s-v">' +
+      M.lpr_1y.toFixed(1) + '%</span></div>' +
+      '<div class="s-kv"><span class="s-n">LPR 5 年期以上</span><span class="s-v">' +
+      M.lpr_5y.toFixed(1) + '%</span></div>' +
+      '<div class="s-kv"><span class="s-n">上半年 GDP 同比</span><span class="s-v">+' +
+      M.gdp_h1.toFixed(1) + '%</span><span class="s-n">Q1 ' + M.gdp_q1.toFixed(1) +
+      "% · Q2 " + M.gdp_q2.toFixed(1) + "% · " + esc(M.gdp_target) + "</span></div>" +
+      '<div class="s-kv"><span class="s-n">製造業 PMI（近 3 個月）</span><span class="s-v">' +
+      pmi + "</span></div></div>" +
+      '<p class="s-note">' + esc(M.lpr_note) + "；" + esc(M.gdp_note) + "；" +
+      esc(M.pmi_note) + "。來源：" + esc(M.source) + "</p>";
+  }
+
+  function renderChinaIndices() {
+    var host = document.getElementById("cn-indices");
+    var C = D.china;
+    if (!host || !C) return;
+    host.innerHTML = C.indices.map(function (ix) {
+      var up = ix.chg >= 0;
+      return '<div class="card" style="margin:0;"><div class="fund-head">' +
+        '<div class="fund-title"><h3>' + esc(ix.name) + " · " + esc(ix.ticker) + "</h3>" +
+        '<div class="fund-meta">截至 ' + esc(ix.asof) + " · " + esc(ix.note) + "</div></div>" +
+        '<span class="s-v" style="font-size:22px;color:' + (up ? "var(--good)" : "var(--crit)") +
+        ';">' + ix.price.toLocaleString() + "</span></div>" +
+        '<div class="f-row" style="margin-top:8px;">' +
+        '<span class="f-cls">當日</span>' +
+        '<span class="f-val" style="color:' + (up ? "var(--good)" : "var(--crit)") + ';">' +
+        (up ? "+" : "") + ix.chg.toLocaleString() + "</span>" +
+        '<span class="f-cls">今年以來</span>' +
+        '<span class="f-val" style="color:' + (ix.ytd >= 0 ? "var(--good)" : "var(--crit)") +
+        ';">' + (ix.ytd >= 0 ? "+" : "") + ix.ytd.toFixed(2) + "%</span></div></div>";
+    }).join("");
+  }
+
+  function renderChinaTimeline() {
+    var host = document.getElementById("cn-timeline");
+    var C = D.china;
+    if (!host || !C) return;
+    host.innerHTML = C.timeline.map(function (ev) {
+      return '<div class="f-row" style="align-items:flex-start;gap:10px;margin:10px 0;">' +
+        '<span class="s-chip on">' + esc(ev.date) + "</span>" +
+        '<div><strong>' + esc(ev.title) + "</strong>" +
+        '<div class="s-n">' + esc(ev.detail) + "</div></div></div>";
+    }).join("");
+  }
+
+  function renderChinaStocks() {
+    var host = document.getElementById("cn-stocks");
+    var C = D.china;
+    if (!host || !C) return;
+    var S = C.stocks;
+    if (!S || !S.stats) { host.innerHTML = "<p>暫無數據。</p>"; return; }
+    var link = function (r) {
+      return '<a href="' + (r.page || ("stocks/" + encodeURIComponent(r.name) + ".html")) + '">' +
+        esc(r.name) + "</a>";
+    };
+    var pct = function (v) {
+      if (v == null) return "—";
+      return '<span style="color:' + (v >= 0 ? "var(--good)" : "var(--crit)") + ';">' +
+        (v >= 0 ? "+" : "") + v.toFixed(2) + "%</span>";
+    };
+    var rankTable = function (rows) {
+      return '<table class="s-table"><thead><tr><th>公司</th><th>代碼</th><th>板塊</th>' +
+        "<th>現價</th><th>漲跌幅</th></tr></thead><tbody>" +
+        rows.map(function (r) {
+          return "<tr><td>" + link(r) + "</td><td>" + esc(r.ticker) + "</td><td>" +
+            esc(r.sector) + "</td><td>" + (r.price != null ? r.price : "—") +
+            "</td><td>" + pct(r.change_pct) + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    };
+    var uscno = S.rows.filter(function (r) { return r.region === "中概股"; });
+    var cap = S.cap_top.map(function (r) {
+      var mc = r.mktcap >= 1e12 ? (r.mktcap / 1e12).toFixed(2) + " 萬億"
+        : r.mktcap >= 1e8 ? (r.mktcap / 1e8).toFixed(0) + " 億" : r.mktcap;
+      return "<tr><td>" + link(r) + "</td><td>" + esc(r.ticker) + "</td><td>" +
+        esc(r.region) + "</td><td>" + mc + "</td></tr>";
+    }).join("");
+    var sectors = S.sectors.length ? '<table class="s-table"><thead><tr><th>行業</th>' +
+      "<th>公司數</th><th>PE 中位數</th></tr></thead><tbody>" +
+      S.sectors.map(function (s) {
+        var col = s.pe_median < 15 ? "var(--good)" : s.pe_median <= 30 ? "var(--warn)" : "var(--crit)";
+        return "<tr><td>" + esc(s.sector) + "</td><td>" + s.n + "</td><td style='color:" +
+          col + ";'>" + s.pe_median.toFixed(1) + "×</td></tr>";
+      }).join("") + "</tbody></table>" : "";
+    host.innerHTML =
+      '<p class="s-note">站內覆蓋 ' + S.stats.n + " 家中國相關公司：港股 " + S.stats.hk +
+      " · A股 " + S.stats.a + " · 中概股 " + S.stats.uscno + "；有行情 " +
+      S.stats.with_price + " 家" + (S.stats.pe_median != null ?
+        "；PE 中位數 " + S.stats.pe_median.toFixed(1) + "×" : "") + "。</p>" +
+      '<div class="s-bullbear" style="gap:16px;">' +
+      '<div class="card" style="margin:0;"><h3 style="color:var(--good);">🟢 漲幅榜</h3>' +
+      rankTable(S.gainers) + "</div>" +
+      '<div class="card" style="margin:0;"><h3 style="color:var(--crit);">🔴 跌幅榜</h3>' +
+      rankTable(S.losers) + "</div></div>" +
+      '<div class="s-bullbear" style="gap:16px;margin-top:16px;">' +
+      '<div class="card" style="margin:0;"><h3>🏆 市值前 10</h3><table class="s-table">' +
+      "<thead><tr><th>公司</th><th>代碼</th><th>板塊</th><th>市值</th></tr></thead><tbody>" +
+      cap + "</tbody></table></div>" +
+      '<div class="card" style="margin:0;"><h3>🏭 行業估值（PE 中位數）</h3>' +
+      (sectors || '<p class="s-note">行業樣本不足。</p>') + "</div></div>" +
+      (uscno.length ? '<div class="card" style="margin-top:16px;"><h3>🌐 中概股（美股上市）</h3>' +
+        rankTable(uscno) + "</div>" : "");
+  }
+
+  /* ---------- 歷史情景回測（模組 9） ---------- */
+  function renderScenarios() {
+    if (document.body.getAttribute("data-page") !== "scenarios") return;
+    var host = document.getElementById("sc-list");
+    var S = D.scenarios;
+    if (!host || !S || !S.length) {
+      if (host) host.innerHTML = "<p>歷史行情資料暫缺（建站時 20 年月線抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var fmt = function (v) {
+      return v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+    };
+    var col = function (v) { return v == null ? "" : v >= 0 ? "var(--good)" : "var(--crit)"; };
+    host.innerHTML = S.map(function (sc) {
+      var assetRows = Object.keys(sc.assets).map(function (k) {
+        var a = sc.assets[k];
+        return "<tr><td>" + esc(k) + "（代理 ETF）</td>" +
+          '<td style="color:' + col(a.ret) + ';">' + fmt(a.ret) + "</td>" +
+          '<td style="color:' + col(a.maxdd) + ';">' + fmt(a.maxdd) + "</td>" +
+          "<td>" + (a.recover_months != null ? a.recover_months + " 個月" : "—") + "</td></tr>";
+      }).join("");
+      var pair = function (v) { return v.map(function (x, i) { return [i, x]; }); };
+      var chart = '<div class="s-bullbear" style="gap:14px;margin-top:10px;">' +
+        '<div><h4 class="s-h3">建議配置組合</h4>' + fedLineSVG(pair(sc.pf_series), "#0e6b4f") + "</div>" +
+        '<div><h4 class="s-h3">純股票（SPY）</h4>' + fedLineSVG(pair(sc.spy_series), "#3b89e3") + "</div></div>" +
+        '<p class="s-note">縱軸為期初 100 的指數化價值（' + esc(sc.start) + " – " + esc(sc.end) +
+        "，共 " + sc.n_months + " 個月，月頻、每月再平衡）。</p>";
+      var pf = sc.pf || {}, spy = sc.spy || {};
+      return '<div class="card" style="margin-top:12px;">' +
+        "<h3>" + sc.emoji + " " + esc(sc.title) + ' <span class="s-chip off">' +
+        esc(sc.start) + " – " + esc(sc.end) + "</span></h3>" +
+        '<p class="s-note" style="margin:6px 0;">' + esc(sc.desc) + "</p>" +
+        '<ul class="s-reports">' + sc.facts.map(function (f) {
+          return "<li><span class='s-note'>" + esc(f) + "</span></li>";
+        }).join("") + "</ul>" +
+        '<table class="s-table"><thead><tr><th>組合／資產</th><th>區間報酬</th>' +
+        "<th>最大回撤</th><th>回補期初所需月數</th></tr></thead><tbody>" +
+        '<tr style="background:var(--brand-tint);"><td>🏗 建議配置組合（' +
+        Object.keys(sc.weights).map(function (k) {
+          return esc(k) + " " + sc.weights[k].toFixed(0) + "%";
+        }).join("／") + "）</td>" +
+        '<td style="color:' + col(pf.ret) + ';">' + fmt(pf.ret) + "</td>" +
+        '<td style="color:' + col(pf.maxdd) + ';">' + fmt(pf.maxdd) + "</td>" +
+        "<td>" + (pf.recover_months != null ? pf.recover_months + " 個月" : "—") + "</td></tr>" +
+        '<tr><td>SPY（純股票對照）</td>' +
+        '<td style="color:' + col(spy.ret) + ';">' + fmt(spy.ret) + "</td>" +
+        '<td style="color:' + col(spy.maxdd) + ';">' + fmt(spy.maxdd) + "</td>" +
+        "<td>" + (spy.recover_months != null ? spy.recover_months + " 個月" : "—") + "</td></tr>" +
+        assetRows + "</tbody></table>" + chart + "</div>";
+    }).join("");
+  }
+
   /* ---------- 組合頁：總渲染 ---------- */
   function renderTrackRecord() {
     if (document.body.getAttribute("data-page") !== "trackrecord") return;
@@ -1558,6 +1820,9 @@
     if (page === "valuation") renderValuation();
     if (page === "events") renderEvents();
     if (page === "funds") renderF13F();
+    if (page === "politician") renderPolitician();
+    if (page === "china") renderChina();
+    if (page === "scenarios") renderScenarios();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();
