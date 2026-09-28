@@ -2,6 +2,15 @@ name: 更新数据与报告
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 更新模式（小更新＝關鍵數據約 30 秒；大更新＝全部數據＋全部報告）
+        required: true
+        default: "small"
+        type: choice
+        options:
+          - small
+          - big
 
 permissions:
   contents: write
@@ -11,7 +20,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  update:
+  # 小更新：只重抓行情/FRED/資產 1Y（並行）並重建 data.js，報告與個股頁不重渲染
+  small:
+    if: ${{ github.event.inputs.mode == 'small' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout 部署仓库
+        uses: actions/checkout@v4
+
+      - name: 快速重建（行情 + FRED + 資產 1Y 並行抓取，重建 data.js）
+        run: python3 build_site.py --repo . --quick
+
+      - name: 提交并推送（无变更则跳过）
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "無變更，跳過提交"
+            exit 0
+          fi
+          git config user.name "aliu29775-bot"
+          git config user.email "aliu29775-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "auto: 小更新（關鍵數據）$(date +%F)"
+          git push
+
+  # 大更新：全量抓取 + 渲染全部報告與個股頁，並寫入報告快取供小更新使用
+  big:
+    if: ${{ github.event.inputs.mode == 'big' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -40,12 +75,7 @@ jobs:
           print('index 并集条目数:', up['count'])
           EOF
 
-      - name: 设置 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: 重建站点（抓取最新行情 + FRED + 渲染全部报告）
+      - name: 全量重建（抓取全部數據 + 渲染全部報告與個股頁）
         run: python3 build_site.py --repo /tmp/ai-berkshire
 
       - name: 提交并推送（无变更则跳过）
@@ -57,5 +87,5 @@ jobs:
           git config user.name "aliu29775-bot"
           git config user.email "aliu29775-bot@users.noreply.github.com"
           git add -A
-          git commit -m "auto: 數據與報告更新 $(date +%F)"
+          git commit -m "auto: 大更新（全部數據與報告）$(date +%F)"
           git push
