@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>估值儀表板 — AIShan+ 投研網站</title>
+<meta name="description" content="估值儀表板：巴菲特指標（總市值/GDP）、股權風險溢價、行業 PE 中位數熱力、全市場高估與低估榜。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="valuation">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html" class="on">估值</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">估值儀表板</h1>
+    <span class="freshness" id="val-asof"></span>
+  </div>
+  <p class="section-desc">大盤視角：巴菲特指標代理（企業股權市值/GDP）、股權風險溢價、行業 PE 中位數，以及全市場（299 家覆蓋公司）最貴與最便宜的 10 家。數據每次建站自動刷新。</p>
+
+  <!-- 巴菲特指標 -->
+  <section class="section">
+    <div class="section-head"><h2>🐂 巴菲特指標</h2></div>
+    <div class="card" id="val-buffett" style="text-align:center;padding:26px;">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 市場估值概覽 -->
+  <section class="section">
+    <div class="section-head"><h2>🧮 市場估值概覽</h2></div>
+    <div class="card" id="val-overview">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 行業估值 -->
+  <section class="section">
+    <div class="section-head"><h2>🏭 行業估值中位數</h2></div>
+    <div class="card" id="val-sectors">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 高估低估榜 -->
+  <section class="section">
+    <div class="section-head"><h2>⚖️ 全市場最貴 / 最便宜</h2></div>
+    <div class="s-bullbear" style="gap:16px;">
+      <div class="card" style="margin:0;">
+        <h3 style="color:var(--crit);">🔥 PE 最高 10 家</h3>
+        <div id="val-expensive"></div>
+      </div>
+      <div class="card" style="margin:0;">
+        <h3 style="color:var(--good);">🧊 PE 最低 10 家</h3>
+        <div id="val-cheap"></div>
+      </div>
+    </div>
+    <p class="s-note" style="margin-top:10px;">僅統計 PE 為正且 < 1000× 的公司；虧損或無數據公司不在榜內。榜單為機械篩選，不構成投資建議。</p>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>📐 方法論</h3>
+      <p class="section-desc" style="margin:6px 0 0;">
+        巴菲特指標代理 = 美國非金融企業股權市值（FRED NCBCMDPMVCE，Z.1 金融帳戶，百萬美元）÷ GDP（FRED GDPC1 年化季率，十億美元）。
+        FRED 已因授權下架 Wilshire 5000，故用 Z.1 序列作代理，僅看長期趨勢：>130% 偏高、<70% 偏低。
+        股權風險溢價 = 1/標普500前瞻PE − 10年期國債收益率（DFII 為實際利率另見美聯儲頁）。
+        行業 PE 中位數基於全站個股基本面（Yahoo quoteSummary，TTM；trailingPE 已停供時以 價格/每股收益 估算）。
+        本頁為研究框架展示，不構成任何投資建議。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

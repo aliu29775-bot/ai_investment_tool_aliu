@@ -1338,6 +1338,88 @@
     }
   }
 
+  /* ---------- 估值儀表板 ---------- */
+  function renderValuation() {
+    var V = D.allocation && D.allocation.valuation;
+    var host = document.querySelector("main.container");
+    if (!host) return;
+    if (!V) {
+      host.insertAdjacentHTML("afterbegin",
+        '<div class="card" style="padding:16px;margin-top:16px;">' +
+        "⚠️ 估值儀表板資料暫不可用（建站時宏觀數據抓取失敗）。</div>");
+      return;
+    }
+    var i;
+    var asofEls = document.querySelectorAll("#val-asof");
+    for (i = 0; i < asofEls.length; i++) asofEls[i].textContent = "⏱ 更新於 " + (V.asof || D.market_asof);
+
+    /* 巴菲特指標 */
+    var el = document.getElementById("val-buffett");
+    if (el && V.buffett) {
+      var r = V.buffett.ratio, pct = Math.round(r * 100);
+      var cls = pct >= 130 ? "down" : pct <= 70 ? "up" : "mid";
+      var note = pct >= 130 ? "偏高區（>130%）" : pct <= 70 ? "偏低區（<70%）" : "中間區（70–130%）";
+      el.innerHTML = '<div class="fed-big">' + pct + '<span>%</span></div>' +
+        '<div class="fed-sub">美股企業股權市值 / GDP（Z.1 金融帳戶代理，季度）· ' + note + "</div>" +
+        (fedLineSVG(V.buffett.hist.map(function (p) { return [p[0], p[1] * 100]; }), "#e08c3a") || "") +
+        (V.buffett.asof ? '<p class="s-note">最新 ' + esc(V.buffett.asof) + "；歷史為近 40 季。</p>" : "");
+    } else if (el) {
+      el.innerHTML = "<p>巴菲特指標數據暫缺（FRED 未提供 Wilshire/GDP）。</p>";
+    }
+
+    /* 市場估值概覽 */
+    var ov = document.getElementById("val-overview");
+    if (ov) {
+      var rows = [];
+      if (V.pe_median_all != null)
+        rows.push(['全站 PE 中位數（' + (V.n_valued || 0) + " 家）", V.pe_median_all + "×", ""]);
+      if (V.earn_yield_median != null)
+        rows.push(["全站 PE 中位數對應盈餘收益率", (V.earn_yield_median * 100).toFixed(2) + "%", ""]);
+      if (V.dgs10 != null)
+        rows.push(["10 年期國債收益率", V.dgs10 + "%", ""]);
+      if (V.erp != null) {
+        var e = V.erp * 100;
+        rows.push(["股權風險溢價（盈餘收益率 − 10Y）", (e > 0 ? "+" : "") + e.toFixed(2) + "%",
+          e < 1 ? "偏低：股票相對債券吸引力下降" : "股票風險補償充分"]);
+      }
+      ov.innerHTML = rows.length
+        ? '<div class="s-grid2">' + rows.map(function (r2) {
+            return '<div class="s-kv"><span class="s-k">' + r2[0] + "</span><span class='s-v'>" +
+              r2[1] + "</span>" + (r2[2] ? '<span class="s-n">' + r2[2] + "</span>" : "") + "</div>";
+          }).join("") + "</div>"
+        : "<p>全市場估值數據暫缺。</p>";
+    }
+
+    /* 行業估值中位數 */
+    var sec = document.getElementById("val-sectors");
+    if (sec && (V.sectors || []).length) {
+      sec.innerHTML = '<table class="s-table"><thead><tr><th>行業</th><th>公司數</th>' +
+        "<th>PE 中位</th><th>PE 區間</th><th>估值帶</th></tr></thead><tbody>" +
+        V.sectors.map(function (x) {
+          var band = x.pe_median < 15 ? "低估" : x.pe_median <= 30 ? "合理" : "偏高";
+          var color = x.pe_median < 15 ? "#15803d" : x.pe_median <= 30 ? "#8a6d00" : "#b02a37";
+          return "<tr><td>" + esc(x.sector) + "</td><td>" + x.n + "</td><td><b>" +
+            x.pe_median + "×</b></td><td>" + x.pe_low + " – " + x.pe_high + "×</td><td>" +
+            '<span class="s-chip" style="background:' + color + '18;color:' + color + '">' +
+            band + "</span></td></tr>";
+        }).join("") + "</tbody></table>" +
+        '<p class="s-note">行業 PE 中位數：全站有 PE 數據的公司按行業聚合（≥3 家才顯示）；PE 缺時以價格/每股收益估算。</p>';
+    }
+
+    /* 高估 / 低估榜 */
+    function rankTable(items, clsLabel) {
+      return '<table class="s-table"><thead><tr><th>公司</th><th>代碼</th><th>PE</th></tr></thead><tbody>' +
+        items.map(function (r3) {
+          return "<tr><td>" + esc(r3.name) + "</td><td>" + esc(r3.ticker || "") + "</td><td>" +
+            r3.pe + "×</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    var exp = document.getElementById("val-expensive");
+    if (exp && (V.expensive || []).length) exp.innerHTML = rankTable(V.expensive);
+    var chp = document.getElementById("val-cheap");
+    if (chp && (V.cheap || []).length) chp.innerHTML = rankTable(V.cheap);
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -1349,6 +1431,7 @@
     if (page === "trackrecord") renderTrackRecord();
     if (page === "allocation") { renderAllocation(); renderFunds(); }
     if (page === "fed") renderFed();
+    if (page === "valuation") renderValuation();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

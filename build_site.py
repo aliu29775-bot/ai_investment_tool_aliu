@@ -466,7 +466,7 @@ def fetch_quotes(symbols, verbose=True):
 FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
                "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
                "DFII10", "GDPC1", "PAYEMS", "T10Y2Y",
-               "DFEDTARU", "DFEDTARL", "WALCL", "PCEPI", "CPILFESL"]
+               "DFEDTARU", "DFEDTARL", "WALCL", "PCEPI", "CPILFESL", "NCBCMDPMVCE"]
 
 # FOMC 2026 會議日程（聯儲官網預先公佈；end=決議日）
 FOMC_2026 = [("2026-01-28", "1月27–28日"), ("2026-03-18", "3月17–18日"),
@@ -801,6 +801,74 @@ def compute_allocation(fred, quotes, asset_perf):
         "sources": ["FRED 聯儲經濟數據（fredgraph.csv）", "Yahoo Finance 公開行情",
                     "ICE/COMEX 期貨報價"],
     }
+
+
+def compute_valuation(fred, companies, fund_data):
+    """估值儀表板：巴菲特指標（Wilshire/GDP）+ 行業估值中位數 + 高估/低估榜。"""
+    def raw(x):
+        return x.get("raw") if isinstance(x, dict) else x
+
+    v = {}
+    # 巴菲特指標代理（FRED 已下架 Wilshire 5000；改用 Z.1 非金融企業股權市值 / GDP）
+    # 本序列值 ≈ 萬億美元（如 19.14 ≈ 19.14 兆），GDPC1 為十億美元年化 → 比值 = w×1000/g
+    wil = fred.get("NCBCMDPMVCE") or []
+    gdp = fred.get("GDPC1") or []
+    if wil and gdp:
+        hist = []
+        for d_w, w in wil:
+            g = None
+            for d_g, gg in gdp:
+                if d_g <= d_w:
+                    g = gg
+            if g:
+                hist.append([d_w, round(w * 1000 / g, 4)])
+        if hist:
+            v["buffett"] = {"ratio": hist[-1][1], "hist": hist[-40:], "asof": hist[-1][0]}
+    # 個股估值統計（PE 缺時用 價格/每股收益 回退）
+    sec_pes, all_rows = {}, []
+    for c in companies:
+        t = c.get("ticker")
+        ent = fund_data.get(t) or {}
+        qs = ent.get("qs") or {}
+        ks = qs.get("defaultKeyStatistics") or {}
+        det = qs.get("summaryDetail") or {}
+        closes = ent.get("closes") or []
+        price = closes[-1] if closes else None
+        pe = raw(ks.get("trailingPE"))
+        eps = raw(ks.get("trailingEps"))
+        if pe is None and price and eps:
+            pe = price / eps
+        pb, ps, dy, mk = raw(ks.get("priceToBook")), raw(ks.get("priceToSales")), \
+            raw(det.get("dividendYield")), raw(ks.get("marketCap"))
+        if pe is not None and 0 < pe < 1000:
+            row = {"name": c["name"], "ticker": t, "sector": c.get("sector", ""),
+                   "pe": round(pe, 1), "pb": round(pb, 2) if pb is not None else None,
+                   "ps": round(ps, 2) if ps is not None else None,
+                   "dy": round(dy, 4) if dy is not None else None, "mktcap": mk}
+            all_rows.append(row)
+            sec_pes.setdefault(c.get("sector", "其他"), []).append(pe)
+    v["n_valued"] = len(all_rows)
+    if all_rows:
+        pes = sorted(r["pe"] for r in all_rows)
+        v["pe_median_all"] = round(pes[len(pes) // 2], 1)
+        v["sectors"] = []
+        for sec, sp in sorted(sec_pes.items(), key=lambda kv: -len(kv[1])):
+            if len(sp) >= 3:
+                sp = sorted(sp)
+                v["sectors"].append({"sector": sec, "n": len(sp),
+                                     "pe_median": round(sp[len(sp) // 2], 1),
+                                     "pe_low": round(sp[0], 1), "pe_high": round(sp[-1], 1)})
+        ranked = sorted(all_rows, key=lambda r: -r["pe"])
+        v["expensive"] = [{"name": r["name"], "ticker": r["ticker"], "pe": r["pe"]}
+                          for r in ranked[:10]]
+        v["cheap"] = [{"name": r["name"], "ticker": r["ticker"], "pe": r["pe"]}
+                      for r in ranked[-10:][::-1]]
+    # 股權風險溢價 = 全站 PE 中位數的盈餘收益率 − 10Y 國債（ETF 無 forwardPE，用中位 PE 代理）
+    v["dgs10"] = round(_yv(fred, "DGS10"), 2) if fred.get("DGS10") else None
+    if v.get("pe_median_all") and v["dgs10"] is not None:
+        v["earn_yield_median"] = round(1 / v["pe_median_all"], 4)
+        v["erp"] = round(v["earn_yield_median"] - v["dgs10"] / 100, 4)
+    return v
 
 
 def compute_portfolio(asset_perf, targets):
@@ -1279,12 +1347,18 @@ def main():
         asset_perf = fetch_asset_perf(asset_symbols)
         if fred:
             allocation = compute_allocation(fred, quotes, asset_perf)
-            with open(alloc_cache, "w", encoding="utf-8") as f:
-                json.dump(allocation, f, ensure_ascii=False)
             print(f"  ✓ 資產配置已計算（通脹 {allocation['macro'][1]['score']} 分 / "
                   f"壓力 {allocation['macro'][3]['score']} 分）")
         else:
             print("  ✗ FRED 全數失敗，資產配置跳過")
+    if allocation is not None and (not args.no_market or "valuation" not in allocation):
+        fred_for_val = fred if not args.no_market else {}
+        allocation["valuation"] = compute_valuation(fred_for_val, companies, fund_data)
+        if not args.no_market:
+            with open(alloc_cache, "w", encoding="utf-8") as f:
+                json.dump(allocation, f, ensure_ascii=False)
+        print(f"  ✓ 估值儀表板（巴菲特指標 + 行業估值中位數，"
+              f"{allocation['valuation'].get('n_valued', 0)} 家有 PE）")
     elif os.path.exists(alloc_cache):
         allocation = json.load(open(alloc_cache, encoding="utf-8"))
         print("== 3.5/4 使用資產配置快取 ==")

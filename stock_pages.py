@@ -578,6 +578,7 @@ STOCK_TEMPLATE = """<!DOCTYPE html>
       <a href="{rel}trackrecord.html">組合</a>
       <a href="{rel}allocation.html">配置</a>
       <a href="{rel}fed.html">美聯儲</a>
+      <a href="{rel}valuation.html">估值</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>
