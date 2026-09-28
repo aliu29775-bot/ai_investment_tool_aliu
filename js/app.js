@@ -2011,6 +2011,534 @@
       "散戶極度看空時常為反向訊號，但不作投資依據。</p></div>";
   }
 
+  /* ================= 市場全景（模組 11/13/14/16/17/19/21） ================= */
+  function renderMarketPage() {
+    if (document.body.getAttribute("data-page") !== "market") return;
+    renderMarketFlows();
+    renderMarketGlobal();
+    renderMarketEarnings();
+    renderMarketTechnicals();
+    renderMarketAssets();
+    renderMarketLookthrough();
+    renderMarketRebalance();
+  }
+
+  function pctTxt(v) {
+    if (v == null) return "—";
+    return (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+  }
+  function pctClr(v) {
+    if (v == null) return "";
+    return ' style="color:' + (v >= 0 ? "var(--good)" : "var(--crit)") + ';"';
+  }
+
+  function renderMarketFlows() {
+    var host = document.getElementById("m-flows");
+    var F = (D.marketview || {}).flows;
+    if (!host) return;
+    if (!F) {
+      host.innerHTML = "<p>資金流向資料暫缺。</p>";
+      return;
+    }
+    var wkCards = (F.weeks || []).map(function (w) {
+      var g = w.global_eq, u = w.us_eq, b = w.us_bond;
+      return '<div class="card" style="flex:1;min-width:260px;">' +
+        "<h4 class='s-h3'>" + esc(w.week) + "</h4>" +
+        '<div class="s-grid2" style="gap:8px;margin-top:6px;">' +
+        '<div class="s-kv"><span class="s-n">全球股票基金</span><span class="s-v"' +
+        pctClr(g) + ">" + (g >= 0 ? "+" : "") + g.toFixed(1) + " 億美元</span></div>" +
+        '<div class="s-kv"><span class="s-n">美國股票基金</span><span class="s-v"' +
+        pctClr(u) + ">" + (u >= 0 ? "+" : "") + u.toFixed(1) + " 億美元</span></div>" +
+        (b != null ? '<div class="s-kv"><span class="s-n">美國債券基金</span><span class="s-v"' +
+          pctClr(b) + ">" + (b >= 0 ? "+" : "") + b.toFixed(1) + " 億美元</span></div>" : "") +
+        "</div><p class='s-note' style='margin-top:6px;'>" + esc(w.note) + "</p></div>";
+    }).join("");
+    var ici = F.ici || {};
+    var na = F.naaim || {};
+    var naCls = na.value == null ? "" : na.value >= 100 ? "on" : na.value <= 40 ? "down" : "mid";
+    host.innerHTML = '<div class="s-bullbear" style="gap:12px;align-items:stretch;flex-wrap:wrap;">' +
+      wkCards +
+      '<div class="card" style="flex:1;min-width:240px;"><h4 class="s-h3">機構倉位（NAAIM）</h4>' +
+      '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' +
+      (na.value != null ? na.value : "—") + ' <span class="s-n">/ 100 平均曝險</span></span>' +
+      '<span class="s-n">' + esc(na.date || "") + " · 歷史中位數 " + (na.median != null ? na.median : "—") +
+      " · 100=滿倉</span></div>" +
+      '<p class="s-note" style="margin-top:6px;">' + esc(na.note || "") + "</p></div>" +
+      '<div class="card" style="flex:1;min-width:240px;"><h4 class="s-h3">ICI 週度統計</h4>' +
+      '<div class="s-kv" style="margin-top:6px;"><span class="s-v"' + pctClr(ici.equity) + ">" +
+      (ici.equity != null ? (ici.equity >= 0 ? "+" : "") + ici.equity.toFixed(2) + " 億美元" : "—") +
+      "</span><span class=\"s-n\">股票基金 · " + esc(ici.week || "") + "</span></div>" +
+      '<div class="s-kv"><span class="s-v"' + pctClr(ici.bond) + ">" +
+      (ici.bond != null ? (ici.bond >= 0 ? "+" : "") + ici.bond.toFixed(2) + " 億美元" : "—") +
+      "</span><span class=\"s-n\">債券基金</span></div>" +
+      '<p class="s-note" style="margin-top:6px;">' + esc(ici.note || "") + "</p></div></div>" +
+      '<p class="s-note">來源：' + esc(F.source || "") + "；ICI：ICH 週度統計；NAAIM：" +
+      esc(na.source || "") + "。散戶情緒見風險儀表板（AAII）。</p>";
+  }
+
+  function renderMarketGlobal() {
+    var host = document.getElementById("m-global");
+    var G = (D.marketview || {}).global;
+    if (!host) return;
+    if (!G || !G.length) {
+      host.innerHTML = "<p>全球指數資料暫缺（行情抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var rows = G.map(function (r) {
+      return "<tr><td><b>" + esc(r.label) + "</b></td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' +
+        (r.price != null ? r.price.toLocaleString() : "—") + "</td>" +
+        "<td" + pctClr(r.chg) + ">" + pctTxt(r.chg) + "</td>" +
+        "<td" + pctClr(r.ytd) + ">" + pctTxt(r.ytd) + "</td>" +
+        "<td" + pctClr(r.y1) + ">" + pctTxt(r.y1) + "</td>" +
+        "<td" + pctClr(r.rs) + ">" + pctTxt(r.rs) + "</td>" +
+        "<td>" + (r.ma50 != null ? r.ma50.toLocaleString() : "—") + "</td>" +
+        "<td>" + (r.ma200 != null ? r.ma200.toLocaleString() : "—") + "</td>" +
+        "<td>" + (r.trend ? (r.trend.indexOf("上方") >= 0
+          ? '<span class="s-chip on">' : '<span class="s-chip down">') + esc(r.trend) + "</span>" : "—") +
+        "</td></tr>";
+    }).join("");
+    host.innerHTML = '<div class="card"><h3>🌍 全球主要指數</h3>' +
+      '<table class="s-table"><thead><tr><th>指數</th><th>價格</th><th>日漲跌</th>' +
+      "<th>YTD</th><th>1 年</th><th>相對標普500（1 年）</th><th>50 日均線</th><th>200 日均線</th>" +
+      "<th>趨勢</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+      '<p class="s-note">價格為最近收盤（Yahoo 1 年日線）；相對強弱＝該指數 1 年報酬 − 標普 500 1 年報酬。' +
+      "資料點不足的指數不展示期間報酬（如滬深 300 的 Yahoo 日線僅有最新點）。</p></div>";
+  }
+
+  function renderMarketEarnings() {
+    var host = document.getElementById("m-earnings");
+    var E = (D.marketview || {}).earnings;
+    if (!host) return;
+    if (!E || !E.now) {
+      host.innerHTML = "<p>標普 500 盈利資料暫缺（multpl 抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var pts = (E.series || []).map(function (x, i) { return [i, x.yy]; });
+    var chips = (E.declines || []).map(function (rg) {
+      return '<span class="s-chip down">盈利衰退 ' + esc(rg[0].slice(0, 4)) +
+        (rg[0] !== rg[1] ? " – " + esc(rg[1].slice(0, 4)) : "") + "</span>";
+    }).join(" ");
+    var ly = E.last_year || {};
+    host.innerHTML = '<div class="card"><h3>💹 標普 500 盈利（as-reported EPS）</h3>' +
+      '<div class="s-grid2" style="gap:12px;margin-top:8px;">' +
+      '<div class="s-kv"><span class="s-n">TTM EPS（' + esc(E.now.date) + "）</span><span class=\"s-v\">" +
+      E.now.eps.toFixed(2) + "</span></div>" +
+      '<div class="s-kv"><span class="s-n">後視市盈率</span><span class="s-v">' +
+      (E.pe != null ? E.pe.toFixed(1) + "×" : "—") +
+      "<span class=\"s-n\">指數 " + (E.spx != null ? E.spx.toFixed(2) : "—") + " ÷ TTM EPS</span></div>" +
+      '<div class="s-kv"><span class="s-n">最近完整年度（' + esc(ly.date || "") + "）</span><span class=\"s-v\"" +
+      pctClr(ly.yy) + ">" + pctTxt(ly.yy) + "</span><span class=\"s-n\">EPS " +
+      (ly.eps != null ? ly.eps.toFixed(2) : "—") + "</span></div>" +
+      '<div class="s-kv"><span class="s-n">10 年複合增速</span><span class="s-v">' +
+      (E.cagr10 != null ? "+" + E.cagr10 + "% / 年" : "—") + "</span></div></div>" +
+      '<div style="margin-top:14px;"><h4 class="s-h3">年度 EPS 同比增速（%，1971 年起，降採樣）</h4>' +
+      fedLineSVG(pts, "#0e6b4f") + "</div>" +
+      '<p class="s-note">' + chips + "</p>" +
+      '<p class="s-note">資料：multpl.com 標普 500 盈利（1871 年起）；同比只比較每年 12-31 的年度 EPS。' +
+      "盈利衰退＝年度 EPS 同比轉負（1990 年後）。EPS 為標普公司公佈的 as-reported 值。</p></div>";
+  }
+
+  function renderMarketTechnicals() {
+    var host = document.getElementById("m-technicals");
+    var T = (D.marketview || {}).technicals;
+    if (!host) return;
+    if (!T || !T.length) {
+      host.innerHTML = "<p>技術面資料暫缺（1 年日線抓取失敗）。</p>";
+      return;
+    }
+    var rows = T.map(function (t) {
+      var rsiCls = t.rsi == null ? "" : t.rsi >= 70 ? "down" : t.rsi <= 30 ? "on" : "mid";
+      return "<tr><td><b>" + esc(t.label) + "</b></td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' +
+        (t.price != null ? t.price.toLocaleString() : "—") + "</td>" +
+        "<td>" + (t.ma50 != null ? t.ma50.toLocaleString() : "—") + "</td>" +
+        "<td>" + (t.ma200 != null ? t.ma200.toLocaleString() : "—") + "</td>" +
+        "<td>" + (t.above200 == null ? "—" : t.above200
+          ? '<span class="s-chip on">200 日線上方</span>'
+          : '<span class="s-chip down">200 日線下方</span>') + "</td>" +
+        "<td>" + (t.rsi != null
+          ? '<span class="s-chip ' + rsiCls + '">' + t.rsi + "</span>" : "—") + "</td>" +
+        "<td>" + (t.pos52 != null ? t.pos52 + "%" : "—") + "</td></tr>";
+    }).join("");
+    host.innerHTML = '<div class="card"><h3>📈 50/200 日均線、RSI、52 週位置</h3>' +
+      '<table class="s-table"><thead><tr><th>指數</th><th>價格</th><th>50 日均線</th>' +
+      "<th>200 日均線</th><th>長期趨勢</th><th>RSI-14</th><th>52 週區間位置</th></tr></thead><tbody>" +
+      rows + "</tbody></table>" +
+      '<p class="s-note">RSI ≥ 70 超買、≤ 30 超賣；52 週位置＝（現價 − 52 週低）÷（52 週高 − 52 週低）。' +
+      "由 Yahoo 1 年日線真實計算。</p></div>";
+  }
+
+  function renderMarketAssets() {
+    var host = document.getElementById("m-assets");
+    var A = (D.marketview || {}).assets;
+    if (!host) return;
+    if (!A || !A.length) {
+      host.innerHTML = "<p>擴展資產資料暫缺。</p>";
+      return;
+    }
+    var cards = A.map(function (a) {
+      return '<div class="card" style="flex:1;min-width:180px;">' +
+        "<h4 class='s-h3'>" + esc(a.label) + "</h4>" +
+        '<div class="s-kv" style="margin-top:6px;"><span class="s-v">' +
+        (a.price != null ? a.price.toLocaleString() : "—") + "</span>" +
+        '<span class="s-n">YTD <span' + pctClr(a.ytd) + ">" + pctTxt(a.ytd) +
+        "</span> · 1 年 <span" + pctClr(a.y1) + ">" + pctTxt(a.y1) + "</span></span>" +
+        (a.note ? '<span class="s-n">' + esc(a.note) + "</span>" : "") +
+        "</div></div>";
+    }).join("");
+    host.innerHTML = '<div class="s-bullbear" style="gap:12px;align-items:stretch;flex-wrap:wrap;">' +
+      cards + "</div>" +
+      '<p class="s-note">REITs＝VNQ、上市私募股權＝PSP、新興市場＝EEM（均為 ETF 代理）；' +
+      "比特幣／以太幣為加密市場價；房價為 Case-Shiller 20 城季調指數。私募／風投直接數據無公開免費來源，" +
+      "故用上市私募股權 ETF 代理。行情由 Yahoo 1 年日線真實計算。</p>";
+  }
+
+  function renderMarketLookthrough() {
+    var host = document.getElementById("m-lookthrough");
+    var L = (D.marketview || {}).lookthrough;
+    if (!host) return;
+    if (!L) {
+      host.innerHTML = "<p>持倉穿透資料暫缺（ETF 持倉抓取失敗），請重新觸發更新。</p>";
+      return;
+    }
+    var topRows = (L.top || []).map(function (h) {
+      return "<tr><td>" + esc(h.sym) + "</td><td>" + h.pct.toFixed(2) + "%</td></tr>";
+    }).join("");
+    var secRows = (L.sectors || []).map(function (s) {
+      return "<tr><td>" + esc(s.name) + "</td><td>" + s.pct.toFixed(2) + "%</td></tr>";
+    }).join("");
+    var etfCards = (L.etfs || []).map(function (e) {
+      var hs = (e.holds || []).slice(0, 6).map(function (h) {
+        return esc(h.sym) + " " + h.pct.toFixed(1) + "%";
+      }).join("、");
+      return '<div class="card" style="flex:1;min-width:200px;">' +
+        "<h4 class='s-h3'>" + esc(e.sym) + "</h4>" +
+        '<p class="s-note">' + esc(e.category || "") +
+        (e.asof ? " · 截至 " + esc(e.asof) : "") + "</p>" +
+        (hs ? '<p class="s-note">前十大：' + hs + "</p>"
+            : '<p class="s-note">持倉為國債／實物資產，無個股符號。</p>') +
+        "</div>";
+    }).join("");
+    host.innerHTML = '<div class="card"><h3>🔍 建議配置的穿透視角</h3>' +
+      '<p class="s-note">把建議配置中股票權重（' + (L.eq_w != null ? L.eq_w + "%" : "—") +
+      "）乘進 SPY 前十大持倉，得到整個組合對個股的隱含暴露：</p>" +
+      '<div class="s-bullbear" style="gap:18px;align-items:flex-start;">' +
+      '<div style="flex:1;min-width:220px;"><h4 class="s-h3">穿透後前十大個股暴露</h4>' +
+      '<table class="s-table"><thead><tr><th>代碼</th><th>組合內權重</th></tr></thead><tbody>' +
+      (topRows || "<tr><td colspan='2'>暫缺</td></tr>") + "</tbody></table></div>" +
+      '<div style="flex:1;min-width:220px;"><h4 class="s-h3">穿透後行業暴露</h4>' +
+      '<table class="s-table"><thead><tr><th>行業</th><th>組合內權重</th></tr></thead><tbody>' +
+      (secRows || "<tr><td colspan='2'>暫缺</td></tr>") + "</tbody></table>" +
+      (L.sec_note ? '<p class="s-note">' + esc(L.sec_note) + "</p>" : "") + "</div></div>" +
+      '<h4 class="s-h3" style="margin-top:12px;">各代理 ETF 前十大持倉</h4>' +
+      '<div class="s-bullbear" style="gap:10px;align-items:stretch;flex-wrap:wrap;">' +
+      etfCards + "</div>" +
+      '<p class="s-note">ETF 持倉資料：Yahoo quoteSummary topHoldings（建站時抓取）。' +
+      "穿透計算＝建議配置的資產權重 × ETF 持倉權重，反映「整個組合買到了什麼」。</p></div>";
+  }
+
+  function renderMarketRebalance() {
+    var host = document.getElementById("m-rebalance");
+    var R = (D.marketview || {}).rebalance;
+    if (!host) return;
+    if (!R || !R.now || !R.now.length) {
+      host.innerHTML = "<p>再平衡資料暫缺（資產 1 年日線缺失）。</p>";
+      return;
+    }
+    var rows = R.now.map(function (d) {
+      var over = Math.abs(d.drift) >= (R.threshold || 5);
+      return "<tr" + (over ? ' style="background:var(--brand-tint);"' : "") + ">" +
+        "<td>" + esc(d.cls) + "（" + esc(d.sym) + "）</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + d.target.toFixed(1) + "%</td>" +
+        "<td" + pctClr(d.rel) + ">" + pctTxt(d.rel) + "</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + d.w30.toFixed(1) + "%</td>" +
+        "<td" + pctClr(d.drift) + ">" + (d.drift >= 0 ? "+" : "") + d.drift.toFixed(1) + " 百分點</td>" +
+        "<td>" + (over ? '<span class="s-chip mid">⚠ 建議檢視</span>' : '<span class="s-chip on">正常</span>') +
+        "</td></tr>";
+    }).join("");
+    var sim = R.sim || {};
+    host.innerHTML = '<div class="card"><h3>⚖️ 目標權重 vs 30 天不動作後的實際權重</h3>' +
+      '<table class="s-table"><thead><tr><th>資產</th><th>目標權重</th><th>近 30 天報酬</th>' +
+      "<th>當前隱含權重</th><th>偏離</th><th>狀態（閾值 ±" + (R.threshold || 5) +
+      " 百分點）</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+      '<p class="s-note">假設 30 天前按目標權重買入後完全不動作：各資產漲跌使實際權重偏離目標。' +
+      (sim.n_months
+        ? "歷史模擬（20 年月線，每月重平衡後持有 1 個月，共 " + sim.n_months +
+          " 個月）：平均最大偏離 " + sim.avg_max_drift +
+          " 百分點，超過閾值的月份佔 " + sim.pct_over5 +
+          "%。月頻再平衡下偏離極少超過 5 百分點——若網站月更，5pp 閾值足夠。"
+        : "") +
+      " 實際操作請以自身持倉金額計算（見決策工具箱的再平衡計算器）。</p></div>";
+  }
+
+  /* ---------- 決策工具箱（模組 22-26） ---------- */
+  var TOOL_CLS = ["股票", "國債", "商品", "黃金", "現金"];
+  var TOOL_COLOR = {"股票": "#2563eb", "國債": "#16a34a", "商品": "#d97706",
+                    "黃金": "#f59e0b", "現金": "#64748b"};
+  var TOOL_W = null;        // 模擬器目前權重（與再平衡計算器共享）
+  var TOOL_CURRENT = {};    // 目前總資產與五類持倉（再平衡計算器）
+
+  function toolWeightsFromScores(g, i, l, s, dbcY) {
+    var w = {股票: 40, 國債: 20, 商品: 10, 黃金: 10, 現金: 20};
+    var fired = [];
+    if (s >= 60) { w["股票"] -= 10; w["現金"] += 10; fired.push("壓力 ≥ 60 → 股票 −10、現金 +10"); }
+    if (g < 45) { w["股票"] -= 10; w["國債"] += 10; fired.push("增長 < 45 → 股票 −10、國債 +10"); }
+    if (i >= 70) { w["黃金"] += 8; w["國債"] -= 8; fired.push("通脹 ≥ 70 → 黃金 +8、國債 −8"); }
+    if (l < 45) { w["現金"] += 5; w["商品"] -= 5; fired.push("流動性 < 45 → 現金 +5、商品 −5"); }
+    if (dbcY > 25) { w["商品"] += 5; w["現金"] -= 5; fired.push("商品一年報酬 > +25% → 商品 +5、現金 −5"); }
+    if (w["國債"] < 10) { w["股票"] -= 10 - w["國債"]; w["國債"] = 10; }
+    if (w["現金"] < 10) { w["股票"] -= 10 - w["現金"]; w["現金"] = 10; }
+    return {w: w, fired: fired};
+  }
+
+  function toolCurrentScores() {
+    var macro = ((D.allocation || {}).macro) || [];
+    var sc = {growth: 50, inflation: 50, liquidity: 50, stress: 50};
+    macro.forEach(function (m) {
+      if (m && m.key && typeof m.score === "number") sc[m.key] = m.score;
+    });
+    var dbcY = 0;
+    (((D.allocation || {}).assets) || []).concat(
+      ((D.marketview || {}).assets) || []).forEach(function (a) {
+      if (a && a.sym === "DBC" && typeof a.y1 === "number") dbcY = a.y1;
+    });
+    return {g: sc.growth, i: sc.inflation, l: sc.liquidity, s: sc.stress, dbc: dbcY};
+  }
+
+  function toolSimResult() {
+    var g = +document.getElementById("tool-g").value;
+    var i = +document.getElementById("tool-i").value;
+    var l = +document.getElementById("tool-l").value;
+    var s = +document.getElementById("tool-s").value;
+    var dbc = +document.getElementById("tool-dbc").value;
+    var r = toolWeightsFromScores(g, i, l, s, dbc);
+    TOOL_W = r.w;
+    var seg = TOOL_CLS.map(function (c) {
+      return '<div style="flex:' + r.w[c] + ' 1 0%;background:' + TOOL_COLOR[c] +
+             ';height:22px;" title="' + c + " " + r.w[c] + '%"></div>';
+    }).join("");
+    var legend = TOOL_CLS.map(function (c) {
+      return '<span style="white-space:nowrap;"><span style="display:inline-block;width:10px;height:10px;' +
+             "border-radius:2px;background:" + TOOL_COLOR[c] + ';margin-right:4px;"></span>' +
+             c + " <b>" + r.w[c] + "%</b></span>";
+    }).join('<span style="margin:0 8px;color:var(--mid);">·</span>');
+    var firedHtml = r.fired.length
+      ? "<ul>" + r.fired.map(function (f) {
+          return '<li><span class="s-chip mid">規則觸發</span> ' + esc(f) + "</li>";
+        }).join("") + "</ul>"
+      : '<p class="s-note">未觸發任何調整規則 → 維持基準配置 40/20/10/10/20。</p>';
+    document.getElementById("tool-result").innerHTML =
+      '<div style="display:flex;gap:2px;border-radius:6px;overflow:hidden;">' + seg + "</div>" +
+      '<p style="margin:8px 0 4px;">' + legend + "</p>" + firedHtml;
+    toolCalcRender();
+    return r;
+  }
+
+  function toolSliderRow(id, label, val, min, max, unit, desc) {
+    return '<div class="s-kv"><div><span class="s-n">' + label + "</span>" +
+      '<span class="s-v" id="' + id + '-v" style="font-variant-numeric:tabular-nums;">' +
+      val + unit + "</span></div>" +
+      '<input type="range" id="' + id + '" min="' + min + '" max="' + max +
+      '" step="1" value="' + val + '" style="width:100%;margin-top:6px;">' +
+      '<p class="s-note" style="margin:2px 0 0;">' + desc + "</p></div>";
+  }
+
+  function renderToolsSim() {
+    var host = document.getElementById("t-sim");
+    if (!host) return;
+    var cur = toolCurrentScores();
+    var macro = ((D.allocation || {}).macro) || [];
+    var labelOf = {"growth": "增長", "inflation": "通脹", "liquidity": "流動性", "stress": "壓力"};
+    var noteOf = {
+      growth: "GDP 同比、失業率與薪資成長（越高越強）",
+      inflation: "CPI 與核心 PCE（越高壓力越大）",
+      liquidity: "利率鬆緊、利差曲線與信用利差（越高越寬鬆）",
+      stress: "VIX 與高收益利差（越高越緊張）",
+    };
+    var defs = {g: cur.g, i: cur.i, l: cur.l, s: cur.s, dbc: Math.round(cur.dbc)};
+    host.innerHTML = '<div class="card">' +
+      '<div class="s-grid2">' +
+      toolSliderRow("tool-g", "增長評分", defs.g, 0, 100, "", noteOf.growth) +
+      toolSliderRow("tool-i", "通脹評分", defs.i, 0, 100, "", noteOf.inflation) +
+      toolSliderRow("tool-l", "流動性評分", defs.l, 0, 100, "", noteOf.liquidity) +
+      toolSliderRow("tool-s", "壓力評分", defs.s, 0, 100, "", noteOf.stress) +
+      toolSliderRow("tool-dbc", "商品一年報酬", defs.dbc, -40, 60, "%",
+                    "DBC 過去 12 個月報酬（目前 " + (cur.dbc >= 0 ? "+" : "") +
+                    cur.dbc.toFixed(1) + "%）") +
+      '</div><div id="tool-result" style="margin-top:14px;"></div>' +
+      '<p class="s-note" style="margin-top:10px;">規則與評分公式同配置頁：增長＝0.4×GDP＋0.3×就業＋0.3×薪資；' +
+      "通脹＝0.6×CPI＋0.4×核心 PCE；流動性＝0.75×利率鬆緊與曲線＋0.25×信用利差；壓力＝0.5×VIX＋0.5×信用利差。</p></div>";
+    ["tool-g", "tool-i", "tool-l", "tool-s", "tool-dbc"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", function () {
+        document.getElementById(id + "-v").textContent =
+          id === "tool-dbc" ? (this.value >= 0 ? "+" : "") + this.value + "%" : this.value;
+        toolSimResult();
+      });
+    });
+    toolSimResult();
+  }
+
+  function renderToolsScenarios() {
+    var host = document.getElementById("t-scenarios");
+    if (!host) return;
+    var presets = [
+      {n: "通脹回落至 2%", d: "CPI／核心 PCE 回到目標，其他評分維持現狀。",
+       g: 60, i: 25, l: 58, s: 33, dbc: 0},
+      {n: "衰退來臨", d: "GDP 轉負、失業率升、VIX 飆升、曲線重新陡峭化。",
+       g: 25, i: 35, l: 40, s: 75, dbc: -10},
+      {n: "地緣衝突升級", d: "能源價格飆升、避險情緒高漲、商品大漲。",
+       g: 40, i: 75, l: 35, s: 85, dbc: 40},
+      {n: "2022 重演：股債雙殺", d: "高通脹＋聯儲快速加息，股債同跌、信用利差擴大。",
+       g: 45, i: 80, l: 25, s: 70, dbc: 15},
+      {n: "全面中性（基準）", d: "四項評分均中性、商品平淡：回到基準 40/20/10/10/20。",
+       g: 60, i: 30, l: 60, s: 30, dbc: 0},
+    ];
+    host.innerHTML = '<div class="card"><div style="display:flex;flex-wrap:wrap;gap:8px;">' +
+      presets.map(function (p, k) {
+        return '<button class="s-chip up" data-scen="' + k + '" style="cursor:pointer;border:none;" ' +
+          'title="' + esc(p.d) + '">' + esc(p.n) + "</button>";
+      }).join("") + "</div>" +
+      '<p id="t-scen-desc" class="s-note" style="margin-top:8px;">點選情景 → 上方模擬器的滑桿自動代入該假設，配置隨即重算。</p></div>';
+    host.querySelectorAll("[data-scen]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var p = presets[+this.getAttribute("data-scen")];
+        [["tool-g", p.g], ["tool-i", p.i], ["tool-l", p.l],
+         ["tool-s", p.s], ["tool-dbc", p.dbc]].forEach(function (kv) {
+          var el = document.getElementById(kv[0]);
+          el.value = kv[1];
+          document.getElementById(kv[0] + "-v").textContent =
+            kv[0] === "tool-dbc" ? (kv[1] >= 0 ? "+" : "") + kv[1] + "%" : kv[1];
+        });
+        document.getElementById("t-scen-desc").textContent = "已代入「" + p.n + "」：" + p.d;
+        toolSimResult();
+      });
+    });
+  }
+
+  function toolCalcRender() {
+    var host = document.querySelector("#t-calc-table tbody");
+    if (!host || !TOOL_W) return;
+    var total = parseFloat(document.getElementById("tool-total").value) || 0;
+    var rows = TOOL_CLS.map(function (c) {
+      var curAmt = parseFloat(document.getElementById("tool-cur-" + c).value) || 0;
+      var tgt = total * TOOL_W[c] / 100;
+      var diff = tgt - curAmt;
+      var act = Math.abs(diff) < Math.max(1, total * 0.001) ? "—"
+        : (diff > 0 ? '<span style="color:var(--good);">買入 ' +
+          Math.round(diff).toLocaleString() + "</span>"
+          : '<span style="color:var(--crit);">賣出 ' +
+          Math.round(-diff).toLocaleString() + "</span>");
+      return "<tr><td><span style='display:inline-block;width:10px;height:10px;" +
+        "border-radius:2px;background:" + TOOL_COLOR[c] + ";margin-right:6px;'></span>" +
+        c + "</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + Math.round(curAmt).toLocaleString() + "</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + TOOL_W[c] + "% → " +
+        Math.round(tgt).toLocaleString() + "</td><td>" + act + "</td></tr>";
+    }).join("");
+    host.innerHTML = rows;
+  }
+
+  function renderToolsCalc() {
+    var host = document.getElementById("t-calc");
+    if (!host) return;
+    var cur = toolCurrentScores();
+    host.innerHTML = '<div class="card">' +
+      '<div class="s-grid2">' +
+      '<div><span class="s-n">總資產（元）</span><br>' +
+      '<input type="number" id="tool-total" min="0" step="10000" value="1000000" ' +
+      'style="width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);"></div>' +
+      TOOL_CLS.map(function (c) {
+        return '<div><span class="s-n">目前 ' + c + " 持倉（元）</span><br>" +
+          '<input type="number" id="tool-cur-' + c + '" min="0" step="10000" value="0" ' +
+          'style="width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);"></div>';
+      }).join("") + "</div>" +
+      '<p class="s-note" style="margin:8px 0;">目標權重＝上方模擬器目前結果（股票 ' +
+      (TOOL_W ? TOOL_W["股票"] : "—") + "%／國債 " + (TOOL_W ? TOOL_W["國債"] : "—") +
+      "%／商品 " + (TOOL_W ? TOOL_W["商品"] : "—") + "%／黃金 " + (TOOL_W ? TOOL_W["黃金"] : "—") +
+      "%／現金 " + (TOOL_W ? TOOL_W["現金"] : "—") + "%），拖動滑桿後此表自動更新；|調整| 小於總資產 0.1% 顯示「—」。</p>" +
+      '<table class="s-table" id="t-calc-table"><thead><tr><th>資產</th><th>目前金額</th>' +
+      "<th>目標金額</th><th>動作</th></tr></thead><tbody></tbody></table></div>";
+    ["tool-total"].concat(TOOL_CLS.map(function (c) { return "tool-cur-" + c; }))
+      .forEach(function (id) {
+        document.getElementById(id).addEventListener("input", toolCalcRender);
+      });
+    toolCalcRender();
+  }
+
+  function renderToolsBudget() {
+    var host = document.getElementById("t-riskbudget");
+    var rb = ((D.tools || {}).riskbudget) || null;
+    if (!host) return;
+    if (!rb || !rb.assets || !rb.assets.length) {
+      host.innerHTML = "<p>風險預算資料暫缺（組合月報酬序列缺失）。</p>";
+      return;
+    }
+    var rows = rb.assets.map(function (a) {
+      return "<tr><td>" + esc(a.label) + "（" + esc(a.sym) + "）</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + a.w + "%</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + a.vol_ann + "%</td>" +
+        '<td><div style="display:flex;align-items:center;gap:8px;">' +
+        '<div style="flex:1;height:8px;border-radius:4px;background:var(--bg2);overflow:hidden;">' +
+        '<div style="height:100%;width:' + Math.min(100, Math.max(0, a.contrib)) +
+        '%;background:var(--brand);"></div></div>' +
+        '<span style="font-variant-numeric:tabular-nums;white-space:nowrap;">' +
+        a.contrib + "%</span></div></td></tr>";
+    }).join("");
+    host.innerHTML = '<div class="card">' +
+      '<div class="s-grid2">' +
+      '<div class="s-kv"><span class="s-n">組合年化波動</span>' +
+      '<span class="s-v" style="font-variant-numeric:tabular-nums;">' + rb.pf_vol_ann + "%</span></div>" +
+      '<div class="s-kv"><span class="s-n">歷史最大回撤（按目前權重每月再平衡）</span>' +
+      '<span class="s-v" style="font-variant-numeric:tabular-nums;color:var(--crit);">' +
+      rb.maxdd + "%</span></div>" +
+      "</div>" +
+      '<table class="s-table"><thead><tr><th>資產</th><th>權重</th><th>年化波動</th>' +
+      "<th>波動貢獻（佔組合方差）</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+      '<p class="s-note">樣本：' + rb.n_months +
+      " 個月真實月報酬（SPY／IEF／DBC／GLD／BIL）。波動貢獻＝權重 × 資產與組合的協方差 ÷ 組合方差，" +
+      "各資產加總為 100%——權重大的資產不一定貢獻最多的風險。</p></div>";
+  }
+
+  function renderToolsLog() {
+    var host = document.getElementById("t-log");
+    var log = ((D.tools || {}).log) || [];
+    if (!host) return;
+    if (!log.length) {
+      host.innerHTML = "<p>規則日誌暫缺（FRED 歷史序列未載入）。</p>";
+      return;
+    }
+    var rows = log.slice().reverse().map(function (e, k) {
+      var sc = e.scores;
+      return "<tr" + (k === 0 ? ' style="background:var(--brand-tint);"' : "") + ">" +
+        '<td style="font-variant-numeric:tabular-nums;">' + e.date + "</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + sc["增長"] + " / " + sc["通脹"] +
+        " / " + sc["流動性"] + " / " + sc["壓力"] + "</td>" +
+        "<td>" + (e.fired.length ? e.fired.map(esc).join("<br>")
+          : '<span class="s-chip on">無觸發</span>') + "</td>" +
+        '<td style="font-variant-numeric:tabular-nums;">' + TOOL_CLS.map(function (c) {
+          return c + " " + e.w[c] + "%";
+        }).join(" · ") + "</td></tr>";
+    }).join("");
+    var span = log[0].date + " → " + log[log.length - 1].date;
+    host.innerHTML = '<div class="card">' +
+      '<p class="s-note" style="margin:0 0 8px;">僅記錄配置發生變化的月份：共 ' + log.length +
+      " 條，範圍 " + span +
+      "（FRED 歷史逐月重算評分並執行同一套規則；最新一列高亮）。" +
+      esc((D.tools || {}).log_note || "") + "</p>" +
+      '<table class="s-table"><thead><tr><th>月份</th><th>評分（增/通/流/壓）</th>' +
+      "<th>觸發規則</th><th>調整後配置</th></tr></thead><tbody>" + rows +
+      "</tbody></table></div>";
+  }
+
+  function renderTools() {
+    renderToolsSim();
+    renderToolsScenarios();
+    renderToolsCalc();
+    renderToolsBudget();
+    renderToolsLog();
+  }
+
   /* ---------- 啟動 ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
@@ -2029,6 +2557,8 @@
     if (page === "china") renderChina();
     if (page === "scenarios") renderScenarios();
     if (page === "risk") renderRisk();
+    if (page === "market") renderMarketPage();
+    if (page === "tools") renderTools();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();

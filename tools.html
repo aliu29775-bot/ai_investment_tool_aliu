@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>決策工具箱 — AIShan+ 投研網站</title>
+<meta name="description" content="決策工具箱：如果-那麼配置模擬器、情景分析、再平衡計算器、風險預算（波動貢獻）、規則透明日誌。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="tools">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html">事件</a>
+      <a href="funds.html">基金</a>
+      <a href="politician.html">政要</a>
+      <a href="china.html">中國</a>
+      <a href="scenarios.html">回測</a>
+      <a href="risk.html">風險</a>
+      <a href="market.html">市場</a>
+      <a href="tools.html" class="on">工具</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">決策工具箱</h1>
+  </div>
+  <p class="section-desc">配置頁規則的交互版本：拖動評分滑桿即可看到規則如何改變建議配置；情景預設、再平衡計算、風險預算與 2000 年以來的規則觸發日誌一應俱全。</p>
+
+  <!-- 模組 22：如果-那麼模擬器 -->
+  <section class="section">
+    <div class="section-head"><h2>🧪 如果-那麼模擬器</h2></div>
+    <p class="section-desc">四個宏觀評分（0-100）與商品一年報酬，與配置頁同一套規則。拖動滑桿 → 立即看到觸發的規則與對應配置。</p>
+    <div id="t-sim">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 23：情景分析 -->
+  <section class="section">
+    <div class="section-head"><h2>🎭 情景分析</h2></div>
+    <p class="section-desc">預設情景一鍵代入模擬器：每個情景是一組「評分會如何變化」的假設。</p>
+    <div id="t-scenarios">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 24：再平衡計算器 -->
+  <section class="section">
+    <div class="section-head"><h2>🧮 再平衡計算器</h2></div>
+    <p class="section-desc">輸入總資產與目前五類持倉金額，算出回到目標配置（上方模擬器結果）需要買／賣的金額。</p>
+    <div id="t-calc">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 25：風險預算 -->
+  <section class="section">
+    <div class="section-head"><h2>🎯 風險預算</h2></div>
+    <p class="section-desc">每類資產對組合波動的實際貢獻（月報酬協方差）與歷史最大回撤——不是權重本身，而是「風險從哪裡來」。</p>
+    <div id="t-riskbudget">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 26：規則透明日誌 -->
+  <section class="section">
+    <div class="section-head"><h2>📜 規則透明日誌</h2></div>
+    <p class="section-desc">用 FRED 真實歷史逐月重算四項評分並執行同一套規則，記錄 2000 年以來每次配置變化的日期、觸發條件與調整結果。</p>
+    <div id="t-log">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>📐 方法論</h3>
+      <p class="section-desc" style="margin:6px 0 0;">
+        模擬器與情景分析：與配置頁完全相同的規則與評分公式（增長＝GDP 同比＋失業率＋薪資；通脹＝CPI＋核心 PCE；流動性＝聯邦基金利率＋利差曲線＋信用利差；壓力＝VIX＋信用利差）。
+        再平衡計算器：僅做算術換算（目標權重 × 總資產 − 目前持倉），買入／賣出金額四捨五入至整元，不考慮交易成本。
+        風險預算：SPY／IEF／DBC／GLD／BIL 真實月報酬協方差矩陣（最近 20 年），邊際波動貢獻＝權重 × 資產與組合的協方差 ÷ 組合方差；最大回撤為按當前權重每月再平衡的歷史組合。
+        規則透明日誌：FRED 歷史（GDPC1、UNRATE、PAYEMS、CPIAUCSL、PCEPILFE、DFF、T10Y2Y、BAA10Y、VIXCLS）每月末重算評分並執行規則，DBC 歷史取自 Yahoo；僅記錄配置發生變化的月份。信用利差以 BAA10Y（Moody's Baa−10Y）代替 ICE 高收益 OAS——後者的 fredgraph 下載僅提供近三年。
+        本頁為研究框架展示，不構成任何投資建議。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

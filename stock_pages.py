@@ -588,6 +588,8 @@ STOCK_TEMPLATE = """<!DOCTYPE html>
       <a href="{rel}china.html">中國</a>
       <a href="{rel}scenarios.html">回測</a>
       <a href="{rel}risk.html">風險</a>
+      <a href="{rel}market.html">市場</a>
+      <a href="{rel}tools.html">工具</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>

@@ -17,6 +17,8 @@ AIShan+ 投研網站 — 一鍵建站腳本
 """
 
 import argparse
+import html
+import http.cookiejar
 import json
 import math
 import os
@@ -31,7 +33,7 @@ import urllib.request
 from collections import Counter, defaultdict
 
 from stock_pages import (EXTRA_COMPANIES, load_or_fetch_fundamentals,
-                         render_stock_pages, slugify)
+                         render_stock_pages, slugify, _get_crumb, _yahoo_json)
 
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -467,6 +469,7 @@ def fetch_quotes(symbols, verbose=True):
 FRED_SERIES = ["CPIAUCSL", "PCEPILFE", "UNRATE", "DGS2", "DGS10", "DGS30",
                "DFF", "BAMLH0A0HYM2", "BAMLH0A0HYM2EY", "BAMLC0A0CM", "BAMLC0A0CMEY",
                "DFII10", "GDPC1", "PAYEMS", "T10Y2Y", "T10Y3M", "ICSA", "VIXCLS",
+               "BAA10Y",
                "GEPUCURRENT", "USREC", "CSUSHPINSA",
                "DFEDTARU", "DFEDTARL", "WALCL", "PCEPI", "CPILFESL", "NCBCMDPMVCE"]
 
@@ -1634,6 +1637,526 @@ def compute_risk(fred, quotes, hist, fund_data, companies):
 
 
 # ---------------------------------------------------------------------------
+# 模組 11/13/14/16/17/19/21：市場全景（資金流向／擴展資產／全球儀表板／盈利週期／
+# 技術面／ETF 持倉穿透／再平衡提醒）
+# ---------------------------------------------------------------------------
+
+GLOBAL_INDICES = {
+    "^GSPC": "標普500", "^IXIC": "納斯達克", "^HSI": "恒生指數", "000300.SS": "滬深300",
+    "^N225": "日經225", "^GDAXI": "德國DAX", "^FTSE": "英國富時100",
+    "^NSEI": "印度Nifty 50", "^BVSP": "巴西Bovespa", "EEM": "MSCI 新興市場",
+}
+EXTENDED_ASSETS = {
+    "VNQ": "美國房地產 REITs", "BTC-USD": "比特幣", "ETH-USD": "以太幣",
+    "DX-Y.NYB": "美元指數", "EEM": "MSCI 新興市場", "PSP": "全球上市私募股權",
+}
+ETF_HOLDING_SYMBOLS = ["SPY", "IEF", "DBC", "GLD", "BIL"]
+INDEX_PERF_CACHE = os.path.join(SITE_DIR, "js", "index_perf_cache.json")
+EARNINGS_CACHE = os.path.join(SITE_DIR, "js", "earnings_cache.json")
+ETF_CACHE = os.path.join(SITE_DIR, "js", "etf_cache.json")
+
+# 資金流向人工維護數據（模組 11）：LSEG Lipper／ICI 週度數據與 NAAIM 曝險的公開報導，
+# 站長手動更新（NAAIM 2026-08-01 起轉訂閱制）
+FUND_FLOWS_MANUAL = {
+    "weeks": [
+        {"week": "截至 2026-09-25", "global_eq": 44.1, "us_eq": 37.6, "us_bond": 5.93,
+         "note": "全球股票基金 +441 億美元，7-08 以來最大單週流入；AI 樂觀情緒回歸＋油價回落。科技板塊 +48.9 億、金融 −25.3 億"},
+        {"week": "截至 2026-09-16", "global_eq": -23.21, "us_eq": -31.44, "us_bond": None,
+         "note": "全球股票基金 −232 億美元，九個月來最大單週流出（油價創四個月高點、聯儲加息前通脹擔憂）；亞洲基金逆勢 +62.6 億"},
+    ],
+    "ici": {"week": "截至 2026-08-27 當週", "equity": 12.34, "bond": -3.21,
+            "note": "ICI 週度統計：股票基金 +123.4 億美元、債券基金 −32.1 億美元",
+            "source": "ICI 週度統計"},
+    "naaim": {"value": 89.6, "date": "2026-09-11", "median": 92.64,
+              "note": "主動投資經理平均美股曝險（100=滿倉）；8-26 曾達 102.66（槓桿多頭）",
+              "source": "NAAIM Exposure Index"},
+    "source": "LSEG Lipper 週度基金流量（公開報導，站長手動維護）",
+}
+
+
+def fetch_earnings():
+    """模組 16：標普 500 盈利歷史（multpl.com 公開表格，as-reported EPS）。"""
+    url = "https://www.multpl.com/s-p-500-earnings/table/by-year"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            page = resp.read().decode("utf-8", "replace")
+        m = re.search(r'<table id="datatable".*?</table>', page, re.S)
+        if not m:
+            return []
+        rows = []
+        for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", m.group(0), re.S):
+            cells = [html.unescape(re.sub(r"<[^>]+>", "", c)).strip()
+                     .replace(" ", "").replace("\n", "")
+                     for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.S)]
+            if len(cells) >= 2 and cells[1] and cells[0] != "Date":
+                d = datetime.strptime(cells[0], "%b %d, %Y").strftime("%Y-%m-%d")
+                rows.append({"date": d, "eps": float(cells[1])})
+        return rows
+    except Exception as e:
+        print(f"  ✗ 標普500盈利 multpl {e}")
+        return []
+
+
+def fetch_etf_holdings(symbols):
+    """模組 19：ETF 前十大持倉與行業權重（Yahoo quoteSummary topHoldings）。"""
+    jar = http.cookiejar.CookieJar()
+    crumb = _get_crumb(jar)
+    if not crumb:
+        print("  ✗ Yahoo crumb 取得失敗，ETF 持倉穿透跳過")
+        return {}
+    out = {}
+    for sym in sorted(symbols):
+        try:
+            url = ("https://query1.finance.yahoo.com/v10/finance/quoteSummary/"
+                   f"{urllib.parse.quote(sym)}?modules=topHoldings,fundProfile"
+                   f"&crumb={urllib.parse.quote(crumb)}")
+            d = _yahoo_json(url, jar)
+            res = (d.get("quoteSummary", {}).get("result") or [None])[0]
+            if not res:
+                continue
+            th = res.get("topHoldings") or {}
+            fp = res.get("fundProfile") or {}
+            holds = []
+            for h in th.get("holdings") or []:
+                s = h.get("symbol")
+                p = (h.get("holdingPercent") or {}).get("raw")
+                if s and p is not None:
+                    holds.append({"sym": s, "pct": round(p * 100, 2)})
+            secs = [(w.get("sectorName"), (w.get("sectorWeight") or {}).get("raw"))
+                    for w in th.get("sectorWeightings") or []]
+            out[sym] = {
+                "category": fp.get("categoryName"),
+                "holds": holds[:10],
+                "sectors": [{"name": n, "pct": round(p * 100, 1)}
+                            for n, p in secs if p is not None],
+                "asof": th.get("dateShortFormat"),
+            }
+            print(f"  ✓ ETF 持倉 {sym}（前 {len(out[sym]['holds'])} 大）")
+        except Exception as e:
+            print(f"  ✗ ETF 持倉 {sym} {e}")
+        time.sleep(0.25)
+    return out
+
+
+def _sma(closes, n):
+    if not closes or len(closes) < n:
+        return None
+    return round(sum(closes[-n:]) / n, 2)
+
+
+def _rsi(closes, n=14):
+    if not closes or len(closes) < n + 1:
+        return None
+    gains = losses = 0.0
+    for i in range(len(closes) - n, len(closes)):
+        ch = closes[i] - closes[i - 1]
+        gains += max(ch, 0.0)
+        losses += max(-ch, 0.0)
+    if losses == 0:
+        return 100.0
+    rs = (gains / n) / (losses / n)
+    return round(100 - 100 / (1 + rs), 1)
+
+
+def simulate_rebalance_drift(hist, targets):
+    """模組 21：月頻模擬——每月以目標權重重平衡、持有 1 個月後的最大權重偏離分佈。"""
+    sym_of = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+    rets = {}
+    for t in targets:
+        sym = sym_of.get(t["cls"])
+        if sym in hist:
+            closes = hist[sym]["closes"]
+            rets[sym] = [closes[i] / closes[i - 1] - 1
+                         for i in range(1, len(closes)) if closes[i - 1]]
+    if len(rets) < 3:
+        return None
+    n = min(len(r) for r in rets.values())
+    over, maxdrs = 0, []
+    for i in range(n):
+        w = {}
+        for t in targets:
+            sym = sym_of.get(t["cls"])
+            if sym in rets:
+                w[sym] = t["pct"] * (1 + rets[sym][i])
+        tot = sum(w.values())
+        if tot <= 0:
+            continue
+        drifts = [abs(t["pct"] - w[sym_of[t["cls"]]] * 100 / tot)
+                  for t in targets if sym_of[t["cls"]] in w]
+        maxdrs.append(max(drifts))
+        if max(drifts) > 5:
+            over += 1
+    return {"n_months": len(maxdrs),
+            "avg_max_drift": round(sum(maxdrs) / len(maxdrs), 1) if maxdrs else None,
+            "pct_over5": round(over / len(maxdrs) * 100, 1) if maxdrs else None,
+            "threshold": 5}
+
+
+def compute_market(fred, quotes, index_perf, asset_perf, hist, allocation,
+                   earnings, etf_holds, companies):
+    """市場全景：全球儀表板（14）、擴展資產（13）、盈利週期（16）、技術面（17）、
+    持倉穿透（19）、再平衡提醒（21）、資金流向（11）。"""
+    out = {"flows": FUND_FLOWS_MANUAL}
+
+    # ---- 模組 14：全球市場儀表板 ----
+    spy_y1 = (index_perf.get("^GSPC") or {}).get("y1")
+    rows = []
+    for sym, label in GLOBAL_INDICES.items():
+        p = index_perf.get(sym) or {}
+        q = quotes.get(sym) or {}
+        if p.get("price") is None and q.get("price") is None:
+            continue
+        closes = p.get("closes") or []
+        price = p.get("price") or q.get("price")
+        ma50, ma200 = _sma(closes, 50), _sma(closes, 200)
+        # 資料點太少時不展示期間報酬（避免單點資料出現 0.0% 誤導）
+        ok = len(closes) >= 60
+        y1 = p.get("y1") if ok else None
+        ytd = p.get("ytd") if ok else None
+        rows.append({
+            "sym": sym, "label": label, "price": round(price, 2),
+            "chg": q.get("change_pct"), "ytd": ytd, "y1": y1,
+            "rs": round(y1 - spy_y1, 1) if (y1 is not None and spy_y1 is not None) else None,
+            "ma50": ma50, "ma200": ma200,
+            "trend": "50 日線上方" if (ma50 and price and price >= ma50) else
+                     "50 日線下方" if (ma50 and price) else None,
+        })
+    out["global"] = rows
+
+    # ---- 模組 17：主要指數技術面（50/200 日均線、RSI、52 週位置）----
+    tech_rows = []
+    for sym in ("^GSPC", "^IXIC", "^HSI", "000300.SS", "^N225"):
+        p = index_perf.get(sym) or {}
+        q = quotes.get(sym) or {}
+        label = GLOBAL_INDICES.get(sym, sym)
+        closes = p.get("closes") or []
+        price = p.get("price") or q.get("price")
+        if price is None:
+            continue
+        hi52, lo52 = p.get("high"), p.get("low")
+        pos52 = round((price - lo52) / (hi52 - lo52) * 100, 1) if (hi52 and lo52 and hi52 != lo52) else None
+        ma50, ma200 = _sma(closes, 50), _sma(closes, 200)
+        tech_rows.append({
+            "sym": sym, "label": label, "price": round(price, 2),
+            "ma50": ma50, "ma200": ma200, "rsi": _rsi(closes), "pos52": pos52,
+            "above200": None if (ma200 is None or price is None)
+                        else price >= ma200,
+        })
+    out["technicals"] = tech_rows
+
+    # ---- 模組 13：擴展資產類別 ----
+    assets = []
+    for sym, label in EXTENDED_ASSETS.items():
+        p = index_perf.get(sym) or {}
+        q = quotes.get(sym) or {}
+        if p.get("price") is None and q.get("price") is None:
+            continue
+        assets.append({"sym": sym, "label": label,
+                       "price": round(p.get("price") or q.get("price"), 2),
+                       "chg": q.get("change_pct"), "ytd": p.get("ytd"), "y1": p.get("y1")})
+    csh = fred.get("CSUSHPINSA") or []
+    if len(csh) >= 13:
+        now, yago = csh[-1][1], csh[-13][1]
+        assets.append({"sym": "CSUSHPINSA", "label": "美國房價（20 城，季調）",
+                       "price": round(now, 1), "chg": None, "ytd": None,
+                       "y1": round((now / yago - 1) * 100, 1),
+                       "note": f"Case-Shiller 指數（FRED，截至 {csh[-1][0]}）"})
+    out["assets"] = assets
+
+    # ---- 模組 16：盈利週期（標普 500 EPS：當前、同比、長期、盈利衰退段）----
+    # multpl 表格為「當前 TTM（6-30）+ 歷年 12-31」，同比只用 12-31 行比較
+    if earnings:
+        year_rows = [r for r in earnings if r["date"][5:] == "12-31"]
+        yago = {}
+        for r in earnings:
+            yago[(int(r["date"][5:7]), int(r["date"][:4]))] = r["eps"]
+        e_series = []
+        for r in year_rows:
+            yy = yago.get((12, int(r["date"][:4]) - 1))
+            e_series.append({"date": r["date"], "eps": r["eps"],
+                             "yy": round((r["eps"] / yy - 1) * 100, 1) if yy else None})
+        e_series = sorted(e_series, key=lambda x: x["date"])
+        # 盈利衰退段（同比連續為負，僅展示 1990 年以後）
+        declines, lo = [], None
+        for e in e_series:
+            if e["yy"] is not None and e["yy"] < 0 and e["date"] >= "1990-01-01":
+                if lo is None:
+                    lo = e["date"]
+                prev_d = e["date"]
+            elif lo:
+                declines.append([lo, prev_d])
+                lo = None
+        if lo:
+            declines.append([lo, e_series[-1]["date"]])
+        spx = (quotes.get("^GSPC") or {}).get("price")
+        eps_now = earnings[0] if earnings else None
+        # 最近完整年度同比
+        last_year = e_series[-1] if e_series else None
+        cagr10 = None
+        if eps_now and e_series:
+            r10ago = None
+            for r in reversed(e_series):
+                if int(eps_now["date"][:4]) - int(r["date"][:4]) >= 10:
+                    r10ago = r
+                    break
+            if r10ago and eps_now["eps"] and r10ago["eps"]:
+                yrs = int(eps_now["date"][:4]) - int(r10ago["date"][:4])
+                if yrs > 0:
+                    cagr10 = round(((eps_now["eps"] / r10ago["eps"]) ** (1 / yrs) - 1) * 100, 1)
+        step = max(1, len(e_series) // 40)
+        series = [{"date": e["date"], "yy": e["yy"]}
+                  for e in e_series[::step] if e["yy"] is not None]
+        if e_series and (not series or series[-1]["date"] != e_series[-1]["date"]):
+            series.append({"date": e_series[-1]["date"], "yy": e_series[-1]["yy"]})
+        out["earnings"] = {
+            "now": eps_now, "spx": spx,
+            "pe": round(spx / eps_now["eps"], 1) if (spx and eps_now["eps"]) else None,
+            "last_year": last_year, "cagr10": cagr10, "declines": declines,
+            "series": series,
+        }
+
+    # ---- 模組 19：持倉穿透（建議配置 × ETF 前十大）----
+    sym_of = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+    targets = (allocation or {}).get("targets") or []
+    weights = {t["cls"]: t["pct"] / 100.0 for t in targets}
+    spy_h = (etf_holds.get("SPY") or {}).get("holds") or []
+    spy_s = (etf_holds.get("SPY") or {}).get("sectors") or []
+    # Yahoo 有時缺 SPY 行業權重 → 用站內公司的行業標籤聚合前十大持倉（標註口徑）
+    sec_note = ""
+    if not spy_s and spy_h:
+        sec_by_ticker = {c["ticker"]: c["sector"] for c in companies if c.get("ticker")}
+        agg = {}
+        for h in spy_h:
+            sec = sec_by_ticker.get(h["sym"])
+            if sec:
+                agg[sec] = agg.get(sec, 0) + h["pct"]
+        spy_s = [{"name": k, "pct": round(v, 1)}
+                 for k, v in sorted(agg.items(), key=lambda kv: -kv[1])]
+        if spy_s:
+            sec_note = "行業口徑＝SPY 前十大持倉按站內行業標籤聚合"
+    eq_w = weights.get("股票")
+    look_top = [{"sym": h["sym"], "pct": round(h["pct"] * eq_w, 2)}
+                for h in spy_h[:10]] if eq_w and spy_h else []
+    look_sec = [{"name": s["name"], "pct": round(s["pct"] * eq_w, 2)}
+                for s in spy_s] if eq_w and spy_s else []
+    out["lookthrough"] = {
+        "top": look_top, "sectors": look_sec, "sec_note": sec_note,
+        "eq_w": round(eq_w * 100, 1) if eq_w else None,
+        "etfs": [dict({"sym": s}, **etf_holds.get(s, {}))
+                 for s in ETF_HOLDING_SYMBOLS if s in etf_holds],
+    }
+
+    # ---- 模組 21：再平衡提醒（30 天不動作的權重漂移，用資產 1 年日線）----
+    drifts = []
+    for t in targets:
+        sym = sym_of.get(t["cls"])
+        p = (asset_perf or {}).get(sym) or index_perf.get(sym) or {}
+        closes = p.get("closes") or []
+        if len(closes) < 31 or not closes[-31]:
+            continue
+        rel = closes[-1] / closes[-31]
+        drifts.append({"cls": t["cls"], "sym": sym, "target": t["pct"],
+                       "rel": round((rel - 1) * 100, 1)})
+    tot = sum(d["target"] * (1 + d["rel"] / 100) for d in drifts)
+    if tot:
+        for d in drifts:
+            d["w30"] = round(d["target"] * (1 + d["rel"] / 100) * 100 / tot, 1)
+            d["drift"] = round(d["w30"] - d["target"], 1)
+    out["rebalance"] = {
+        "now": drifts, "threshold": 5,
+        "sim": simulate_rebalance_drift(hist, targets),
+    }
+    return out
+
+
+# ---------------------------------------------------------------------------
+# 模組 22-26：決策工具箱（前端交互 + 風險預算 + 規則透明日誌）
+# ---------------------------------------------------------------------------
+
+RULE_TEXTS = [
+    "基準配置：股票 40 / 國債 20 / 商品 10 / 黃金 10 / 現金 20",
+    "壓力 ≥ 60 → 股票 −10、現金 +10",
+    "增長 < 45 → 股票 −10、國債 +10",
+    "通脹 ≥ 70 → 黃金 +8、國債 −8",
+    "流動性 < 45 → 現金 +5、商品 −5",
+    "商品一年報酬 > +25% → 商品 +5、現金 −5",
+    "下限保護：國債、現金均不低於 10%",
+]
+
+
+def build_rule_log(fred, hist):
+    """模組 26：用 FRED 真實歷史逐月（月尾）重算四項評分與配置規則，
+    記錄每次配置變化的日期、觸發條件與調整動作。"""
+    # 信用利差用 BAA10Y（Moody's Baa−10Y，1986 起全歷史）：ICE 高收益 OAS 的
+    # fredgraph 下載僅提供近三年，無法支持 2000 年起的逐月重算
+    need = ["GDPC1", "UNRATE", "PAYEMS", "CPIAUCSL", "PCEPILFE",
+            "DFF", "T10Y2Y", "BAA10Y", "VIXCLS"]
+    if not all(s in fred for s in need):
+        return []
+
+    def ff(by, m):
+        best = None
+        for k in sorted(by):
+            if k > m:
+                break
+            best = by[k]
+        return best
+
+    def madd(m, k):
+        y, mo = int(m[:4]), int(m[5:7])
+        mo += k
+        y += (mo - 1) // 12
+        mo = (mo - 1) % 12 + 1
+        return f"{y:04d}-{mo:02d}"
+
+    def yoy(m, by):
+        v = ff(by, m)
+        p = ff(by, madd(m, -12))
+        return (v / p - 1) * 100 if (v and p) else None
+
+    ms = {}
+    for sid in need:
+        by = {}
+        for d, v in fred.get(sid) or []:
+            by[d[:7]] = v
+        ms[sid] = by
+    dbc = hist.get("DBC") or {}
+    dbc_m = dict(zip([d[:7] for d in dbc.get("dates", [])], dbc.get("closes", [])))
+
+    axis = [m for m in sorted(ms["UNRATE"]) if m >= "2000-01"]
+    prev_w, log = None, []
+    for m in axis:
+        gdp_y = yoy(m, ms["GDPC1"])
+        un = ff(ms["UNRATE"], m)
+        pay_y = yoy(m, ms["PAYEMS"])
+        cpi_y = yoy(m, ms["CPIAUCSL"])
+        pce_y = yoy(m, ms["PCEPILFE"])
+        ffr = ff(ms["DFF"], m)
+        sp = ff(ms["T10Y2Y"], m)
+        oas = ff(ms["BAA10Y"], m)
+        vix = ff(ms["VIXCLS"], m)
+        dbc_y = yoy(m, dbc_m)
+        if None in (gdp_y, un, pay_y, cpi_y, pce_y, ffr, sp, oas, vix):
+            continue
+        g = (0.4 * _clamp((gdp_y - 0.5) * 25)
+             + 0.3 * _clamp(100 - (un - 3.5) * 22)
+             + 0.3 * _clamp(50 + pay_y * 30))
+        i = 0.6 * _clamp((cpi_y - 1.5) * 40) + 0.4 * _clamp((pce_y - 1.5) * 35)
+        tight = _clamp((ffr - 1.0) * 22)
+        curve = 8 if sp >= 0 else -12
+        l = 0.75 * _clamp(100 - tight + curve) + 0.25 * _clamp(100 - (oas - 3.0) * 30)
+        s = 0.5 * _clamp((vix - 12) * 6) + 0.5 * _clamp(50 + (oas - 3.2) * 25)
+        w = {"股票": 40.0, "國債": 20.0, "商品": 10.0, "黃金": 10.0, "現金": 20.0}
+        fired = []
+        if s >= 60:
+            w["股票"] -= 10
+            w["現金"] += 10
+            fired.append("壓力 ≥ 60 → 股票 −10、現金 +10")
+        if g < 45:
+            w["股票"] -= 10
+            w["國債"] += 10
+            fired.append("增長 < 45 → 股票 −10、國債 +10")
+        if i >= 70:
+            w["黃金"] += 8
+            w["國債"] -= 8
+            fired.append("通脹 ≥ 70 → 黃金 +8、國債 −8")
+        if l < 45:
+            w["現金"] += 5
+            w["商品"] -= 5
+            fired.append("流動性 < 45 → 現金 +5、商品 −5")
+        if dbc_y is not None and dbc_y > 25:
+            w["商品"] += 5
+            w["現金"] -= 5
+            fired.append("商品一年報酬 > +25% → 商品 +5、現金 −5")
+        for k in ("國債", "現金"):
+            if w[k] < 10:
+                w["股票"] -= 10 - w[k]
+                w[k] = 10
+        w_now = tuple(round(w[k], 1) for k in ("股票", "國債", "商品", "黃金", "現金"))
+        if prev_w != w_now:
+            log.append({
+                "date": m,
+                "scores": {"增長": round(g), "通脹": round(i),
+                           "流動性": round(l), "壓力": round(s)},
+                "fired": fired,
+                "w": {k: round(w[k], 1) for k in w},
+            })
+            prev_w = w_now
+    return log
+
+
+def compute_tools(fred, hist, allocation):
+    """決策工具箱：風險預算（25）＋規則透明日誌（26）。22-24 為前端交互，
+    以當前評分與目標權重為預設值。"""
+    tools = {"rules": RULE_TEXTS}
+    targets = (allocation or {}).get("targets") or []
+    sym_of = {"股票": "SPY", "國債": "IEF", "商品": "DBC", "黃金": "GLD", "現金": "BIL"}
+    weights = {}
+    for t in targets:
+        sym = sym_of.get(t["cls"])
+        if sym and sym in hist:
+            weights[sym] = t["pct"] / 100.0
+
+    # ---- 模組 25：風險預算（月報酬協方差 → 波動貢獻；歷史最大回撤）----
+    if len(weights) >= 3 and "SPY" in hist:
+        rets = {}
+        for s in weights:
+            closes = hist[s]["closes"]
+            rets[s] = [closes[i] / closes[i - 1] - 1
+                       for i in range(1, len(closes)) if closes[i - 1]]
+        n = min(len(r) for r in rets.values())
+        R = {s: r[-n:] for s, r in rets.items()}
+        means = {s: sum(R[s]) / n for s in R}
+        cov = {}
+        for a in R:
+            for b in R:
+                cov[(a, b)] = (sum((R[a][i] - means[a]) * (R[b][i] - means[b])
+                                  for i in range(n)) / (n - 1))
+        var_p = sum(weights[a] * weights[b] * cov[(a, b)] for a in R for b in R)
+        contrib = {}
+        for a in R:
+            marg = weights[a] * sum(weights[b] * cov[(a, b)] for b in R)
+            contrib[a] = marg / var_p * 100 if var_p > 0 else 0.0
+        maps = {s: dict(zip(hist[s]["dates"], hist[s]["closes"])) for s in R}
+        lasts, base, pf = {s: None for s in R}, None, []
+        for d in hist["SPY"]["dates"]:
+            for s, m in maps.items():
+                if d in m:
+                    lasts[s] = m[d]
+            if any(lasts[s] is None for s in R):
+                continue
+            if base is None:
+                base = dict(lasts)
+            pf.append(sum(weights[s] * lasts[s] / base[s] for s in R))
+        peak, maxdd = pf[0], 0.0
+        for v in pf:
+            peak = max(peak, v)
+            maxdd = min(maxdd, v / peak - 1)
+        tools["riskbudget"] = {
+            "assets": [{
+                "sym": s, "label": RISK_LABELS.get(s, s),
+                "w": round(weights[s] * 100, 1),
+                "vol_ann": round((sum((x - means[s]) ** 2 for x in R[s])
+                                  / (n - 1)) ** 0.5 * 12 ** 0.5 * 100, 1),
+                "contrib": round(contrib[s], 1),
+            } for s in sorted(weights)],
+            "pf_vol_ann": round(var_p ** 0.5 * 12 ** 0.5 * 100, 1) if var_p > 0 else None,
+            "maxdd": round(maxdd * 100, 1) if pf else None,
+            "n_months": n,
+        }
+
+    # ---- 模組 26：規則透明日誌 ----
+    log = build_rule_log(fred, hist)
+    tools["log"] = log
+    tools["log_note"] = (
+        "歷史重算的信用利差以 Moody's Baa − 10Y 國債利差（FRED BAA10Y，1986 年起全歷史）"
+        "代替 ICE 高收益 OAS——後者的 fredgraph 下載僅提供近三年；"
+        "評分公式與現行頁面相同（信用錨點 3.0／3.2 百分點）。")
+    return tools
+
+
+# ---------------------------------------------------------------------------
 # 4. Markdown → HTML（自製輕量轉換器，支援表格/列表/引言/程式碼）
 # ---------------------------------------------------------------------------
 
@@ -2016,7 +2539,8 @@ def main():
     cache_file = os.path.join(SITE_DIR, "js", "market_cache.json")
     if not args.no_market:
         print(f"== 3/4 抓取行情（{len([t for t in tickers if t])} 個代碼，約 40 秒）==")
-        quotes = fetch_quotes(tickers + list(MARKET_INDICES) + asset_symbols)
+        quotes = fetch_quotes(tickers + list(MARKET_INDICES) + list(GLOBAL_INDICES)
+                              + list(EXTENDED_ASSETS) + asset_symbols)
         for sym, label in MARKET_INDICES.items():
             if sym in quotes:
                 quotes[sym]["label"] = label
@@ -2091,6 +2615,46 @@ def main():
             print(f"  ✓ 風險儀表板（衰退概率 {r.get('prob_now', '—')}% · "
                   f"相關性 {len((risk.get('corr') or {}).get('labels', []))} 資產 · "
                   f"尾部風險 {len((risk.get('tail') or {}).get('items', []))} 指標）")
+
+    # 市場全景（模組 11/13/14/16/17/19/21）
+    marketview = None
+    tools = None
+    if quotes:
+        index_perf, earnings, etf_holds = {}, [], {}
+        if not args.no_market:
+            print("== 3.7/4 抓取市場全景資料（全球指數 1Y + 標普盈利 + ETF 持倉）==")
+            index_perf = fetch_asset_perf(list(GLOBAL_INDICES) + list(EXTENDED_ASSETS)
+                                          + asset_symbols)
+            with open(INDEX_PERF_CACHE, "w", encoding="utf-8") as f:
+                json.dump(index_perf, f, ensure_ascii=False)
+            earnings = fetch_earnings()
+            with open(EARNINGS_CACHE, "w", encoding="utf-8") as f:
+                json.dump(earnings, f, ensure_ascii=False)
+            etf_holds = fetch_etf_holdings(ETF_HOLDING_SYMBOLS)
+            with open(ETF_CACHE, "w", encoding="utf-8") as f:
+                json.dump(etf_holds, f, ensure_ascii=False)
+        else:
+            if os.path.exists(INDEX_PERF_CACHE):
+                index_perf = json.load(open(INDEX_PERF_CACHE, encoding="utf-8"))
+            if os.path.exists(EARNINGS_CACHE):
+                earnings = json.load(open(EARNINGS_CACHE, encoding="utf-8"))
+            if os.path.exists(ETF_CACHE):
+                etf_holds = json.load(open(ETF_CACHE, encoding="utf-8"))
+        fred_for_mv = fred if not args.no_market else {}
+        if args.no_market and os.path.exists(FRED_CACHE):
+            fred_for_mv = json.load(open(FRED_CACHE, encoding="utf-8"))
+        mv_asset_perf = asset_perf if not args.no_market else {}
+        marketview = compute_market(fred_for_mv, quotes, index_perf, mv_asset_perf, hist,
+                                    allocation, earnings, etf_holds, companies)
+        e_now = (marketview.get("earnings") or {}).get("now") or {}
+        print(f"  ✓ 市場全景（全球 {len(marketview['global'])} 指數 · "
+              f"標普盈利 {e_now.get('eps', '—')} · "
+              f"穿透 ETF {len(marketview['lookthrough']['etfs'])}）")
+        # 決策工具箱（模組 22-26）：風險預算＋規則透明日誌
+        tools = compute_tools(fred_for_mv, hist, allocation)
+        rb = (tools or {}).get("riskbudget") or {}
+        print(f"  ✓ 決策工具箱（規則日誌 {len((tools or {}).get('log', []))} 條 · "
+              f"風險預算 {len(rb.get('assets', []))} 資產）")
 
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
@@ -2304,6 +2868,10 @@ def main():
         "scenarios": scenarios,
         # 風險儀表板（模組 7/8/10/18）
         "risk": risk,
+        # 市場全景（模組 11/13/14/16/17/19/21）
+        "marketview": marketview,
+        # 決策工具箱（模組 22-26）：風險預算＋規則透明日誌＋規則文字
+        "tools": tools,
         "companies": companies,
         "topics": topics,
         "latest_reports": [

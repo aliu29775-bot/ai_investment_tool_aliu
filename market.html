@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>市場全景 — AIShan+ 投研網站</title>
+<meta name="description" content="市場全景：資金流向、全球指數儀表板、標普500盈利週期、指數技術面、擴展資產類別（REITs/加密/新興）、ETF持倉穿透、再平衡提醒。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="market">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html">事件</a>
+      <a href="funds.html">基金</a>
+      <a href="politician.html">政要</a>
+      <a href="china.html">中國</a>
+      <a href="scenarios.html">回測</a>
+      <a href="risk.html">風險</a>
+      <a href="market.html" class="on">市場</a>
+          <a href="tools.html">工具</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">市場全景</h1>
+  </div>
+  <p class="section-desc">資金流向、全球指數、盈利週期、技術面、擴展資產與持倉穿透。指數／資產行情每次建站自動抓取，基金流量與 NAAIM 為公開報導整理、人工維護。</p>
+
+  <!-- 資金流向 -->
+  <section class="section">
+    <div class="section-head"><h2>💵 資金流向</h2></div>
+    <div id="m-flows">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 全球市場儀表板 -->
+  <section class="section">
+    <div class="section-head"><h2>🌍 全球市場儀表板</h2></div>
+    <div id="m-global">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 盈利週期 -->
+  <section class="section">
+    <div class="section-head"><h2>💹 標普 500 盈利週期</h2></div>
+    <div id="m-earnings">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 技術面 -->
+  <section class="section">
+    <div class="section-head"><h2>📈 主要指數技術面</h2></div>
+    <div id="m-technicals">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 擴展資產類別 -->
+  <section class="section">
+    <div class="section-head"><h2>🏗 擴展資產類別</h2></div>
+    <div id="m-assets">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 持倉穿透 -->
+  <section class="section">
+    <div class="section-head"><h2>🔍 持倉穿透（Look-through）</h2></div>
+    <div id="m-lookthrough">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 再平衡提醒 -->
+  <section class="section">
+    <div class="section-head"><h2>⚖️ 再平衡提醒</h2></div>
+    <div id="m-rebalance">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>📐 方法論</h3>
+      <p class="section-desc" style="margin:6px 0 0;">
+        資金流向：LSEG Lipper／ICI 週度基金流量與 NAAIM 曝險指數，公開報導整理、站長手動維護（NAAIM 2026-08 起轉訂閱制）。
+        全球儀表板與技術面：Yahoo 1 年日線真實計算（50/200 日均線、RSI-14、52 週位置、相對標普 500 的 1 年相對強弱）；資料點不足的指數不展示期間報酬。
+        盈利週期：multpl.com 標普 500 盈利（as-reported，1871 年起）真實歷史；同比只用每年 12-31 行比較，當前 TTM 取最近一季；市盈率＝指數價格 ÷ TTM EPS。
+        擴展資產：REITs（VNQ）、比特幣／以太幣、美元指數、新興市場（EEM）、上市私募股權（PSP）與 Case-Shiller 房價指數（FRED）。
+        持倉穿透：建議配置權重 × 各代理 ETF 前十大持倉（Yahoo topHoldings）；SPY 缺行業權重時用前十大持倉按站內行業標籤聚合（頁面標註口徑）。
+        再平衡提醒：假設 30 天前按目標權重買入且不動作，計算當前實際權重偏離；歷史頻率用 20 年月線模擬（每月重平衡後持有 1 個月）。
+        本頁為研究框架展示，不構成任何投資建議。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
