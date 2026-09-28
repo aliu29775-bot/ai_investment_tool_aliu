@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-AI investment+ 投研網站 — 一鍵建站腳本
+AIShan+ 投研網站 — 一鍵建站腳本
 
 用法:
     python3 build_site.py                 # 完整建站（含行情抓取）
@@ -946,7 +946,7 @@ class Markdown:
             if end != -1:
                 text = text[end + 4:].lstrip("\n")
         # 網站更名：報告正文中的舊站名/舊倉庫名統一改寫
-        text = text.replace("AI Berkshire", "AI investment+")
+        text = text.replace("AI Berkshire", "AIShan+")
         text = text.replace("xbtlin/ai-berkshire", "aliu29775-bot/ai-berkshire")
         lines = text.split("\n")
         out, i, n = [], 0, len(lines)
@@ -1437,7 +1437,7 @@ def render_reports(repo, reports):
                     s = open(p, encoding="utf-8").read()
                 except (OSError, UnicodeDecodeError):
                     continue
-                s2 = s.replace("AI Berkshire", "AI investment+").replace(
+                s2 = s.replace("AI Berkshire", "AIShan+").replace(
                     "xbtlin/ai-berkshire", "aliu29775-bot/ai-berkshire")
                 if s2 != s:
                     open(p, "w", encoding="utf-8").write(s2)
@@ -1469,13 +1469,13 @@ def render_reports(repo, reports):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{_esc(title)} — AI investment+ 投研網站</title>
+<title>{_esc(title)} — AIShan+ 投研網站</title>
 <link rel="stylesheet" href="{rel}css/style.css">
 <link rel="stylesheet" href="{rel}css/report.css">
 </head>
 <body data-page="report">
 <header class="site-nav">
-  <a class="brand" href="{rel}index.html">◆ AI investment+ <span>投研網站</span></a>
+  <a class="brand" href="{rel}index.html">◆ AIShan+ <span>投研網站</span></a>
   <nav>
     <a href="{rel}index.html">首頁</a>
     <a href="{rel}companies.html">公司</a>
@@ -1503,7 +1503,7 @@ def render_reports(repo, reports):
 {body}
   </article>
   <footer class="report-foot">
-    <p>資料來源：<a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AI investment+</a>
+    <p>資料來源：<a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
     · 本網站為研究框架展示，所有內容不構成投資建議。投資有風險，決策需謹慎。</p>
   </footer>
 </main>
