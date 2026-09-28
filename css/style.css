@@ -488,7 +488,7 @@ table.data-table {
 @media (max-width: 640px) {
   .site-nav .container { gap: 12px; }
   .brand span { display: none; }
-  .site-nav nav a { padding: 6px 8px; font-size: 13px; }
+  .site-nav nav a { padding: 6px 8px; font-size: 14px; }
   .stat + .stat { border-left: none; }
   .perf-card .ret { font-size: 32px; }
   .report-row .g { display: none; }
