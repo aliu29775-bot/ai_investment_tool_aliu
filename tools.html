@@ -28,6 +28,8 @@
       <a href="risk.html">風險</a>
       <a href="market.html">市場</a>
       <a href="tools.html" class="on">工具</a>
+      <a href="glossary.html">術語</a>
+      <a href="sources.html">來源</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>
@@ -84,6 +86,24 @@
     <p class="section-desc">用 FRED 真實歷史逐月重算四項評分並執行同一套規則，記錄 2000 年以來每次配置變化的日期、觸發條件與調整結果。</p>
     <div id="t-log">
       <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 36：規則敏感性 -->
+  <section class="section">
+    <div class="section-head"><h2>🎚 規則敏感性</h2></div>
+    <p class="section-desc">「如果某個評分變動 ±10 分，配置會如何調整」——以目前滑桿值為基準，逐一變動單一評分後重跑規則，列出權重變化。</p>
+    <div id="t-sensitivity">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 模組 33：匯出 -->
+  <section class="section">
+    <div class="section-head"><h2>⬇ 匯出與分享</h2></div>
+    <div class="card">
+      <p class="section-desc" style="margin:0 0 10px;">匯出目前模擬器狀態（評分＋配置＋觸發規則）為 CSV，或複製帶參數的分享連結（開啟後自動帶入模擬器）。</p>
+      <div id="t-export" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
     </div>
   </section>
 

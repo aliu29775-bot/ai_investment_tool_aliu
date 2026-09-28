@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>術語表 — AIShan+ 投研網站</title>
+<meta name="description" content="AIShan+ 術語表：宏觀評分、估值指標、技術面、風險指標、監管披露等術語的簡明解釋。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="glossary">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html">事件</a>
+      <a href="funds.html">基金</a>
+      <a href="politician.html">政要</a>
+      <a href="china.html">中國</a>
+      <a href="scenarios.html">回測</a>
+      <a href="risk.html">風險</a>
+      <a href="market.html">市場</a>
+      <a href="tools.html">工具</a>
+      <a href="glossary.html" class="on">術語</a>
+      <a href="sources.html">來源</a>
+    </nav>
+        <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">術語表</h1>
+  </div>
+  <p class="section-desc">全站指標的簡明解釋。各頁面「ⓘ」連結均指向本頁對應條目；完整數據來源見<a href="sources.html">來源與免責</a>。</p>
+
+  <section class="section">
+    <div class="section-head"><h2>🧭 宏觀評分（配置頁四維）</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:130px;">術語</th><th>解釋</th></tr></thead>
+        <tbody>
+          <tr id="growth-score"><td>增長評分</td><td>0–100 分，衡量美國經濟動能：GDP 同比、失業率、非農就業同比各按公式加權。分數越高代表增長越強。</td></tr>
+          <tr id="inflation-score"><td>通脹評分</td><td>0–100 分，衡量通脹壓力：CPI 同比與核心 PCE 同比加權。分數越高代表通脹壓力越大（越高越差）。</td></tr>
+          <tr id="liquidity-score"><td>流動性評分</td><td>0–100 分，衡量金融條件鬆緊：聯邦基金利率離 1% 的距離、10Y-2Y 利差曲線（正斜率加分）、高收益信用利差。分數越高代表流動性越寬鬆。</td></tr>
+          <tr id="stress-score"><td>壓力評分</td><td>0–100 分，衡量市場緊張程度：VIX 與高收益信用利差加權。分數越高代表市場越緊張（越高越差）。</td></tr>
+          <tr id="clamp"><td>截斷（clamp）</td><td>把公式結果限制在 0–100 範圍內：超出部分按邊界計。保證單項貢獻分不為負、不超上限。</td></tr>
+          <tr id="rule"><td>配置規則</td><td>「如果-那麼」式的公開規則：如「壓力 ≥ 60 → 股票 −10%、現金 +10%」。全部規則見配置頁方法論與決策工具箱。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>💰 估值指標</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:130px;">術語</th><th>解釋</th></tr></thead>
+        <tbody>
+          <tr id="pe"><td>市盈率（P/E）</td><td>價格 ÷ 每股盈利。後視 P/E 用過去 12 個月（TTM）盈利；前瞻 P/E 用分析師預測的未來 12 個月盈利。越高代表市場願意為每元盈利付越多錢。</td></tr>
+          <tr id="cape"><td>席勒 CAPE</td><td>通脹調整後的 10 年平均盈利計算的市盈率（Shiller P/E），平滑景氣週期波動；常用於判斷長期估值高低。</td></tr>
+          <tr id="buffett"><td>巴菲特指標</td><td>股市總市值 ÷ GDP，巴菲特稱之為「任何時刻衡量估值的最佳單一指標」；通常 >100% 視為偏高（結構變化後常態值有爭議）。</td></tr>
+          <tr id="ey-spread"><td>股債性價比</td><td>股票盈利收益率（1 ÷ P/E）− 10 年期國債收益率。為正代表股票相對債券更划算，為負則相反。</td></tr>
+          <tr id="eps"><td>每股盈利（EPS）</td><td>公司淨利潤 ÷ 在外流通股數。本站標普 500 盈利用標普公司公佈的 as-reported 值。</td></tr>
+          <tr id="peg"><td>PEG</td><td>市盈率 ÷ 盈利增速，同時衡量估值與成長；<1 常被視為「便宜」。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>📈 技術面與風險指標</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:130px;">術語</th><th>解釋</th></tr></thead>
+        <tbody>
+          <tr id="ma"><td>均線（MA）</td><td>過去 N 日收盤價平均。50 日代表中期趨勢、200 日代表長期趨勢；價格在均線上方視為偏多。</td></tr>
+          <tr id="rsi"><td>RSI（相對強弱指數）</td><td>0–100 的動量指標，衡量近期漲跌力道。>70 常視為超買、<30 超賣（本站以 14 日計算）。</td></tr>
+          <tr id="vix"><td>VIX（恐慌指數）</td><td>標普 500 期權隱含波動率，反映市場對未來 30 天波動的預期。長期均值約 19–20；>30 代表恐慌、<13 代表極度平靜。</td></tr>
+          <tr id="oas"><td>信用利差（OAS）</td><td>公司債殖利率高出同期限國債的部分（經選擇權調整），衡量信用風險補償。高收益利差擴大代表違約擔憂上升。本站 FRED 數據單位為百分點（2.8 = 280 基點）。</td></tr>
+          <tr id="curve"><td>利差曲線（10Y-2Y）</td><td>10 年期減 2 年期國債殖利率。為負（倒掛）歷史上常領先衰退 12–18 個月；本站流動性評分對正斜率加分。</td></tr>
+          <tr id="dd"><td>最大回撤（Max Drawdown）</td><td>歷史淨值從最高點到最低點的最大跌幅，衡量最壞情形下的虧損。</td></tr>
+          <tr id="vol"><td>波動率／年化波動</td><td>報酬的標準差（年化），衡量資產風險大小；越高代表價格擺動越大。</td></tr>
+          <tr id="corr"><td>相關係數</td><td>兩資產報酬同漲同跌的程度：+1 完全同步、0 無關、−1 完全反向。低相關是分散配置的基礎。</td></tr>
+          <tr id="contrib"><td>波動貢獻</td><td>單一資產對組合總波動的邊際貢獻佔比（權重 × 資產與組合的協方差 ÷ 組合方差），各資產加總為 100%。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🏛 監管披露與機構</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:130px;">術語</th><th>解釋</th></tr></thead>
+        <tbody>
+          <tr id="13f"><td>13F</td><td>SEC 規則：管理逾 1 億美元美股資產的機構須每季申報美股多頭持倉（季末後 45 天內）。只含多頭，不含空頭、衍生品與非美資產。</td></tr>
+          <tr id="13dg"><td>13D／13G</td><td>持股逾 5% 的大股東申報：13D 為主動型（10 天內），13G 為被動型（年度更新）。</td></tr>
+          <tr id="stock-act"><td>STOCK Act</td><td>2012 年法案：國會議員及近親交易須在 45 天內公開申報（金額僅區間）。</td></tr>
+          <tr id="oge"><td>OGE 申報</td><td>美國政府道德辦公室：總統與高官的年度／季度財務披露。</td></tr>
+          <tr id="endowment"><td>捐贈基金（Endowment）</td><td>大學等非營利機構的永久性投資基金，以「永續支出 + 資產增值」為目標；耶魯模式以重配私募股權/另類著稱。</td></tr>
+          <tr id="swf"><td>主權財富基金（SWF）</td><td>國家持有的投資基金（如挪威 GPFG、中投、GIC），管理外匯儲備或資源收入。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🧪 模型與統計</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:130px;">術語</th><th>解釋</th></tr></thead>
+        <tbody>
+          <tr id="logreg"><td>邏輯迴歸</td><td>把輸入（如 10Y-3M 利差）映射到 0–100% 概率的統計模型；本站用於「未來 12 個月衰退概率」。</td></tr>
+          <tr id="nber"><td>NBER 衰退</td><td>美國國家經濟研究局官方認定的衰退區間（經濟活動顯著、廣泛且持續的下滑），為事後認定。</td></tr>
+          <tr id="backtest"><td>回測（Backtest）</td><td>用歷史數據重放策略，看「過去這樣做會如何」；不代表未來，且易受過擬合影響。</td></tr>
+          <tr id="rebalance"><td>再平衡</td><td>把偏離目標的持倉權重調回目標（賣出超配、買入低配），以維持風險水平並系統化低買高賣。</td></tr>
+          <tr id="lookthrough"><td>持倉穿透（Look-through）</td><td>把 ETF／基金的持倉逐層拆開，看到最終底層股票的行業與個股暴露。</td></tr>
+          <tr id="gepu"><td>GEPU（經濟政策不確定性）</td><td>由報紙報道頻率構建的指數，衡量政策不確定性程度；高企時企業傾向延後投資。</td></tr>
+          <tr id="recession-prob"><td>衰退概率模型</td><td>本站用 10Y-3M 國債利差對「未來 12 個月是否落入 NBER 衰退」擬合邏輯迴歸（1982 年起，樣本內）。單一變量為粗糙先行指標，僅作交叉驗證。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="sources.html">數據來源與免責聲明</a>
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

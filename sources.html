@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>數據來源與免責聲明 — AIShan+ 投研網站</title>
+<meta name="description" content="AIShan+ 數據來源清單（FRED、SEC、標普、各基金年報等）與免責聲明。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
+</head>
+<body data-page="sources">
+<header class="site-nav">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="mark">◆</span> AIShan+ <span>投研網站</span></a>
+    <nav>
+      <a href="index.html">首頁</a>
+      <a href="companies.html">公司</a>
+      <a href="reports.html">報告</a>
+      <a href="trackrecord.html">組合</a>
+      <a href="allocation.html">配置</a>
+      <a href="fed.html">美聯儲</a>
+      <a href="valuation.html">估值</a>
+      <a href="events.html">事件</a>
+      <a href="funds.html">基金</a>
+      <a href="politician.html">政要</a>
+      <a href="china.html">中國</a>
+      <a href="scenarios.html">回測</a>
+      <a href="risk.html">風險</a>
+      <a href="market.html">市場</a>
+      <a href="tools.html">工具</a>
+      <a href="glossary.html">術語</a>
+      <a href="sources.html" class="on">來源</a>
+    </nav>
+    <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
+    <span class="update-status" id="update-status" hidden></span>
+    <button class="theme-toggle" aria-label="切換亮暗主題"></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 32px;">
+
+  <div class="section-head" style="margin-bottom: 4px;">
+    <h1 style="font-size:28px;">數據來源與免責聲明</h1>
+  </div>
+  <p class="section-desc">本站所有數據來自公開渠道，全部可由任何人重複取得。術語解釋見<a href="glossary.html">術語表</a>。</p>
+
+  <section class="section">
+    <div class="section-head"><h2>🗂 數據來源清單</h2></div>
+    <div class="card">
+      <table class="s-table">
+        <thead><tr><th style="width:180px;">類別</th><th>來源</th></tr></thead>
+        <tbody>
+          <tr><td>宏觀經濟（GDP、CPI、PCE、非農、失業率、聯邦基金利率、國債殖利率、利差、VIX）</td><td>聖路易斯聯儲 FRED（fred.stlouisfed.org），GDPC1、CPIAUCSL、PCEPILFE、PAYEMS、UNRATE、DFF、DGS2、DGS10、DGS30、T10Y2Y、T10Y3M、BAA10Y、VIXCLS 等</td></tr>
+          <tr><td>股票、ETF、商品行情（SPY、IEF、DBC、GLD、BIL、指數、油金銀銅）</td><td>Yahoo Finance 公開行情接口（歷史與近 5 日收盤）</td></tr>
+          <tr><td>標普 500 盈利、回購、派息</td><td>標普道瓊斯指數公司（spglobal.com）公開發佈的 S&amp;P 500 EPS／Buyback／Dividend 統計</td></tr>
+          <tr><td>股市總市值（巴菲特指標）</td><td>FRED 的 Wilshire 5000 市值（WILL5000PRFC）÷ GDP</td></tr>
+          <tr><td>席勒 CAPE</td><td>shillerdata.com（耶魯大學 Robert Shiller 在線數據）</td></tr>
+          <tr><td>公司財務、評分與研究報告</td><td>開源項目 xbtlin/ai-berkshire（本站上游倉庫）及其生成的 2,565 份研究報告、299 家覆蓋公司</td></tr>
+          <tr><td>SEC 13F／13D／13G 持倉（對沖基金、家族辦公室）</td><td>SEC EDGAR（sec.gov）；聚合整理參考 13radar、PortfolioSavvy 等公開站點</td></tr>
+          <tr><td>大學捐贈基金配置（耶魯、哈佛）</td><td>各校投資辦公室年報（investments.yale.edu 等），FY2025 年度</td></tr>
+          <tr><td>養老基金配置（CPP、GIC、NPS）</td><td>CPP Investments 年報（FY2026）、GIC 年度報告（FY2025/26）、韓國國民年金 NPS 公告（2025）</td></tr>
+          <tr><td>主權財富基金（GPFG、GPIF、中投、ADIA、KIA）</td><td>NBIM 年報、GPIF 公告、中投／ADIA 年報與官方政策披露（規模為公開估算）</td></tr>
+          <tr><td>國會議員與政要交易</td><td>美國國會財務披露（STOCK Act，disclosures-clerk.house.gov 等）、OGE 高官申報</td></tr>
+          <tr><td>中國經濟數據</td><td>中國國家統計局、人民銀行、海關總署公開發佈；FRED 對應序列（如 M2、匯率）</td></tr>
+          <tr><td>經濟政策不確定性（GEPU）</td><td>policyuncertainty.com（Baker, Bloom &amp; Davis）</td></tr>
+          <tr><td>大宗商品／債券歷史回測</td><td>FRED 歷史序列 + Yahoo Finance ETF 歷史（DBC 等）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>⚠️ 已知數據限制</h2></div>
+    <div class="card">
+      <ul class="judgment-list" style="list-style:none;padding:6px;">
+        <li>🚧 <strong>ICE 高收益信用利差（OAS）</strong>：fredgraph 下載僅提供近三年，故「規則透明日誌」等歷史重算以 Moody's Baa−10Y 利差（BAA10Y，1986 年起）代替——現行評分頁與日誌均以公式相同的信用錨點計算，詳見決策工具箱方法論。</li>
+        <li>🚧 <strong>13F 只含美股多頭</strong>：不含空頭、衍生品與非美資產，且季末後 45 天才公佈——機構「最新持倉」實際已滯後 1–2 個季度。</li>
+        <li>🚧 <strong>養老／捐贈基金披露口徑不一</strong>：部分機構只公佈資產大類區間（如 ADIA 政策區間），條形圖用區間中值為示意；CPP 為加元、NPS 為韓元，規模以原文貨幣標示。</li>
+        <li>🚧 <strong>公司財務數據與評分</strong>：上游開源項目生成，評分為規則式自動計算；財報為滯後數據，不代表最新一季。</li>
+        <li>🚧 <strong>回測與衰退概率模型</strong>：均為樣本內歷史重放，存在過擬合風險，不代表未來。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>📜 免責聲明</h2></div>
+    <div class="card">
+      <p class="section-desc" style="margin:6px 0;">
+        1. 本網站（AIShan+）為<strong>研究框架展示</strong>：所有評分、配置建議、研究報告與結論均由規則與公開數據自動生成，旨在展示「宏觀狀態 → 配置動作」「公司分析 → 強制結論」的可複現流程。
+      </p>
+      <p class="section-desc" style="margin:6px 0;">
+        2. <strong>本網站不構成任何投資建議</strong>，不構成證券、基金或其他金融產品的要約、招攬或推薦。任何依據本網站內容作出的投資決策，由使用者自行承擔全部風險與後果。
+      </p>
+      <p class="section-desc" style="margin:6px 0;">
+        3. 數據可能存在延遲、錯誤或遺漏；本站不對數據的準確性、完整性或時效性作任何保證。歷史表現不代表未來表現，投資有風險，本金可能虧損。
+      </p>
+      <p class="section-desc" style="margin:6px 0;">
+        4. 本站引用之第三方數據（FRED、Yahoo、SEC、標普及各基金年報）版權歸原權利人所有，本站僅作研究用途的整理與展示。
+      </p>
+      <p class="section-desc" style="margin:6px 0;">
+        5. 本站為開源項目（GitHub: aliu29775-bot/ai_investment_tool_aliu，上游 xbtlin/ai-berkshire），歡迎審查數據與代碼。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="container">
+    <div class="links">
+      <a href="glossary.html">術語表</a>
+      <a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
+    </div>
+    <p>本網站為研究框架展示，所有內容均為自動計算與公開資料整理，<strong>不構成任何投資建議</strong>。投資有風險，決策需謹慎。</p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

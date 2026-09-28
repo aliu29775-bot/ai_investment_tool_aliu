@@ -6,6 +6,7 @@
 <title>資產配置 — AIShan+ 投研網站</title>
 <meta name="description" content="宏觀儀錶板（增長/通脹/流動性/壓力 0-100 評分）、規則式資產配置（股票/國債/商品/黃金/現金）、債券殖利率與大宗商品行情。">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/stock.css">
 </head>
 <body data-page="allocation">
 <header class="site-nav">
@@ -27,6 +28,8 @@
           <a href="risk.html">風險</a>
           <a href="market.html">市場</a>
           <a href="tools.html">工具</a>
+          <a href="glossary.html">術語</a>
+          <a href="sources.html">來源</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>
@@ -90,6 +93,24 @@
     <div class="section-head"><h2>🛢 大宗商品</h2></div>
     <p class="section-desc">黃金、白銀、原油與銅的即時行情、YTD 與一年報酬。走勢線為近 5 個交易日。</p>
     <div class="asset-grid" id="alloc-commodities"></div>
+  </section>
+
+  <!-- 評分映射說明（模組 37） -->
+  <section class="section">
+    <div class="section-head"><h2>🧮 評分映射說明</h2></div>
+    <p class="section-desc">每個宏觀評分如何從原始數據映射到 0–100 分：輸入值 × 權重 → 貢獻分，加總即評分。指標解釋見<a href="glossary.html">術語表</a>。</p>
+    <div id="a-mapping">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 匯出（模組 33） -->
+  <section class="section">
+    <div class="section-head"><h2>⬇ 匯出與分享</h2></div>
+    <div class="card">
+      <p class="section-desc" style="margin:0 0 10px;">把目前宏觀評分與建議配置匯出為 CSV，或複製帶參數的分享連結（開啟後自動帶入決策工具箱模擬器）。</p>
+      <div id="alloc-export" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+    </div>
   </section>
 
   <!-- 全球前五大基金 -->

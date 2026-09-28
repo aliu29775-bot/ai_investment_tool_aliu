@@ -28,6 +28,8 @@
           <a href="risk.html">風險</a>
           <a href="market.html">市場</a>
           <a href="tools.html">工具</a>
+          <a href="glossary.html">術語</a>
+          <a href="sources.html">來源</a>
     </nav>
         <button class="btn-update" id="btn-update-data" title="觸發 GitHub Actions 重新抓取行情並重建報告">🔄 更新數據</button>
     <span class="update-status" id="update-status" hidden></span>
@@ -59,6 +61,33 @@
     <div class="funds-grid" id="hedge-list"></div>
   </section>
 
+  <!-- 家族辦公室 -->
+  <section class="section">
+    <div class="section-head"><h2>👪 知名家族辦公室</h2></div>
+    <p class="section-desc">蓋茨基金會信託、巴菲特（波克夏 13F）、索羅斯基金管理。數據取自 SEC 13F 披露（僅美股多頭），按最新申報手動維護。</p>
+    <div class="funds-grid" id="familyoffice-list">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 大學捐贈基金 -->
+  <section class="section">
+    <div class="section-head"><h2>🎓 大學捐贈基金</h2></div>
+    <p class="section-desc">耶魯、哈佛——不申報 13F，數據取自各校年度報告（財年截至 6 月 30 日）。</p>
+    <div class="funds-grid" id="endowment-list">
+      <p>載入中…</p>
+    </div>
+  </section>
+
+  <!-- 大型養老基金 -->
+  <section class="section">
+    <div class="section-head"><h2>🏛 大型養老基金</h2></div>
+    <p class="section-desc">加拿大 CPP、新加坡 GIC、韓國 NPS——數據取自各基金最新年度報告。</p>
+    <div class="funds-grid" id="pension-list">
+      <p>載入中…</p>
+    </div>
+  </section>
+
   <!-- 共識持倉榜 -->
   <section class="section">
     <div class="section-head"><h2>🔥 共識持倉榜</h2></div>
@@ -74,7 +103,7 @@
       <p class="section-desc" style="margin:6px 0 0;">
         SEC 規則：管理超過 1 億美元美股資產的機構投資管理人，須於每季季末後 45 天內申報 13F 持倉（慣例截止日為次季次月 14/15 日）。
         13F 僅披露美股多頭，不含空頭、衍生品與非美資產；13D/G 為大股東變動的快速披露（10 天內）。
-        各基金持倉數據取自 13radar、StockDrifts 等公開匯總，由站長按最新披露手動維護；反向持倉為基金披露文本與本站覆蓋公司的機械匹配（代碼與中文名），不構成任何投資建議。
+        對沖基金與家族辦公室數據取自 13radar、PortfolioSavvy、StockDrifts 等公開匯總；捐贈基金（耶魯／哈佛年報）與養老基金（CPP／GIC／NPS 年報）取自各機構官方披露，均由站長按最新披露手動維護並標註截止時間；反向持倉為基金披露文本與本站覆蓋公司的機械匹配（代碼與中文名），不構成任何投資建議。
       </p>
     </div>
   </section>

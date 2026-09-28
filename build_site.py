@@ -653,6 +653,55 @@ def stress_score(fred, vix, back=0):
     return 0.5 * _clamp((vix - 12) * 6) + 0.5 * _clamp(50 + (oas - 3.2) * 25)
 
 
+def build_score_mapping(fred, vix):
+    """模組 37：把每項宏觀評分拆成「原始輸入 → 權重 → 貢獻分」的映射說明，
+    與 compute_allocation 使用完全相同的輸入與公式。"""
+    out = []
+
+    def row(key, label, formula, parts):
+        score = sum(w * c for _, _, w, c in parts)
+        out.append({
+            "key": key, "label": label, "formula": formula, "score": round(score),
+            "parts": [{"name": n, "value": round(v, 2) if v is not None else None,
+                       "weight": w, "contrib": round(w * c, 1)}
+                      for n, v, w, c in parts],
+        })
+
+    gdp = _gdp_yoy(fred)
+    un = _yv(fred, "UNRATE")
+    pay = _yoy_at(fred, "PAYEMS")
+    if None not in (gdp, un, pay):
+        row("growth", "增長", "0.4×GDP 同比 + 0.3×就業 + 0.3×薪資", [
+            ("GDP 同比（%）", gdp, 0.4, _clamp((gdp - 0.5) * 25)),
+            ("失業率（%）", un, 0.3, _clamp(100 - (un - 3.5) * 22)),
+            ("非農就業同比（%）", pay, 0.3, _clamp(50 + pay * 30)),
+        ])
+    cpi = _yoy_at(fred, "CPIAUCSL")
+    pce = _yoy_at(fred, "PCEPILFE")
+    if cpi is not None and pce is not None:
+        row("inflation", "通脹", "0.6×CPI 同比 + 0.4×核心 PCE 同比", [
+            ("CPI 同比（%）", cpi, 0.6, _clamp((cpi - 1.5) * 40)),
+            ("核心 PCE 同比（%）", pce, 0.4, _clamp((pce - 1.5) * 35)),
+        ])
+    ffr = _yv(fred, "DFF")
+    spread = _yv(fred, "T10Y2Y")
+    oas = _yv(fred, "BAMLH0A0HYM2")
+    if None not in (ffr, spread, oas):
+        tight = _clamp((ffr - 1.0) * 22)
+        curve = 8 if spread >= 0 else -12
+        credit = _clamp(100 - (oas - 3.0) * 30)
+        row("liquidity", "流動性", "0.75×利率鬆緊與曲線 + 0.25×信用利差", [
+            ("聯邦基金利率（%）", ffr, 0.75, _clamp(100 - tight + curve)),
+            ("高收益 OAS（%）", oas, 0.25, credit),
+        ])
+    if vix is not None and oas is not None:
+        row("stress", "壓力", "0.5×VIX + 0.5×信用利差", [
+            ("VIX 指數", vix, 0.5, _clamp((vix - 12) * 6)),
+            ("高收益 OAS（%）", oas, 0.5, _clamp(50 + (oas - 3.2) * 25)),
+        ])
+    return out
+
+
 def compute_allocation(fred, quotes, asset_perf):
     """規則式宏觀評分 + 資產配置（全部規則公開透明，見頁面方法論）。"""
     vix_q = quotes.get("^VIX", {})
@@ -832,6 +881,7 @@ def compute_allocation(fred, quotes, asset_perf):
         "commodities": commodities,
         "assets": assets,
         "portfolio": compute_portfolio(asset_perf, targets),
+        "mapping": build_score_mapping(fred, vix),
         "sources": ["FRED 聯儲經濟數據（fredgraph.csv）", "Yahoo Finance 公開行情",
                     "ICE/COMEX 期貨報價"],
     }
@@ -1400,11 +1450,25 @@ def compute_scenarios(hist, targets):
 
         assets = {s: metrics(series_of(s)) for s in sorted(weights)}
         assets = {s: m for s, m in assets.items() if m}
+        # 模組 35：歸因——各資產貢獻 ≈ 權重 × 資產期間回報（月頻再平衡的近似分解）
+        spy_m = metrics(series_of("SPY"))
+        pf_m = metrics(pf)
+        attr = []
+        for s, w in weights.items():
+            m = metrics(series_of(s))
+            if m:
+                attr.append({"sym": s, "label": RISK_LABELS.get(s, s),
+                             "w": round(w * 100, 1), "ret": m["ret"],
+                             "contrib": round(w * m["ret"], 2)})
+        attr.sort(key=lambda a: -(a["contrib"] or -999))
         out.append({
             "id": sc["id"], "title": sc["title"], "emoji": sc["emoji"],
             "start": axes[0], "end": axes[-1], "desc": sc["desc"], "facts": sc["facts"],
             "weights": {s: round(w * 100, 1) for s, w in weights.items()},
-            "assets": assets, "pf": metrics(pf), "spy": metrics(series_of("SPY")),
+            "assets": assets, "pf": pf_m, "spy": spy_m,
+            "attr": attr,
+            "excess": round((pf_m["ret"] - spy_m["ret"]), 2)
+            if pf_m and spy_m else None,
             "pf_series": slim(pf), "spy_series": slim(series_of("SPY")),
             "n_months": len(axes),
         })
@@ -2086,6 +2150,60 @@ def build_rule_log(fred, hist):
     return log
 
 
+def compute_market_review(quotes, allocation):
+    """模組 29：本週市場回顧（自動彙總）——指數與核心資產一週變動、
+    宏觀評分變動、未來 30 天關注事件。"""
+    syms = ["^GSPC", "^IXIC", "^HSI", "000300.SS", "^N225", "^GDAXI", "^FTSE",
+            "^NSEI", "^BVSP", "EEM", "SPY", "IEF", "DBC", "GLD", "BIL", "TLT"]
+    rows = []
+    for s in syms:
+        q = quotes.get(s) or {}
+        c = q.get("closes") or []
+        if len(c) >= 5 and c[-1]:
+            prev = c[-6] if len(c) >= 6 else c[0]
+            if prev:
+                rows.append({"sym": s, "label": q.get("label") or s,
+                             "w": round((c[-1] / prev - 1) * 100, 2)})
+    rows.sort(key=lambda r: -(r["w"] if r["w"] is not None else -999))
+    macro = (allocation or {}).get("macro") or []
+    moves = [{"label": m.get("label", ""), "score": m.get("score"),
+              "change": m.get("change"), "up_good": m.get("up_good")}
+             for m in macro if m.get("change")]
+    events = (allocation or {}).get("events") or {}
+    asof = quotes.get("^GSPC", {}).get("asof", "")
+    upcoming = []
+    try:
+        d0 = datetime.strptime(asof, "%Y-%m-%d").date()
+    except Exception:
+        d0 = None
+    if d0:
+        for e in (events.get("fixed") or []):
+            try:
+                de = datetime.strptime(e.get("date", ""), "%Y-%m-%d").date()
+            except Exception:
+                de = None
+            if de and d0 <= de <= d0 + timedelta(days=30):
+                upcoming.append({"date": e["date"], "label": e.get("label", ""),
+                                 "note": e.get("note", ""), "kind": "fixed"})
+        for e in (events.get("earnings") or []):
+            try:
+                de = datetime.strptime(e.get("date", ""), "%Y-%m-%d").date()
+            except Exception:
+                de = None
+            if de and d0 <= de <= d0 + timedelta(days=30):
+                upcoming.append({"date": e["date"], "label": e.get("name", ""),
+                                 "ticker": e.get("ticker", ""), "kind": "earnings"})
+        upcoming.sort(key=lambda e: e["date"])
+    best = rows[0] if rows else None
+    worst = rows[-1] if rows else None
+    summary = ""
+    if best and worst:
+        summary = (f"本週最佳：{best['label']} {best['w']:+.2f}%；"
+                   f"最弱：{worst['label']} {worst['w']:+.2f}%。")
+    return {"asof": asof, "rows": rows, "moves": moves,
+            "upcoming": upcoming[:12], "summary": summary}
+
+
 def compute_tools(fred, hist, allocation):
     """決策工具箱：風險預算（25）＋規則透明日誌（26）。22-24 為前端交互，
     以當前評分與目標權重為預設值。"""
@@ -2619,6 +2737,7 @@ def main():
     # 市場全景（模組 11/13/14/16/17/19/21）
     marketview = None
     tools = None
+    review = None
     if quotes:
         index_perf, earnings, etf_holds = {}, [], {}
         if not args.no_market:
@@ -2655,6 +2774,10 @@ def main():
         rb = (tools or {}).get("riskbudget") or {}
         print(f"  ✓ 決策工具箱（規則日誌 {len((tools or {}).get('log', []))} 條 · "
               f"風險預算 {len(rb.get('assets', []))} 資產）")
+        # 本週市場回顧（模組 29）：一週變動＋宏觀評分變動＋下月關注
+        review = compute_market_review(quotes, allocation)
+        print(f"  ✓ 市場回顧（一週變動 {len(review['rows'])} 標的 · "
+              f"下月關注 {len(review['upcoming'])} 項）")
 
     print(f"== 4/4 預渲染 {len(reports)} + {len(extra)} 份報告 ==")
     render_reports(repo, reports + extra)
@@ -2824,6 +2947,138 @@ def main():
         },
     ]
 
+    # 知名家族辦公室（模組 12，SEC 13F 美股多頭口徑，站長手動維護）
+    FAMILY_OFFICES = [
+        {
+            "name": "蓋茨基金會信託（Bill & Melinda Gates Foundation Trust）",
+            "mgr": "比爾·蓋茨家族慈善信託 · 全球最大慈善基金會",
+            "country": "美國",
+            "aum": "13F 持倉 ≈344 億美元（24 檔）",
+            "asof": "2026-06-30（13F Q2，2026-08-14 申報）",
+            "source": "SEC 13F 披露（13radar／PortfolioSavvy）",
+            "note": "前十大集中度 94.9%，季度換手僅 1.6%。Q2 新建倉 Home Depot（+3.5 億美元），減持 BRK-B −13.8%、WM −3.3%。",
+            "alloc": [
+                {"cls": "工業", "pct": 65.0, "sub": "CAT 19.7% · CNI 18.0% · WM 17.3% · DE 6.6% · FDX 2.2%"},
+                {"cls": "金融", "pct": 21.4, "sub": "主要為 BRK-B 21.4%"},
+                {"cls": "消費", "pct": 5.4, "sub": "WMT 2.8% · KOF 1.9%"},
+                {"cls": "材料", "pct": 4.2, "sub": "ECL 4.2%"},
+            ],
+            "tops": ["BRK-B 21.4%", "CAT 19.7%", "CNI 18.0%", "WM 17.3%", "DE 6.6%"],
+        },
+        {
+            "name": "巴菲特家族辦公室（波克夏 13F）",
+            "mgr": "華倫·巴菲特 · 波克夏海瑟威（家族辦公室口徑）",
+            "country": "美國",
+            "aum": "13F 持倉約 29 檔",
+            "asof": "2026-06-30（13F Q2）",
+            "source": "SEC 13F 披露（13radar 等）",
+            "note": "Q2 大增持 Alphabet +83%（兩類股合計），市值 166→378 億美元，躍居第三大持倉（12.6%），為其 AI 敞口的主要途徑；前兩大為 Apple 與美國運通。組合 0% AI 基建（半導體／電力）。",
+            "alloc": [],
+            "tops": ["Apple（第一大）", "美國運通（第二大）", "Alphabet 12.6%（第三大，Q2 +83%）"],
+        },
+        {
+            "name": "索羅斯基金管理（Soros Fund Management）",
+            "mgr": "喬治·索羅斯家族辦公室 · 全球宏觀策略",
+            "country": "美國",
+            "aum": "13F 持倉 ≈81.4 億美元（266 檔）",
+            "asof": "2026-06-30（13F Q2，2026-08-14 申報）",
+            "source": "SEC 13F 披露（13radar）",
+            "note": "季度換手 28.2%，前十大集中度 30.8%。Q2 新建倉 84 檔，主題為 AI 基建：最大新買 SMCI（≈1.1 億美元）、AEP（≈1.05 億美元）、NBIS（≈0.86 億美元）；最大加倉 Entergy +1,084%、Digital Realty +840%；大減 Amazon −39.2%。",
+            "alloc": [],
+            "tops": ["AMZN 3.5%（−39.2%）", "TSM 3.1%", "GPN 2.7%", "GOOG 2.6%", "NVDA 2.6%", "EA 2.4%"],
+        },
+    ]
+
+    # 大學捐贈基金（模組 12，FY2025 年報口徑，站長手動維護）
+    ENDOWMENTS = [
+        {
+            "name": "耶魯大學捐贈基金（Yale Endowment）",
+            "mgr": "美國第二大捐贈基金 · David Swensen 模式開創者",
+            "country": "美國",
+            "aum": "≈441 億美元",
+            "asof": "FY2025（截至 2025-06-30）",
+            "source": "耶魯投資辦公室年報（Yale Daily News／Forbes 報導）",
+            "note": "FY2025 回報 +11.1%（上一年 +5.7%），投資收益 45 億美元，向學校撥款 21 億美元（逾營運收入三分之一）；10 年年化 9.4%。2026-07-01 起聯邦捐贈稅升至 8%（每年估計最高 ~3 億美元）。",
+            "alloc": [
+                {"cls": "私募/風投", "pct": 48.0, "sub": "常春藤中最高（範圍 29–48%）"},
+                {"cls": "公開市場", "pct": 17.0, "sub": "發達＋新興"},
+                {"cls": "另類", "pct": 16.0, "sub": "對沖基金等"},
+                {"cls": "房地產", "pct": 12.0},
+                {"cls": "其他", "pct": 7.0},
+            ],
+            "tops": [],
+        },
+        {
+            "name": "哈佛大學捐贈基金（Harvard Management Company）",
+            "mgr": "全球最大大學捐贈基金",
+            "country": "美國",
+            "aum": "≈569 億美元",
+            "asof": "FY2025（截至 2025-06-30）",
+            "source": "HMC 年報（Forbes 報導）",
+            "note": "FY2025 回報 +11.9%（FY2024 +9.6%），向學校撥款 25 億美元（約佔預算四成）；8 年年化 9.6%。校方自認「公開股票太少、私募太多」拖累表現；2026-07-01 起聯邦捐贈稅升至 8%（每年估計最高 ~3 億美元）。",
+            "alloc": [
+                {"cls": "私募/風投", "pct": 41.0},
+                {"cls": "實物資產", "pct": 8.0},
+                {"cls": "公開市場等", "pct": 51.0, "sub": "公開股票＋其他（年報未細分）"},
+            ],
+            "tops": [],
+        },
+    ]
+
+    # 大型養老基金（模組 12，最新年報口徑，站長手動維護）
+    PENSIONS = [
+        {
+            "name": "加拿大養老金計劃投資委員會（CPP Investments）",
+            "mgr": "2,200 萬加拿大人養老金 · 全球最大養老基金之一",
+            "country": "加拿大",
+            "aum": "淨資產 7,933 億加元",
+            "asof": "FY2026（截至 2026-03-31）",
+            "source": "CPP Investments FY2026 年報",
+            "note": "FY2026 淨回報 +7.8%，跑輸基準組合 +13.2%（主因刻意低配美國公開股票以分散風險）；公開股票為回報主引擎（美國 +6.0%／歐洲 +8.3%／亞太 +6.5%／拉美 +22.0%）。",
+            "alloc": [
+                {"cls": "公開股票", "pct": 36.0},
+                {"cls": "私募股權", "pct": 22.0},
+                {"cls": "實物資產", "pct": 20.0, "sub": "房地產＋基建＋能源"},
+                {"cls": "政府債", "pct": 13.0},
+                {"cls": "信貸", "pct": 9.0},
+            ],
+            "tops": [],
+        },
+        {
+            "name": "新加坡政府投資公司（GIC）",
+            "mgr": "新加坡主權財富基金 · 管理國家外匯儲備",
+            "country": "新加坡",
+            "aum": "管理規模不公開披露",
+            "asof": "FY2025/26（截至 2026-03-31）",
+            "source": "GIC Report 2025/26",
+            "note": "20 年年化實質回報 +3.4%（名目 +5.6% 美元），較上年 3.8% 下滑、六年最低；5 年年化名目 3.6%。全權主動管理的全球委託。",
+            "alloc": [
+                {"cls": "股票", "pct": 56.0},
+                {"cls": "固定收益", "pct": 22.0},
+                {"cls": "實物資產", "pct": 22.0},
+            ],
+            "tops": [],
+        },
+        {
+            "name": "韓國國民年金（National Pension Service）",
+            "mgr": "全球第三大養老基金",
+            "country": "韓國",
+            "aum": "≈1,458 兆韓元",
+            "asof": "2025 曆年末（2025-12-31）",
+            "source": "NPS／韓國保健福祉部 2025 年報",
+            "note": "2025 年回報 +18.82%——1988 年成立以來最高，收益 231.6 兆韓元；成立以來年化 8.04%。2025 年優於挪威 GPFG +15.1%、日本 GPIF +12.3%、加拿大 CPPIB +7.7%、荷蘭 ABP −1.6%。",
+            "alloc": [
+                {"cls": "海外股票", "pct": 37.8},
+                {"cls": "國內債券", "pct": 20.9},
+                {"cls": "國內股票", "pct": 18.1},
+                {"cls": "另類", "pct": 16.0},
+                {"cls": "海外債券", "pct": 6.9},
+                {"cls": "短期資金", "pct": 0.3},
+            ],
+            "tops": [],
+        },
+    ]
+
     # 13F 反向持倉（公司 → 持有該股的頂級基金）與法定申報日曆
     fund_holdings = build_fund_holdings(HEDGE_FUNDS, companies)
     f13f = build_13f_calendar()
@@ -2852,6 +3107,10 @@ def main():
         "funds": FUNDS,
         # 前五大對沖基金配置動態（SEC 13F 美股多頭口徑，站長手動維護）
         "hedgefunds": HEDGE_FUNDS,
+        # 模組 12 擴展：家族辦公室（13F）／大學捐贈基金（年報）／養老基金（年報）
+        "familyoffices": FAMILY_OFFICES,
+        "endowments": ENDOWMENTS,
+        "pensions": PENSIONS,
         # 13F 反向持倉映射與法定申報日曆（模組 6）
         "fund_holdings": fund_holdings,
         "f13f": f13f,
@@ -2872,6 +3131,8 @@ def main():
         "marketview": marketview,
         # 決策工具箱（模組 22-26）：風險預算＋規則透明日誌＋規則文字
         "tools": tools,
+        # 本週市場回顧（模組 29）
+        "review": review,
         "companies": companies,
         "topics": topics,
         "latest_reports": [

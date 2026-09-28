@@ -833,10 +833,43 @@
     host.innerHTML = D.hedgefunds.map(hedgeFundCardHTML).join("");
   }
 
+  /* ---------- 模組 12：家族辦公室／捐贈基金／養老基金 ---------- */
+  function fundGroupCard(f, i) {
+    var maxP = 1;
+    (f.alloc || []).forEach(function (a) { if (a.pct > maxP) maxP = a.pct; });
+    var rows = (f.alloc || []).length ? f.alloc.map(function (a) {
+      var w = Math.round(a.pct / maxP * 100);
+      return '<div class="f-row">' +
+        '<span class="f-cls">' + esc(a.cls) + "</span>" +
+        '<div class="track"><div class="fill" style="width:' + w + "%;background:" +
+        (HF_COLORS[a.cls] || "#98a2b3") + '" aria-hidden="true"></div></div>' +
+        '<span class="f-val">' + a.pct + "%</span></div>" +
+        (a.sub ? '<div class="f-sub">' + esc(a.sub) + "</div>" : "");
+    }).join("") : '<div class="empty" style="padding:14px 0;">未披露行業配置（見備註）</div>';
+    var tops = f.tops && f.tops.length ?
+      '<div class="fund-note">重倉：' + esc(f.tops.join(" · ")) + "</div>" : "";
+    return '<div class="card fund-card">' +
+      '<div class="fund-head"><span class="fund-rank">' + (i + 1) + "</span>" +
+      '<div class="fund-title"><h3>' + esc(f.name) + "</h3>" +
+      '<div class="fund-meta">' + esc(f.mgr) + " · " + esc(f.country) + " · " +
+      esc(f.aum) + " · 截至 " + esc(f.asof) + "</div></div></div>" +
+      rows + tops +
+      '<div class="fund-note">' + esc(f.note) + ' · 來源：' + esc(f.source) + "</div></div>";
+  }
+
+  function renderFundGroup(hostId, list) {
+    var host = document.getElementById(hostId);
+    if (!host || !list || !list.length) return;
+    host.innerHTML = list.map(fundGroupCard).join("");
+  }
+
   /* ---------- 13F 頂級基金追蹤頁（模組 6） ---------- */
   function renderF13F() {
     if (document.body.getAttribute("data-page") !== "funds") return;
     renderHedgeFunds();
+    renderFundGroup("familyoffice-list", D.familyoffices);
+    renderFundGroup("endowment-list", D.endowments);
+    renderFundGroup("pension-list", D.pensions);
     renderF13FCalendar();
     renderFundHeat();
   }
@@ -1132,6 +1165,24 @@
         '<p class="s-note">縱軸為期初 100 的指數化價值（' + esc(sc.start) + " – " + esc(sc.end) +
         "，共 " + sc.n_months + " 個月，月頻、每月再平衡）。</p>";
       var pf = sc.pf || {}, spy = sc.spy || {};
+      /* 模組 35：報酬歸因——各資產貢獻 ≈ 平均權重 × 區間報酬 */
+      var attrRows = (sc.attr || []).map(function (a) {
+        return "<tr><td>" + esc(a.label) + "（" + esc(a.sym) + "）</td>" +
+          '<td style="font-variant-numeric:tabular-nums;">' + a.w + "%</td>" +
+          '<td style="color:' + col(a.ret) + ';">' + fmt(a.ret) + "</td>" +
+          '<td style="color:' + col(a.contrib) + ';">' + fmt(a.contrib) + "</td></tr>";
+      }).join("");
+      var attrTable = (sc.attr && sc.attr.length
+        ? '<h4 class="s-h3" style="margin-top:14px;">🔍 報酬歸因（近似：平均權重 × 資產區間報酬）</h4>' +
+          '<table class="s-table"><thead><tr><th>資產</th><th>平均權重</th><th>區間報酬</th>' +
+          "<th>貢獻</th></tr></thead><tbody>" + attrRows + "</tbody></table>" +
+          (sc.excess != null
+            ? '<p class="s-note">組合相對 SPY：<b style="color:' +
+              (sc.excess >= 0 ? "var(--good)" : "var(--crit)") + ';">' +
+              (sc.excess >= 0 ? "+" : "") + sc.excess + "%</b>（組合 " + fmt(pf.ret) +
+              " vs SPY " + fmt(spy.ret) + "；月頻再平衡下各資產貢獻之和 ≈ 組合報酬）</p>"
+            : "")
+        : "");
       return '<div class="card" style="margin-top:12px;">' +
         "<h3>" + sc.emoji + " " + esc(sc.title) + ' <span class="s-chip off">' +
         esc(sc.start) + " – " + esc(sc.end) + "</span></h3>" +
@@ -1152,7 +1203,7 @@
         '<td style="color:' + col(spy.ret) + ';">' + fmt(spy.ret) + "</td>" +
         '<td style="color:' + col(spy.maxdd) + ';">' + fmt(spy.maxdd) + "</td>" +
         "<td>" + (spy.recover_months != null ? spy.recover_months + " 個月" : "—") + "</td></tr>" +
-        assetRows + "</tbody></table>" + chart + "</div>";
+        assetRows + "</tbody></table>" + chart + attrTable + "</div>";
     }).join("");
   }
 
@@ -2374,6 +2425,7 @@
         document.getElementById(id + "-v").textContent =
           id === "tool-dbc" ? (this.value >= 0 ? "+" : "") + this.value + "%" : this.value;
         toolSimResult();
+        renderToolsSensitivity();
       });
     });
     toolSimResult();
@@ -2537,6 +2589,282 @@
     renderToolsCalc();
     renderToolsBudget();
     renderToolsLog();
+    renderToolsSensitivity();
+    applyToolsHash();
+  }
+
+  /* ---------- 模組 36：規則敏感性 ---------- */
+  function renderToolsSensitivity() {
+    var host = document.getElementById("t-sensitivity");
+    if (!host) return;
+    var base = ["tool-g", "tool-i", "tool-l", "tool-s", "tool-dbc"].map(function (id) {
+      var el = document.getElementById(id);
+      return el ? +el.value : null;
+    });
+    if (base.some(function (v) { return v == null || isNaN(v); })) {
+      host.innerHTML = "<p>模擬器尚未載入。</p>";
+      return;
+    }
+    var baseW = toolWeightsFromScores(base[0], base[1], base[2], base[3], base[4]).w;
+    var names = [["tool-g", "增長評分"], ["tool-i", "通脹評分"], ["tool-l", "流動性評分"],
+                 ["tool-s", "壓力評分"], ["tool-dbc", "商品一年報酬"]];
+    var unit = function (id, v) { return id === "tool-dbc" ? (v >= 0 ? "+" : "") + v + "%" : v; };
+    var rows = names.map(function (nm, k) {
+      var cells = [-10, +10].map(function (d) {
+        var v = base.slice();
+        v[k] += d;
+        var w = toolWeightsFromScores(v[0], v[1], v[2], v[3], v[4]).w;
+        var deltas = TOOL_CLS.filter(function (c) { return w[c] !== baseW[c]; })
+          .map(function (c) {
+            return c + " " + (w[c] > baseW[c] ? "+" : "") + (w[c] - baseW[c]);
+          });
+        return '<td style="font-variant-numeric:tabular-nums;">' + unit(nm[0], v[k]) +
+          (deltas.length
+            ? '<br><span style="color:var(--mid);">' + deltas.join("、") + "</span>"
+            : '<br><span class="s-note">配置無變化</span>') + "</td>";
+      });
+      return "<tr><td>" + esc(nm[1]) + "（基準 " + unit(nm[0], base[k]) + "）</td>" +
+        cells.join("") + "</tr>";
+    }).join("");
+    host.innerHTML = '<div class="card">' +
+      '<p class="s-note" style="margin:0 0 8px;">基準＝目前滑桿值（股票 ' + baseW["股票"] +
+      "／國債 " + baseW["國債"] + "／商品 " + baseW["商品"] + "／黃金 " + baseW["黃金"] +
+      "／現金 " + baseW["現金"] + '）。每個評分單獨 ±10、其餘不變，重跑全部規則；只列出發生變化的資產。</p>' +
+      '<table class="s-table"><thead><tr><th>變動的評分</th><th>−10 後的配置變化</th>' +
+      "<th>+10 後的配置變化</th></tr></thead><tbody>" + rows + "</tbody></table></div>";
+  }
+
+  /* ---------- 模組 33：匯出與分享 ---------- */
+  function csvCell(c) {
+    c = String(c == null ? "" : c);
+    return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c;
+  }
+  function downloadCsv(filename, lines) {
+    var blob = new Blob(["﻿" + lines.map(csvCell).join("\r\n")],
+                        {type: "text/csv;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function copyText(t, done) {
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = t;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      done();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+  function shareLinkFor(vals) {
+    return "tools.html#tools=" + vals.map(function (v) { return Math.round(v); }).join(",");
+  }
+  function toolsExportState() {
+    return ["tool-g", "tool-i", "tool-l", "tool-s", "tool-dbc"].map(function (id) {
+      var el = document.getElementById(id);
+      return el ? +el.value : null;
+    });
+  }
+  function exportToolsCsv() {
+    var v = toolsExportState();
+    if (!v[0] && v[0] !== 0) return;
+    var r = toolWeightsFromScores(v[0], v[1], v[2], v[3], v[4]);
+    var lines = [["AIShan+ 決策工具箱匯出"], ["匯出時間", new Date().toISOString()], [""],
+      ["評分", "數值"],
+      ["增長", v[0]], ["通脹", v[1]], ["流動性", v[2]], ["壓力", v[3]],
+      ["商品一年報酬（%）", v[4]], [""],
+      ["資產", "權重（%）"]];
+    TOOL_CLS.forEach(function (c) { lines.push([c, r.w[c]]); });
+    lines.push([""]);
+    lines.push(["觸發規則", r.fired.length ? r.fired.join("；") : "無（維持基準 40/20/10/10/20）"]);
+    downloadCsv("aishan-tools-" + new Date().toISOString().slice(0, 10) + ".csv", lines);
+  }
+  function exportAllocCsv() {
+    var A = D.allocation || {};
+    var macro = A.macro || [];
+    var targets = A.targets || [];
+    var lines = [["AIShan+ 資產配置匯出"], ["匯出時間", new Date().toISOString()],
+      ["資料截至", D.market_asof || "—"], [""],
+      ["宏觀評分", "分數", "月變動"]];
+    macro.forEach(function (m) {
+      lines.push([m.label, m.score, m.change != null ? (m.change >= 0 ? "+" : "") + m.change : "—"]);
+    });
+    lines.push([""]);
+    lines.push(["目標配置", "權重（%）", "代理 ETF"]);
+    targets.forEach(function (t) { lines.push([t.cls, t.pct, t.proxy || "—"]); });
+    lines.push([""]);
+    lines.push(["觸發的規則"]);
+    var rules = (D.tools || {}).rules || [];
+    if (rules.length) {
+      rules.forEach(function (rd) { lines.push([rd]); });
+    } else {
+      lines.push(["無（維持基準配置）"]);
+    }
+    downloadCsv("aishan-allocation-" + new Date().toISOString().slice(0, 10) + ".csv", lines);
+  }
+  function initExportButtons() {
+    var allocHost = document.getElementById("alloc-export");
+    if (allocHost) {
+      allocHost.innerHTML =
+        '<button class="btn primary" id="btn-alloc-csv">⬇ 匯出 CSV（評分＋配置）</button>' +
+        '<button class="btn" id="btn-alloc-share">🔗 複製分享連結</button>' +
+        '<span class="s-note" id="alloc-export-msg" style="align-self:center;"></span>';
+      document.getElementById("btn-alloc-csv").addEventListener("click", exportAllocCsv);
+      document.getElementById("btn-alloc-share").addEventListener("click", function () {
+        var cur = toolCurrentScores();
+        var link = shareLinkFor([cur.g, cur.i, cur.l, cur.s, Math.round(cur.dbc)]);
+        copyText(link, function () {
+          document.getElementById("alloc-export-msg").textContent = "已複製：" + link;
+        });
+      });
+    }
+    var toolsHost = document.getElementById("t-export");
+    if (toolsHost) {
+      toolsHost.innerHTML =
+        '<button class="btn primary" id="btn-tools-csv">⬇ 匯出 CSV（模擬器狀態）</button>' +
+        '<button class="btn" id="btn-tools-share">🔗 複製分享連結</button>' +
+        '<span class="s-note" id="tools-export-msg" style="align-self:center;"></span>';
+      document.getElementById("btn-tools-csv").addEventListener("click", exportToolsCsv);
+      document.getElementById("btn-tools-share").addEventListener("click", function () {
+        var link = shareLinkFor(toolsExportState());
+        copyText(link, function () {
+          document.getElementById("tools-export-msg").textContent = "已複製：" + link;
+        });
+      });
+    }
+  }
+  function applyToolsHash() {
+    var m = /#tools=(-?\d+(?:,-?\d+)*)/.exec(location.hash || "");
+    if (!m) return;
+    var v = m[1].split(",").map(function (x) { return +x; });
+    if (v.length !== 5 || v.some(function (x) { return isNaN(x); })) return;
+    [["tool-g", v[0], 0, 100], ["tool-i", v[1], 0, 100], ["tool-l", v[2], 0, 100],
+     ["tool-s", v[3], 0, 100], ["tool-dbc", v[4], -40, 60]].forEach(function (kv) {
+      var el = document.getElementById(kv[0]);
+      if (!el) return;
+      el.value = Math.min(kv[3], Math.max(kv[2], kv[1]));
+      document.getElementById(kv[0] + "-v").textContent =
+        kv[0] === "tool-dbc" ? (el.value >= 0 ? "+" : "") + el.value + "%" : el.value;
+    });
+    toolSimResult();
+    toolCalcRender();
+    renderToolsSensitivity();
+    var d = document.getElementById("t-scen-desc");
+    if (d) d.textContent = "已由分享連結代入評分（見上方滑桿）。";
+  }
+
+  /* ---------- 模組 29：本週市場回顧（首頁） ---------- */
+  function renderMarketReview() {
+    var host = document.getElementById("home-review");
+    var R = D.review;
+    if (!host) return;
+    if (!R || !R.rows || !R.rows.length) {
+      host.innerHTML = "<p>本週回顧資料暫缺（行情未抓取，請觸發更新）。</p>";
+      return;
+    }
+    var bars = R.rows.map(function (r) {
+      var w = r.w;
+      return '<div style="flex:1;min-width:130px;">' +
+        '<div style="display:flex;justify-content:space-between;gap:8px;">' +
+        '<span class="s-n" style="font-size:12px;">' + esc(r.label) +
+        ' <span class="s-note">' + esc(r.sym) + "</span></span>" +
+        '<span class="s-v" style="font-size:12px;"' + pctClr(w) + ">" + pctTxt(w) + "</span></div>" +
+        '<div style="height:6px;border-radius:3px;background:var(--bg2);overflow:hidden;margin-top:3px;">' +
+        '<div style="height:100%;width:' + Math.min(100, Math.max(0, 50 + w * 6)) +
+        "%;background:" + (w >= 0 ? "var(--good)" : "var(--crit)") + ';"></div></div></div>';
+    }).join("");
+    var movesHtml = R.moves.length
+      ? '<ul class="judgment-list">' + R.moves.map(function (m) {
+          var good = m.up_good ? (m.change >= 0) : (m.change <= 0);
+          var arrow = m.change > 0 ? "▲ +" + m.change
+            : m.change < 0 ? "▼ " + m.change : "＝ 0";
+          return "<li><b>" + esc(m.label) + "</b> " + m.score +
+            ' <span style="color:' + (m.change === 0 ? "var(--mid)"
+              : good ? "var(--good)" : "var(--crit)") + ';">' + arrow +
+            "</span>（較上月）</li>";
+        }).join("") + "</ul>"
+      : '<p class="s-note">本月四項評分無變動。</p>';
+    var upHtml = R.upcoming.length
+      ? '<table class="s-table"><thead><tr><th>日期</th><th>事件</th></tr></thead><tbody>' +
+        R.upcoming.map(function (e) {
+          var badge = e.kind === "earnings"
+            ? '<span class="s-chip on">財報</span>'
+            : '<span class="s-chip mid">事件</span>';
+          return '<tr><td style="font-variant-numeric:tabular-nums;white-space:nowrap;">' +
+            esc(e.date) + "</td><td>" + badge + " " + esc(e.label) +
+            (e.ticker ? "（" + esc(e.ticker) + "）" : "") +
+            (e.note ? ' <span class="s-note">' + esc(e.note) + "</span>" : "") + "</td></tr>";
+        }).join("") + "</tbody></table>"
+      : '<p class="s-note">未來 30 天暫無已收錄事件。</p>';
+    host.innerHTML = '<div class="card" style="margin-bottom:14px;">' +
+      '<div class="dash-head"><h3>📊 一週變動（核心指數與資產）</h3>' +
+      '<span class="freshness">資料截至 ' + esc(R.asof || "—") + "</span></div>" +
+      '<div style="display:flex;flex-wrap:wrap;gap:14px 18px;">' + bars + "</div>" +
+      '<p class="s-note" style="margin-top:10px;margin-bottom:0;">' +
+      esc(R.summary || "") + "走勢條為相對零軸的位置示意（非數值軸）。</p></div>" +
+      '<div class="dash-grid">' +
+      '<div class="card"><div class="dash-head"><h3>🌡 宏觀評分變動</h3>' +
+      '<a class="more" href="allocation.html">配置 →</a></div>' + movesHtml + "</div>" +
+      '<div class="card"><div class="dash-head"><h3>🗓 未來 30 天關注</h3>' +
+      '<a class="more" href="events.html">事件 →</a></div>' + upHtml + "</div></div>";
+  }
+
+  /* ---------- 模組 37：評分映射說明（配置頁） ---------- */
+  function renderAllocationMapping() {
+    var host = document.getElementById("a-mapping");
+    var M = ((D.allocation || {}).mapping) || [];
+    if (!host) return;
+    if (!M.length) {
+      host.innerHTML = "<p>評分映射資料暫缺。</p>";
+      return;
+    }
+    var gloss = {growth: "growth-score", inflation: "inflation-score",
+                 liquidity: "liquidity-score", stress: "stress-score"};
+    host.innerHTML = M.map(function (m) {
+      var partRows = (m.parts || []).map(function (p) {
+        return "<tr><td>" + esc(p.name) + "</td>" +
+          '<td style="font-variant-numeric:tabular-nums;">' +
+          (p.value == null ? "—" : p.value) + "</td>" +
+          '<td style="font-variant-numeric:tabular-nums;">× ' + p.weight.toFixed(1) + "</td>" +
+          '<td style="font-variant-numeric:tabular-nums;"><b>' + p.contrib + "</b></td></tr>";
+      }).join("");
+      return '<div class="card" style="margin-top:12px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">' +
+        '<h3 style="margin:0;">' + esc(m.label) + " 評分" +
+        ' <a href="glossary.html#' + (gloss[m.key] || "clamp") +
+        '" style="font-size:12px;text-decoration:none;" title="術語表">ⓘ</a></h3>' +
+        '<span class="s-chip on">總分 ' + m.score + " / 100</span></div>" +
+        '<p class="s-note" style="margin:6px 0;">公式：' + esc(m.formula) + "</p>" +
+        '<table class="s-table"><thead><tr><th>原始輸入</th><th>目前值</th><th>權重</th>' +
+        "<th>貢獻分</th></tr></thead><tbody>" + partRows + "</tbody></table></div>";
+    }).join("");
+  }
+
+  /* ---------- 模組 27：數據更新時間戳 ---------- */
+  function stampPage() {
+    var asof = D.market_asof;
+    if (!asof) return;
+    var existing = document.querySelector(".freshness");
+    if (existing && /截至/.test(existing.textContent || "")) return;
+    var d = document.querySelector(".section-desc");
+    if (!d) return;
+    if (/資料截至|截至/.test(d.textContent || "")) return;
+    var sp = document.createElement("span");
+    sp.className = "freshness";
+    sp.textContent = "資料截至 " + asof;
+    d.appendChild(document.createTextNode(" "));
+    d.appendChild(sp);
   }
 
   /* ---------- 啟動 ---------- */
@@ -2544,11 +2872,11 @@
     initThemeToggle();
     initUpdateButton();
     var page = document.body.getAttribute("data-page");
-    if (page === "home") renderHome();
+    if (page === "home") { renderHome(); renderMarketReview(); }
     if (page === "companies") { initCompanies(); initTopics(); }
     if (page === "reports") initReports();
     if (page === "trackrecord") renderTrackRecord();
-    if (page === "allocation") { renderAllocation(); renderFunds(); }
+    if (page === "allocation") { renderAllocation(); renderFunds(); renderAllocationMapping(); initExportButtons(); }
     if (page === "fed") renderFed();
     if (page === "valuation") renderValuation();
     if (page === "events") renderEvents();
@@ -2558,7 +2886,8 @@
     if (page === "scenarios") renderScenarios();
     if (page === "risk") renderRisk();
     if (page === "market") renderMarketPage();
-    if (page === "tools") renderTools();
+    if (page === "tools") { renderTools(); initExportButtons(); }
+    stampPage();
   });
   window.renderTrackRecord = renderTrackRecord;  // 主題切換時重繪
 })();
