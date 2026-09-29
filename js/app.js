@@ -355,11 +355,12 @@
       var list = D.companies.slice();
       var watch = getWatch();
       if (state.q) {
-        var s = state.q.toLowerCase();
+        // 忽略空格與間隔號：「space x」也能命中「SpaceX」、「台 積 電」命中「台積電」
+        var s = state.q.toLowerCase().replace(/[\s·]+/g, "");
         list = list.filter(function (c) {
-          return c.name.toLowerCase().indexOf(s) >= 0 ||
-            (c.ticker && c.ticker.toLowerCase().indexOf(s) >= 0) ||
-            (c.summary && c.summary.toLowerCase().indexOf(s) >= 0);
+          return c.name.toLowerCase().replace(/[\s·]+/g, "").indexOf(s) >= 0 ||
+            (c.ticker && c.ticker.toLowerCase().replace(/[\s·]+/g, "").indexOf(s) >= 0) ||
+            (c.summary && c.summary.toLowerCase().replace(/[\s·]+/g, "").indexOf(s) >= 0);
         });
       }
       if (state.filter === "scored") list = list.filter(function (c) { return c.score; });

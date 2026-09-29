@@ -268,6 +268,39 @@ HOT_TICKERS = {"NVDA", "MSFT", "AAPL", "GOOGL", "AMZN", "META", "TSM", "AMD",
               "TSLA", "300750.SZ", "XOM", "JPM", "BRK-B", "LLY", "NVO",
               "COIN", "MSTR"}
 
+# 手工數據覆蓋：Yahoo 抓不到但站內有 S-1/研究報告依據的公司，
+# 數據全部取自站內研究報告（SpaceX：S-1 招股書，2026-06-23 報告），非杜撰。
+MANUAL_DATA = {
+    "SpaceX": {
+        "ticker": "SPCX",
+        "region": "美股",
+        "summary": "太空基礎設施壟斷企業——自研可複用火箭部署自有衛星星座，Starlink 向 70+ 國家賣衛星互聯網。2026-06-12 於 NASDAQ 上市（史上最大 IPO），上市時市值約 1.77 萬億美元。",
+        "finance": {
+            "margins": 0.488,      # 2025 毛利率 48.8%（S-1）
+            "op_margins": -0.139,  # 2025 營業利潤 -$25.9 億 ÷ 營收 $187 億
+            "rev_growth": 0.33,    # 2024→2025 營收 +33%
+            "fcf": -9.1e9,         # 2025 自由現金流 -$91 億
+            "cash": 1.59e10,       # Q1 2026 現金 $159 億
+            "debt": 2.91e10,       # 總債務 $291 億
+            "revenue": 1.87e10,    # 2025 營收 $187 億
+            "ebitda": 6.6e9,       # 2025 調整後 EBITDA $66 億
+            "eps": -3.78,          # 2025 淨虧損 $49.4 億 ÷ 130.76 億股
+        },
+        "multiples": {
+            "ps": 11.6,            # 市值 2.17 萬億 ÷ 2025 營收 187 億
+            "evebitda": 330.8,     # (市值+債務-現金) ÷ 調整後 EBITDA
+            "mktcap": 2.17e12,     # 2026-06-23 收盤市值
+            "shares": 1.3076e10,   # 130.76 億股
+        },
+        "profile": {
+            "biz": "SpaceX 用自研可複用火箭部署 Starlink 衛星星座，向全球賣衛星互聯網。三大業務：Starlink（2025 佔收入 61%，運營利潤率 39%）、發射服務（佔 22%，2025 年發射 165 次、全球軌道質量份額 87%）、AI（xAI/X 合併，佔 17%）。護城河：垂直整合與發射規模（85% 零件自製、Falcon 9 複用 35 次）。風險：xAI 虧損 + Starship 資本開支（2025 資本開支 $207 億）。",
+            "industry": "航天 / 衛星互聯網",
+            "website": "spacex.com",
+            "country": "美國",
+        },
+    },
+}
+
 # 分析師評級刻度（recommendationMean 1.0=強力買入 … 5.0=賣出）
 REC_SCALE = [(1.5, "強力買入"), (2.5, "買入"), (3.5, "持有"), (4.5, "減持"), (99, "賣出")]
 
@@ -585,6 +618,13 @@ def render_stock_pages(companies, quotes, fund_data, in_combo_names, fund_holdin
         c2["_in_combo"] = c["name"] in in_combo_names
         st = compute_stock(c2, quotes, fund_data.get(c.get("ticker") or ""), sector_peers,
                            spy_closes)
+        ov = MANUAL_DATA.get(st["name"])
+        if ov:
+            for k, v in ov.items():
+                if isinstance(v, dict) and isinstance(st.get(k), dict):
+                    st[k] = {**st[k], **v}
+                else:
+                    st[k] = v
         st["rel_peers_n"] = len(sector_peers.get(c.get("sector", ""), []))
         st["fund_mentions"] = (fund_holdings or {}).get(c.get("ticker") or "") or []
         st["polit_mentions"] = (polit_holdings or {}).get(c.get("ticker") or "") or []
