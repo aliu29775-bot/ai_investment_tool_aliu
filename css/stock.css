@@ -82,3 +82,10 @@
   .s-price { font-size: 26px; }
   .s-title-row h1 { font-size: 24px; }
 }
+
+/* ---------- 暗色模式：硬編碼淺色徽章改深色底（字體清晰度） ---------- */
+:root[data-theme="dark"] .s-badge.hot { background: #3a3218; color: #e0c36e; }
+:root[data-theme="dark"] .s-badge.combo { background: #14321f; color: #6fd3a0; }
+:root[data-theme="dark"] .s-verdict.positive { background: #14321f; color: #6fd3a0; }
+:root[data-theme="dark"] .s-verdict.negative { background: #3a1c1c; color: #e9a0a0; }
+:root[data-theme="dark"] .s-verdict.neutral { background: #332a12; color: #e0c36e; }

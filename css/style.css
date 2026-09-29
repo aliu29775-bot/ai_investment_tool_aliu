@@ -40,6 +40,10 @@
   /* 評分星 */
   --star: #c98500;
   --shadow: 0 1px 2px rgba(11, 11, 11, 0.05), 0 4px 16px rgba(11, 11, 11, 0.06);
+  /* 個股頁共用（stock.css 引用；原本未定義，暗色模式會回退到淺色底） */
+  --card-bg: var(--surface);
+  --chip: #eef1f5;
+  --text: var(--ink);
 }
 
 :root[data-theme="dark"] {
@@ -68,7 +72,15 @@
   --crit-tint: #3a1c1c;
   --star: #e0a72e;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.4);
+  /* 個股頁共用（stock.css 引用；原本未定義，暗色模式會回退到淺色底） */
+  --card-bg: var(--surface);
+  --chip: #2a2a28;
+  --text: var(--ink);
 }
+
+/* 暗色模式 chip 中性文字提亮，確保與深色 chip 底的可讀性 */
+:root[data-theme="dark"] .s-chip.mid,
+:root[data-theme="dark"] .s-chip.off { color: var(--ink-2); }
 
 /* ---------- 基礎 ---------- */
 
