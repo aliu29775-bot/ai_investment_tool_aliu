@@ -478,6 +478,49 @@ def fetch_quotes(symbols, verbose=True, workers=16):
     return quotes
 
 
+def fetch_mktcaps(symbols, workers=12):
+    """並行抓一批標的市值（quoteSummary price 模組；defaultKeyStatistics 對港股/A股常缺 marketCap）。
+    回傳 (mktcaps, fx)：mktcaps {symbol: 市值(原幣)}、fx {幣別: 每1原幣折美元}。"""
+    jar = http.cookiejar.CookieJar()
+    crumb = _get_crumb(jar)
+    if not crumb:
+        print("  ✗ Yahoo crumb 取得失敗，市值補抓跳過")
+        return {}, {}
+    cookies = list(jar)
+    syms = sorted(set(s for s in symbols if s))
+
+    def one(sym):
+        # 每個執行緒用獨立 jar（複製同一組 cookie），避免並行讀寫衝突
+        j = http.cookiejar.CookieJar()
+        for c in cookies:
+            j.set_cookie(c)
+        url = ("https://query1.finance.yahoo.com/v10/finance/quoteSummary/"
+               f"{urllib.parse.quote(sym)}?modules=price&crumb={urllib.parse.quote(crumb)}")
+        try:
+            d = _yahoo_json(url, j)
+            res = (d.get("quoteSummary") or {}).get("result") or []
+            mc = (((res[0].get("price") or {}).get("marketCap") or {})
+                  .get("raw")) if res else None
+            return sym, mc
+        except Exception:
+            return sym, None
+
+    out = {}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(one, sym) for sym in syms]
+        for fut in as_completed(futs):
+            sym, mc = fut.result()
+            if mc is not None:
+                out[sym] = mc
+    # 匯率：市值統一折算美元，避免港幣/人民幣混排失真
+    fx = {}
+    for pair, cur in (("HKDUSD=X", "HKD"), ("CNYUSD=X", "CNY")):
+        _, q, err = _fetch_one_quote(pair)
+        if q and q.get("price"):
+            fx[cur] = q["price"]
+    return out, fx
+
+
 # ---------------------------------------------------------------------------
 # 3.5 宏觀數據與資產配置（FRED + Yahoo 資產行情）
 # ---------------------------------------------------------------------------
@@ -1571,8 +1614,9 @@ CHINA_TRADE_TIMELINE = [
 ]
 
 
-def compute_china(companies, quotes, fund_data):
-    """中國資產專區：站內港股／A股／中概股行情與估值聚合（宏觀與指數見 CHINA_* 常量）。"""
+def compute_china(companies, quotes, fund_data, mktcaps=None):
+    """中國資產專區：站內港股／A股／中概股行情與估值聚合（宏觀與指數見 CHINA_* 常量）。
+    mktcaps：Yahoo v7 報價接口抓到的市值（quoteSummary 對港股/A股常缺 marketCap）。"""
     cn_regions = {"港股", "A股", "中概股"}
     rows = []
     for c in companies:
@@ -1598,7 +1642,7 @@ def compute_china(companies, quotes, fund_data):
             "region": "中概股" if is_uscno else ("港股" if is_hk else "A股"),
             "currency": q.get("currency") or "",
             "price": price, "change_pct": q.get("change_pct"),
-            "pe": pe, "mktcap": _u(ks.get("marketCap")),
+            "pe": pe, "mktcap": _u(ks.get("marketCap")) or (mktcaps or {}).get(t),
             "page": c.get("page", ""),
         })
     with_price = [r for r in rows if r["price"] is not None]
@@ -3453,7 +3497,21 @@ def main():
     polit_holdings = build_polit_holdings(POLITICIAN_DISCLOSURES, companies)
 
     # 中國資產專區（港股／A股／中概股聚合 + 宏觀常量）
-    china = compute_china(companies, quotes, fund_data)
+    # 港股/A股 quoteSummary 常缺 marketCap → 用 price 模組補抓（只補缺的，節省時間）
+    china_tickers = [c.get("ticker") for c in companies
+                     if (c.get("ticker") or "").endswith((".HK", ".SZ", ".SS"))
+                     or c.get("region") in ("港股", "A股", "中概股")]
+    need_mc = [t for t in china_tickers
+               if not ((((fund_data.get(t) or {}).get("qs") or {}).get("defaultKeyStatistics") or {}).get("marketCap"))]
+    mktcaps, fx = fetch_mktcaps(need_mc, workers=12) if need_mc else ({}, {})
+    if mktcaps:
+        print(f"   ✓ 補抓市值 {len(mktcaps)}/{len(need_mc)} 檔")
+    # 統一折算美元（港幣/人民幣 → USD），避免市值前10混幣種排序失真
+    mktcaps_usd = {}
+    for t, mc in mktcaps.items():
+        cur = (quotes.get(t) or {}).get("currency") or ""
+        mktcaps_usd[t] = mc * fx[cur] if cur in fx else mc
+    china = compute_china(companies, quotes, fund_data, mktcaps_usd)
 
     # 個股獨立分析頁（stocks/，每家公司一頁，內嵌估值模型；帶反向持倉引用）
     if quick:
