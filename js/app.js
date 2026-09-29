@@ -1119,7 +1119,7 @@
       rankTable(S.losers) + "</div></div>" +
       '<div class="s-bullbear" style="gap:16px;margin-top:16px;">' +
       '<div class="card" style="margin:0;"><h3>🏆 市值前 10</h3><table class="s-table">' +
-      "<thead><tr><th>公司</th><th>代碼</th><th>板塊</th><th>市值</th></tr></thead><tbody>" +
+      "<thead><tr><th>公司</th><th>代碼</th><th>板塊</th><th>市值（美元）</th></tr></thead><tbody>" +
       cap + "</tbody></table></div>" +
       '<div class="card" style="margin:0;"><h3>🏭 行業估值（PE 中位數）</h3>' +
       (sectors || '<p class="s-note">行業樣本不足。</p>') + "</div></div>" +
