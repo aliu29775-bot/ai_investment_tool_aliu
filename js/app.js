@@ -1062,7 +1062,7 @@
     var C = D.china;
     if (!host || !C) return;
     host.innerHTML = C.timeline.map(function (ev) {
-      return '<div class="f-row" style="align-items:flex-start;gap:10px;margin:10px 0;">' +
+      return '<div class="f-row" style="display:flex;align-items:flex-start;gap:10px;margin:10px 0;">' +
         '<span class="s-chip on">' + esc(ev.date) + "</span>" +
         '<div><strong>' + esc(ev.title) + "</strong>" +
         '<div class="s-n">' + esc(ev.detail) + "</div></div></div>";
