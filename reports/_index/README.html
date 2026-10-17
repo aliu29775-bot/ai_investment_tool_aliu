@@ -29,7 +29,7 @@
     <div class="report-meta">
       <span class="badge">專題</span>
       <span class="badge badge-type">附屬</span>
-      <span class="meta-item">📅 2026-09-24</span>
+      <span class="meta-item">📅 2026-10-17</span>
       <span class="meta-item">📁 附屬文件</span>
     </div>
   </div>
@@ -40,11 +40,17 @@
 <table><thead><tr><th>文件</th><th>用途</th></tr></thead><tbody><tr><td><code>reports/README.md</code></td><td>人读索引：最近更新 + 按公司/专题/大师分组</td></tr><tr><td><code>reports/index.json</code></td><td>机器可读清单，供脚本、网页、检索消费</td></tr><tr><td>根 <code>README.md</code> 中的 <code>REPORTS-INDEX</code> 块</td><td>仓库首页的研究入口，自动刷新</td></tr></tbody></table>
 <p>三份产物全部由 <code>tools/reports_index.py</code> 生成，<strong>不要手工编辑</strong>。</p>
 <h2>用法</h2>
-<pre><code># 写完新报告后跑一次
-python3 tools/reports_index.py
+<pre><code># 先把本次要发布的报告及附件加入暂存区（替换为实际目录）
+git add -- reports/本次研究目录/
 
-# CI 用：只检查是否过期，不写盘
+# 再生成索引，报告与三份索引产物须在同一次提交中提交
+python3 tools/reports_index.py
+git add -- README.md reports/README.md reports/index.json
+
+# 提交前/CI 检查：只检查是否过期，不写盘
 python3 tools/reports_index.py --check</code></pre>
+<p>索引只收录 Git 暂存区中已有的文件，包括刚 <code>git add</code> 的新报告。 未跟踪、被 <code>.gitignore</code> 忽略或仅执行过 <code>git add -N</code> 的本地文件不会被收录。 如果把新报告移出暂存区，应重新生成索引；不要只提交索引而漏掉报告原文。</p>
+<p>遇到索引有链接、GitHub 上却 404 的情况，先检查 <code>git status --short</code> 和 <code>git ls-files -- reports/对应目录/</code>。如果原稿尚在本地，按上述顺序补交报告和索引； 如果原稿已不在当前 checkout，需从原工作目录或备份找回，索引本身不能恢复正文。</p>
 <h2>元数据从哪来</h2>
 <p>脚本按以下优先级推断每份报告的标题、日期、类型与归属：</p>
 <ol>
@@ -74,7 +80,7 @@ type: 财报
 </ul>
 <p>新增专题或筛选池目录时，记得往 <code>config.json</code> 对应数组里加一行，否则会被当成公司。</p>
 <h2>隐私</h2>
-<p>脚本会调用 <code>git check-ignore</code> 过滤掉被 <code>.gitignore</code> 命中的文件 （例如 <code>reports/portfolio-latest.md</code> 组合报告），确保本地私有内容不会被写进公开索引。</p>
+<p>脚本通过 Git 暂存区路径清单限制公开索引的范围。未加入 Git 的本地文件 （包括被 <code>.gitignore</code> 忽略的 <code>reports/portfolio-latest.md</code>）不会被读取或写进索引。 Git 不可用时停止生成，不退回扫描全部本地文件。显式 <code>git add -f</code> 的文件会被视为待发布文件。</p>
   </article>
   <footer class="report-foot">
     <p>資料來源：<a href="https://github.com/aliu29775-bot/ai_investment_tool_aliu" target="_blank" rel="noopener">GitHub：AIShan+</a>
